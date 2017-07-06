@@ -56,12 +56,8 @@ BEGIN
 						posic.deviceid,
 						posic.attributes,
 						posic.latitude,
-						posic.fixtime,
-						usu1.cuenta as usr_reg,
-						usu2.cuenta as usr_mod	
+						posic.fixtime
 						from positions posic
-						inner join segu.tusuario usu1 on usu1.id_usuario = posic.id_usuario_reg
-						left join segu.tusuario usu2 on usu2.id_usuario = posic.id_usuario_mod
 				        where  ';
 			
 			--Definicion de la respuesta
@@ -86,8 +82,6 @@ BEGIN
 			--Sentencia de la consulta de conteo de registros
 			v_consulta:='select count(id)
 					    from positions posic
-					    inner join segu.tusuario usu1 on usu1.id_usuario = posic.id_usuario_reg
-						left join segu.tusuario usu2 on usu2.id_usuario = posic.id_usuario_mod
 					    where ';
 			
 			--Definicion de la respuesta		    

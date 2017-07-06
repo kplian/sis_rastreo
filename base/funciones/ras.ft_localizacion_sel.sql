@@ -121,7 +121,7 @@ BEGIN
 						local.fecha_mod,
 						local.id_usuario_mod,
 						usu1.cuenta as usr_reg,
-						usu2.cuenta as usr_mod	
+						usu2.cuenta as usr_mod,
                         case
                             when (local.id_localizacion_fk is null) then
                                 ''raiz''::varchar
@@ -130,8 +130,8 @@ BEGIN
                         end as tipo_nodo,
                         ''false''::varchar as checked
 						from ras.tlocalizacion local
-						inner join segu.tusuario usu1 on usu1.id_usuario = claf.id_usuario_reg
-						left join segu.tusuario usu2 on usu2.id_usuario = claf.id_usuario_mod
+						inner join segu.tusuario usu1 on usu1.id_usuario = local.id_usuario_reg
+						left join segu.tusuario usu2 on usu2.id_usuario = local.id_usuario_mod
 				        where ';
 			
 			--Definicion de la respuesta

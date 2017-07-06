@@ -17,7 +17,6 @@ Phx.vista.Events=Ext.extend(Phx.gridInterfaz,{
     	//llama al constructor de la clase padre
 		Phx.vista.Events.superclass.constructor.call(this,config);
 		this.init();
-		this.load({params:{start:0, limit:this.tam_pag}})
 	},
 			
 	Atributos:[
@@ -33,41 +32,20 @@ Phx.vista.Events=Ext.extend(Phx.gridInterfaz,{
 		},
 		{
 			config:{
-				name: 'geofenceid',
-				fieldLabel: 'geofenceid',
-				allowBlank: true,
-				anchor: '80%',
-				gwidth: 100,
-				maxLength:4
+					labelSeparator:'',
+					inputType:'hidden',
+					name: 'deviceid'
 			},
-				type:'NumberField',
-				filters:{pfiltro:'event.geofenceid',type:'numeric'},
-				id_grupo:1,
-				grid:true,
-				form:true
-		},
-		{
-			config:{
-				name: 'deviceid',
-				fieldLabel: 'deviceid',
-				allowBlank: true,
-				anchor: '80%',
-				gwidth: 100,
-				maxLength:4
-			},
-				type:'NumberField',
-				filters:{pfiltro:'event.deviceid',type:'numeric'},
-				id_grupo:1,
-				grid:true,
-				form:true
+			type:'Field',
+			form:true 
 		},
 		{
 			config:{
 				name: 'servertime',
-				fieldLabel: 'servertime',
+				fieldLabel: 'Fecha Hora',
 				allowBlank: false,
 				anchor: '80%',
-				gwidth: 100,
+				gwidth: 140,
 							format: 'd/m/Y', 
 							renderer:function (value,p,record){return value?value.dateFormat('d/m/Y H:i:s'):''}
 			},
@@ -79,8 +57,38 @@ Phx.vista.Events=Ext.extend(Phx.gridInterfaz,{
 		},
 		{
 			config:{
+				name: 'type',
+				fieldLabel: 'Evento',
+				allowBlank: false,
+				anchor: '80%',
+				gwidth: 200,
+				maxLength:128
+			},
+			type:'TextField',
+			filters:{pfiltro:'event.type',type:'string'},
+			id_grupo:1,
+			grid:false,
+			form:true
+		},
+		{
+			config:{
+				name: 'desc_type',
+				fieldLabel: 'Evento',
+				allowBlank: false,
+				anchor: '80%',
+				gwidth: 200,
+				maxLength:128
+			},
+			type:'TextField',
+			filters:{pfiltro:'event.type',type:'string'},
+			id_grupo:1,
+			grid:true,
+			form:true
+		},
+		{
+			config:{
 				name: 'attributes',
-				fieldLabel: 'attributes',
+				fieldLabel: 'Atributos',
 				allowBlank: true,
 				anchor: '80%',
 				gwidth: 100,
@@ -94,17 +102,47 @@ Phx.vista.Events=Ext.extend(Phx.gridInterfaz,{
 		},
 		{
 			config:{
-				name: 'type',
-				fieldLabel: 'type',
+				name: 'latitude',
+				fieldLabel: 'Latitud',
 				allowBlank: false,
 				anchor: '80%',
 				gwidth: 100,
 				maxLength:128
 			},
 				type:'TextField',
-				filters:{pfiltro:'event.type',type:'string'},
+				filters:{pfiltro:'pos.latitude',type:'string'},
 				id_grupo:1,
 				grid:true,
+				form:true
+		},
+		{
+			config:{
+				name: 'longitude',
+				fieldLabel: 'Longitud',
+				allowBlank: false,
+				anchor: '80%',
+				gwidth: 100,
+				maxLength:128
+			},
+				type:'TextField',
+				filters:{pfiltro:'pos.longitude',type:'string'},
+				id_grupo:1,
+				grid:true,
+				form:true
+		},
+		{
+			config:{
+				name: 'geofenceid',
+				fieldLabel: 'geofenceid',
+				allowBlank: true,
+				anchor: '80%',
+				gwidth: 100,
+				maxLength:4
+			},
+				type:'NumberField',
+				filters:{pfiltro:'event.geofenceid',type:'numeric'},
+				id_grupo:1,
+				grid:false,
 				form:true
 		},
 		{
@@ -119,7 +157,7 @@ Phx.vista.Events=Ext.extend(Phx.gridInterfaz,{
 				type:'NumberField',
 				filters:{pfiltro:'event.positionid',type:'numeric'},
 				id_grupo:1,
-				grid:true,
+				grid:false,
 				form:true
 		}
 	],
@@ -138,15 +176,26 @@ Phx.vista.Events=Ext.extend(Phx.gridInterfaz,{
 		{name:'type', type: 'string'},
 		{name:'positionid', type: 'numeric'},
 		{name:'usr_reg', type: 'string'},
-		{name:'usr_mod', type: 'string'},
+		{name:'usr_mod', type: 'string'},'latitude','longitude','desc_type'
 		
 	],
 	sortInfo:{
-		field: 'id',
-		direction: 'ASC'
+		field: 'servertime',
+		direction: 'DESC'
 	},
 	bdel:true,
-	bsave:true
-	}
-)
+	bsave:true,
+	loadValoresIniciales: function() {
+		Phx.vista.Events.superclass.loadValoresIniciales.call(this);
+		this.getComponente('deviceid').setValue(this.maestro.deviceid);
+	},
+	onReloadPage: function(m) {
+		this.maestro=m;	
+		this.store.baseParams={deviceid: this.maestro.deviceid};
+		this.load({params:{start:0, limit:this.tam_pag}});	
+	},
+	bnew: false,
+	bedit: false,
+	bdel: false
+})
 </script>

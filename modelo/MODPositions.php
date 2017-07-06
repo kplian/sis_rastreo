@@ -36,8 +36,6 @@ class MODPositions extends MODbase{
 		$this->captura('attributes','varchar');
 		$this->captura('latitude','float8');
 		$this->captura('fixtime','timestamp');
-		$this->captura('usr_reg','varchar');
-		$this->captura('usr_mod','varchar');
 		
 		//Ejecuta la instruccion
 		$this->armarConsulta();

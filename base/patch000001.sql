@@ -155,3 +155,16 @@ CREATE TABLE public.notifications (
 ) 
 WITH (oids = false);*/
 /***********************************F-SCP-RCM-RAS-0-05/07/2017****************************************/
+
+/***********************************I-SCP-RCM-RAS-0-06/07/2017****************************************/
+ALTER TABLE ras.tequipo
+  ADD COLUMN uniqueid VARCHAR(128);
+
+ALTER TABLE ras.tequipo
+  ADD CONSTRAINT uq_tequipo__uniqueid 
+    UNIQUE (uniqueid) NOT DEFERRABLE;  
+
+ALTER TABLE ras.tequipo
+  ADD CONSTRAINT uq_tequipo__placa 
+    UNIQUE (placa) NOT DEFERRABLE; 
+/***********************************F-SCP-RCM-RAS-0-06/07/2017****************************************/  

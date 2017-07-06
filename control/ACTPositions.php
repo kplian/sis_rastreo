@@ -11,8 +11,12 @@ class ACTPositions extends ACTbase{
 			
 	function listarPositions(){
 		$this->objParam->defecto('ordenacion','id');
-
 		$this->objParam->defecto('dir_ordenacion','asc');
+
+		if($this->objParam->getParametro('deviceid')!=''){
+			$this->objParam->addFiltro("posic.deviceid = ".$this->objParam->getParametro('deviceid'));
+		}
+
 		if($this->objParam->getParametro('tipoReporte')=='excel_grid' || $this->objParam->getParametro('tipoReporte')=='pdf_grid'){
 			$this->objReporte = new Reporte($this->objParam,$this);
 			$this->res = $this->objReporte->generarReporteListado('MODPositions','listarPositions');

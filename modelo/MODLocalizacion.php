@@ -56,7 +56,7 @@ class MODLocalizacion extends MODbase{
 		$this->setParametro('codigo','codigo','varchar');
 		$this->setParametro('latitud','latitud','float8');
 		$this->setParametro('longitud','longitud','float8');
-		$this->setParametro('id_localizacion_fk','id_localizacion_fk','int4');
+		$this->setParametro('id_localizacion_fk','id_localizacion_fk','varchar');
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -79,7 +79,7 @@ class MODLocalizacion extends MODbase{
 		$this->setParametro('codigo','codigo','varchar');
 		$this->setParametro('latitud','latitud','float8');
 		$this->setParametro('longitud','longitud','float8');
-		$this->setParametro('id_localizacion_fk','id_localizacion_fk','int4');
+		$this->setParametro('id_localizacion_fk','id_localizacion_fk','varchar');
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();

@@ -17,7 +17,6 @@ Phx.vista.Positions=Ext.extend(Phx.gridInterfaz,{
     	//llama al constructor de la clase padre
 		Phx.vista.Positions.superclass.constructor.call(this,config);
 		this.init();
-		this.load({params:{start:0, limit:this.tam_pag}})
 	},
 			
 	Atributos:[
@@ -33,8 +32,47 @@ Phx.vista.Positions=Ext.extend(Phx.gridInterfaz,{
 		},
 		{
 			config:{
+					labelSeparator:'',
+					inputType:'hidden',
+					name: 'deviceid'
+			},
+			type:'Field',
+			form:true 
+		},
+		{
+			config:{
+				name: 'latitude',
+				fieldLabel: 'Latitud',
+				allowBlank: false,
+				anchor: '80%',
+				gwidth: 100,
+				maxLength:8
+			},
+				type:'TextField',
+				filters:{pfiltro:'posic.latitude',type:'string'},
+				id_grupo:1,
+				grid:true,
+				form:true
+		},
+		{
+			config:{
+				name: 'longitude',
+				fieldLabel: 'Longitud',
+				allowBlank: false,
+				anchor: '80%',
+				gwidth: 100,
+				maxLength:8
+			},
+				type:'TextField',
+				filters:{pfiltro:'posic.longitude',type:'string'},
+				id_grupo:1,
+				grid:true,
+				form:true
+		},
+		{
+			config:{
 				name: 'address',
-				fieldLabel: 'address',
+				fieldLabel: 'Dirección',
 				allowBlank: true,
 				anchor: '80%',
 				gwidth: 100,
@@ -48,24 +86,8 @@ Phx.vista.Positions=Ext.extend(Phx.gridInterfaz,{
 		},
 		{
 			config:{
-				name: 'devicetime',
-				fieldLabel: 'devicetime',
-				allowBlank: false,
-				anchor: '80%',
-				gwidth: 100,
-							format: 'd/m/Y', 
-							renderer:function (value,p,record){return value?value.dateFormat('d/m/Y H:i:s'):''}
-			},
-				type:'DateField',
-				filters:{pfiltro:'posic.devicetime',type:'date'},
-				id_grupo:1,
-				grid:true,
-				form:true
-		},
-		{
-			config:{
 				name: 'accuracy',
-				fieldLabel: 'accuracy',
+				fieldLabel: 'Exactitud',
 				allowBlank: false,
 				anchor: '80%',
 				gwidth: 100,
@@ -80,7 +102,7 @@ Phx.vista.Positions=Ext.extend(Phx.gridInterfaz,{
 		{
 			config:{
 				name: 'course',
-				fieldLabel: 'course',
+				fieldLabel: 'Rumbo',
 				allowBlank: false,
 				anchor: '80%',
 				gwidth: 100,
@@ -95,7 +117,7 @@ Phx.vista.Positions=Ext.extend(Phx.gridInterfaz,{
 		{
 			config:{
 				name: 'altitude',
-				fieldLabel: 'altitude',
+				fieldLabel: 'Altitud',
 				allowBlank: false,
 				anchor: '80%',
 				gwidth: 100,
@@ -110,7 +132,7 @@ Phx.vista.Positions=Ext.extend(Phx.gridInterfaz,{
 		{
 			config:{
 				name: 'protocol',
-				fieldLabel: 'protocol',
+				fieldLabel: 'Protocol',
 				allowBlank: true,
 				anchor: '80%',
 				gwidth: 100,
@@ -125,7 +147,7 @@ Phx.vista.Positions=Ext.extend(Phx.gridInterfaz,{
 		{
 			config:{
 				name: 'speed',
-				fieldLabel: 'speed',
+				fieldLabel: 'Velocidad',
 				allowBlank: false,
 				anchor: '80%',
 				gwidth: 100,
@@ -140,7 +162,7 @@ Phx.vista.Positions=Ext.extend(Phx.gridInterfaz,{
 		{
 			config:{
 				name: 'network',
-				fieldLabel: 'network',
+				fieldLabel: 'Red',
 				allowBlank: true,
 				anchor: '80%',
 				gwidth: 100,
@@ -149,13 +171,13 @@ Phx.vista.Positions=Ext.extend(Phx.gridInterfaz,{
 				type:'TextField',
 				filters:{pfiltro:'posic.network',type:'string'},
 				id_grupo:1,
-				grid:true,
+				grid:false,
 				form:true
 		},
 		{
 			config:{
 				name: 'servertime',
-				fieldLabel: 'servertime',
+				fieldLabel: 'Hora servidor',
 				allowBlank: false,
 				anchor: '80%',
 				gwidth: 100,
@@ -170,15 +192,16 @@ Phx.vista.Positions=Ext.extend(Phx.gridInterfaz,{
 		},
 		{
 			config:{
-				name: 'longitude',
-				fieldLabel: 'longitude',
+				name: 'devicetime',
+				fieldLabel: 'Hora Dispositivo',
 				allowBlank: false,
 				anchor: '80%',
 				gwidth: 100,
-				maxLength:8
+							format: 'd/m/Y', 
+							renderer:function (value,p,record){return value?value.dateFormat('d/m/Y H:i:s'):''}
 			},
-				type:'TextField',
-				filters:{pfiltro:'posic.longitude',type:'string'},
+				type:'DateField',
+				filters:{pfiltro:'posic.devicetime',type:'date'},
 				id_grupo:1,
 				grid:true,
 				form:true
@@ -186,7 +209,7 @@ Phx.vista.Positions=Ext.extend(Phx.gridInterfaz,{
 		{
 			config:{
 				name: 'valid',
-				fieldLabel: 'valid',
+				fieldLabel: 'Válido',
 				allowBlank: false,
 				anchor: '80%',
 				gwidth: 100
@@ -194,50 +217,20 @@ Phx.vista.Positions=Ext.extend(Phx.gridInterfaz,{
 				type:'Checkbox',
 				filters:{pfiltro:'posic.valid',type:'boolean'},
 				id_grupo:1,
-				grid:true,
-				form:true
-		},
-		{
-			config:{
-				name: 'deviceid',
-				fieldLabel: 'deviceid',
-				allowBlank: false,
-				anchor: '80%',
-				gwidth: 100,
-				maxLength:4
-			},
-				type:'NumberField',
-				filters:{pfiltro:'posic.deviceid',type:'numeric'},
-				id_grupo:1,
-				grid:true,
+				grid:false,
 				form:true
 		},
 		{
 			config:{
 				name: 'attributes',
-				fieldLabel: 'attributes',
+				fieldLabel: 'Atributos',
 				allowBlank: true,
 				anchor: '80%',
-				gwidth: 100,
+				gwidth: 400,
 				maxLength:4000
 			},
 				type:'TextField',
 				filters:{pfiltro:'posic.attributes',type:'string'},
-				id_grupo:1,
-				grid:true,
-				form:true
-		},
-		{
-			config:{
-				name: 'latitude',
-				fieldLabel: 'latitude',
-				allowBlank: false,
-				anchor: '80%',
-				gwidth: 100,
-				maxLength:8
-			},
-				type:'TextField',
-				filters:{pfiltro:'posic.latitude',type:'string'},
 				id_grupo:1,
 				grid:true,
 				form:true
@@ -249,13 +242,13 @@ Phx.vista.Positions=Ext.extend(Phx.gridInterfaz,{
 				allowBlank: false,
 				anchor: '80%',
 				gwidth: 100,
-							format: 'd/m/Y', 
-							renderer:function (value,p,record){return value?value.dateFormat('d/m/Y H:i:s'):''}
+				format: 'd/m/Y', 
+				renderer:function (value,p,record){return value?value.dateFormat('d/m/Y H:i:s'):''}
 			},
 				type:'DateField',
 				filters:{pfiltro:'posic.fixtime',type:'date'},
 				id_grupo:1,
-				grid:true,
+				grid:false,
 				form:true
 		}
 	],
@@ -291,9 +284,20 @@ Phx.vista.Positions=Ext.extend(Phx.gridInterfaz,{
 		direction: 'ASC'
 	},
 	bdel:true,
-	bsave:true
-	}
-)
+	bsave:true,
+	loadValoresIniciales: function() {
+		Phx.vista.Positions.superclass.loadValoresIniciales.call(this);
+		this.getComponente('deviceid').setValue(this.maestro.deviceid);
+	},
+	onReloadPage: function(m) {
+		this.maestro=m;	
+		this.store.baseParams={deviceid: this.maestro.deviceid};
+		this.load({params:{start:0, limit:this.tam_pag}});	
+	},
+	bnew: false,
+	bedit: false,
+	bdel: false
+})
 </script>
 		
 		

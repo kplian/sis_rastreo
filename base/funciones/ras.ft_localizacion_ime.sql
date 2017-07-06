@@ -26,7 +26,8 @@ DECLARE
 	v_resp		            varchar;
 	v_nombre_funcion        text;
 	v_mensaje_error         text;
-	v_id_localizacion	integer;
+	v_id_localizacion		integer;
+	v_id_localizacion_fk	integer;
 			    
 BEGIN
 
@@ -43,6 +44,13 @@ BEGIN
 	if(p_transaccion='RAS_LOCAL_INS')then
 					
         begin
+
+        	if v_parametros.id_localizacion_fk = 'id' then
+        		v_id_localizacion_fk = null;
+        	else 
+        		v_id_localizacion_fk = v_parametros.id_localizacion_fk::integer;
+        	end if;
+
         	--Sentencia de la insercion
         	insert into ras.tlocalizacion(
 			estado_reg,
@@ -63,7 +71,7 @@ BEGIN
 			v_parametros.codigo,
 			v_parametros.latitud,
 			v_parametros.longitud,
-			v_parametros.id_localizacion_fk,
+			v_id_localizacion_fk,
 			now(),
 			v_parametros._id_usuario_ai,
 			p_id_usuario,
@@ -94,13 +102,19 @@ BEGIN
 	elsif(p_transaccion='RAS_LOCAL_MOD')then
 
 		begin
+			if v_parametros.id_localizacion_fk = 'id' then
+        		v_id_localizacion_fk = null;
+        	else 
+        		v_id_localizacion_fk = v_parametros.id_localizacion_fk::integer;
+        	end if;
+
 			--Sentencia de la modificacion
 			update ras.tlocalizacion set
 			nombre = v_parametros.nombre,
 			codigo = v_parametros.codigo,
 			latitud = v_parametros.latitud,
 			longitud = v_parametros.longitud,
-			id_localizacion_fk = v_parametros.id_localizacion_fk,
+			id_localizacion_fk = v_id_localizacion_fk,
 			fecha_mod = now(),
 			id_usuario_mod = p_id_usuario,
 			id_usuario_ai = v_parametros._id_usuario_ai,

@@ -72,7 +72,9 @@ BEGIN
 						tipeq.nombre as desc_tipo_equipo,
 						model.id_marca,
 						model.nombre as desc_modelo,
-						marca.nombre as desc_marca
+						marca.nombre as desc_marca,
+						equip.uniqueid,
+						de.id as deviceid
 						from ras.tequipo equip
 						left join ras.ttipo_equipo tipeq
 						on tipeq.id_tipo_equipo = equip.id_tipo_equipo
@@ -82,6 +84,8 @@ BEGIN
 						on marca.id_marca = model.id_marca
 						inner join segu.tusuario usu1 on usu1.id_usuario = equip.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = equip.id_usuario_mod
+						left join devices de
+						on de.uniqueid = equip.uniqueid
 				        where  ';
 			
 			--Definicion de la respuesta
@@ -114,6 +118,8 @@ BEGIN
 						on mar.id_marca = model.id_marca
 						inner join segu.tusuario usu1 on usu1.id_usuario = equip.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = equip.id_usuario_mod
+						left join devices de
+						on de.uniqueid = equip.uniqueid
 				        where  ';
 			
 			--Definicion de la respuesta		    

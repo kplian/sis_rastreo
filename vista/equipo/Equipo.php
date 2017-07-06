@@ -44,7 +44,7 @@ Phx.vista.Equipo=Ext.extend(Phx.gridInterfaz,{
 			config: {
 				name: 'id_tipo_equipo',
 				fieldLabel: 'Tipo Equipo',
-				allowBlank: true,
+				allowBlank: false,
 				emptyText: 'Elija una opción...',
 				store: new Ext.data.JsonStore({
 					url: '../../sis_rastreo/control/TipoEquipo/listarTipoEquipo',
@@ -87,7 +87,7 @@ Phx.vista.Equipo=Ext.extend(Phx.gridInterfaz,{
 			config: {
 				name: 'id_marca',
 				fieldLabel: 'Marca',
-				allowBlank: true,
+				allowBlank: false,
 				emptyText: 'Elija una opción...',
 				store: new Ext.data.JsonStore({
 					url: '../../sis_rastreo/control/Marca/listarMarca',
@@ -130,7 +130,7 @@ Phx.vista.Equipo=Ext.extend(Phx.gridInterfaz,{
 			config: {
 				name: 'id_modelo',
 				fieldLabel: 'Modelo',
-				allowBlank: true,
+				allowBlank: false,
 				emptyText: 'Elija una opción...',
 				store: new Ext.data.JsonStore({
 					url: '../../sis_rastreo/control/Modelo/listarModelo',
@@ -171,10 +171,72 @@ Phx.vista.Equipo=Ext.extend(Phx.gridInterfaz,{
 		},
 		{
 			config:{
+				name: 'gestion',
+				fieldLabel: 'Año',
+				allowBlank: false,
+				anchor: '30%',
+				gwidth: 100,
+				maxLength:4,
+				maxValue: 2050,
+				minValue: 1900
+			},
+				type:'NumberField',
+				filters:{pfiltro:'equip.gestion',type:'numeric'},
+				id_grupo:1,
+				grid:true,
+				form:true
+		},
+		{
+			config:{
+				name: 'uniqueid',
+				fieldLabel: 'IMEI',
+				allowBlank: false,
+				anchor: '100%',
+				gwidth: 100,
+				maxLength:128
+			},
+				type:'TextField',
+				filters:{pfiltro:'equip.uniqueid',type:'string'},
+				id_grupo:1,
+				grid:true,
+				form:true
+		},
+		{
+			config:{
+				name: 'placa',
+				fieldLabel: 'Placa',
+				allowBlank: false,
+				anchor: '100%',
+				gwidth: 100,
+				maxLength:20
+			},
+				type:'TextField',
+				filters:{pfiltro:'equip.placa',type:'string'},
+				id_grupo:1,
+				grid:true,
+				form:true
+		},
+		{
+			config:{
+				name: 'monto',
+				fieldLabel: 'Monto (Bs.)',
+				allowBlank: true,
+				anchor: '100%',
+				gwidth: 100,
+				maxLength:1179650
+			},
+				type:'NumberField',
+				filters:{pfiltro:'equip.monto',type:'numeric'},
+				id_grupo:1,
+				grid:true,
+				form:true
+		},
+		{
+			config:{
 				name: 'pta',
 				fieldLabel: 'PTA',
 				allowBlank: true,
-				anchor: '80%',
+				anchor: '100%',
 				gwidth: 100,
 				maxLength:50
 			},
@@ -189,7 +251,7 @@ Phx.vista.Equipo=Ext.extend(Phx.gridInterfaz,{
 				name: 'nro_chasis',
 				fieldLabel: 'Nro.Chasis',
 				allowBlank: true,
-				anchor: '80%',
+				anchor: '100%',
 				gwidth: 100,
 				maxLength:50
 			},
@@ -204,7 +266,7 @@ Phx.vista.Equipo=Ext.extend(Phx.gridInterfaz,{
 				name: 'nro_motor',
 				fieldLabel: 'Nro.Motor',
 				allowBlank: true,
-				anchor: '80%',
+				anchor: '100%',
 				gwidth: 100,
 				maxLength:50
 			},
@@ -219,7 +281,7 @@ Phx.vista.Equipo=Ext.extend(Phx.gridInterfaz,{
 				name: 'cilindrada',
 				fieldLabel: 'Cilindrada(cc)',
 				allowBlank: true,
-				anchor: '80%',
+				anchor: '100%',
 				gwidth: 100,
 				maxLength:1179650
 			},
@@ -230,11 +292,57 @@ Phx.vista.Equipo=Ext.extend(Phx.gridInterfaz,{
 				form:true
 		},
 		{
+			config: {
+				name: 'cabina',
+				fieldLabel: 'Cabina',
+				anchor: '100%',
+				tinit: false,
+				allowBlank: true,
+				origen: 'CATALOGO',
+				gdisplayField: 'cabina',
+				hiddenName: 'cabina',
+				gwidth: 55,
+				baseParams:{
+					cod_subsistema:'RAS',
+					catalogo_tipo:'tequipo__cabina'
+				},
+				valueField: 'codigo'
+			},
+			type: 'ComboRec',
+			id_grupo: 0,
+			filters:{pfiltro:'equip.cabina',type:'string'},
+			grid: true,
+			form: true
+		},
+		{
+			config: {
+				name: 'traccion',
+				fieldLabel: 'Tracción',
+				anchor: '100%',
+				tinit: false,
+				allowBlank: true,
+				origen: 'CATALOGO',
+				gdisplayField: 'traccion',
+				hiddenName: 'traccion',
+				gwidth: 55,
+				baseParams:{
+					cod_subsistema:'RAS',
+					catalogo_tipo:'tequipo__traccion'
+				},
+				valueField: 'codigo'
+			},
+			type: 'ComboRec',
+			id_grupo: 0,
+			filters:{pfiltro:'equip.traccion',type:'string'},
+			grid: true,
+			form: true
+		},
+		{
 			config:{
 				name: 'nro_movil',
 				fieldLabel: 'Nro.Móvil',
 				allowBlank: true,
-				anchor: '80%',
+				anchor: '100%',
 				gwidth: 100,
 				maxLength:50
 			},
@@ -246,25 +354,10 @@ Phx.vista.Equipo=Ext.extend(Phx.gridInterfaz,{
 		},
 		{
 			config:{
-				name: 'traccion',
-				fieldLabel: 'Tracción',
-				allowBlank: true,
-				anchor: '80%',
-				gwidth: 100,
-				maxLength:30
-			},
-				type:'TextField',
-				filters:{pfiltro:'equip.traccion',type:'string'},
-				id_grupo:1,
-				grid:true,
-				form:true
-		},
-		{
-			config:{
 				name: 'color',
 				fieldLabel: 'Color',
 				allowBlank: true,
-				anchor: '80%',
+				anchor: '100%',
 				gwidth: 100,
 				maxLength:50
 			},
@@ -276,40 +369,10 @@ Phx.vista.Equipo=Ext.extend(Phx.gridInterfaz,{
 		},
 		{
 			config:{
-				name: 'cabina',
-				fieldLabel: 'Cabina',
-				allowBlank: true,
-				anchor: '80%',
-				gwidth: 100,
-				maxLength:20
-			},
-				type:'TextField',
-				filters:{pfiltro:'equip.cabina',type:'string'},
-				id_grupo:1,
-				grid:true,
-				form:true
-		},
-		{
-			config:{
-				name: 'monto',
-				fieldLabel: 'Monto',
-				allowBlank: true,
-				anchor: '80%',
-				gwidth: 100,
-				maxLength:1179650
-			},
-				type:'NumberField',
-				filters:{pfiltro:'equip.monto',type:'numeric'},
-				id_grupo:1,
-				grid:true,
-				form:true
-		},
-		{
-			config:{
 				name: 'propiedad',
 				fieldLabel: 'Propiedad',
 				allowBlank: true,
-				anchor: '80%',
+				anchor: '100%',
 				gwidth: 100,
 				maxLength:50
 			},
@@ -321,25 +384,10 @@ Phx.vista.Equipo=Ext.extend(Phx.gridInterfaz,{
 		},
 		{
 			config:{
-				name: 'placa',
-				fieldLabel: 'Placa',
-				allowBlank: true,
-				anchor: '80%',
-				gwidth: 100,
-				maxLength:20
-			},
-				type:'TextField',
-				filters:{pfiltro:'equip.placa',type:'string'},
-				id_grupo:1,
-				grid:true,
-				form:true
-		},
-		{
-			config:{
 				name: 'estado',
 				fieldLabel: 'Estado',
 				allowBlank: true,
-				anchor: '80%',
+				anchor: '100%',
 				gwidth: 100,
 				maxLength:15
 			},
@@ -354,7 +402,6 @@ Phx.vista.Equipo=Ext.extend(Phx.gridInterfaz,{
 				name: 'fecha_alta',
 				fieldLabel: 'Fecha Alta',
 				allowBlank: true,
-				anchor: '80%',
 				gwidth: 100,
 							format: 'd/m/Y', 
 							renderer:function (value,p,record){return value?value.dateFormat('d/m/Y'):''}
@@ -370,7 +417,6 @@ Phx.vista.Equipo=Ext.extend(Phx.gridInterfaz,{
 				name: 'fecha_baja',
 				fieldLabel: 'Fecha Baja',
 				allowBlank: true,
-				anchor: '80%',
 				gwidth: 100,
 							format: 'd/m/Y', 
 							renderer:function (value,p,record){return value?value.dateFormat('d/m/Y'):''}
@@ -383,25 +429,10 @@ Phx.vista.Equipo=Ext.extend(Phx.gridInterfaz,{
 		},
 		{
 			config:{
-				name: 'gestion',
-				fieldLabel: 'Gestión',
-				allowBlank: true,
-				anchor: '80%',
-				gwidth: 100,
-				maxLength:4
-			},
-				type:'NumberField',
-				filters:{pfiltro:'equip.gestion',type:'numeric'},
-				id_grupo:1,
-				grid:true,
-				form:true
-		},
-		{
-			config:{
 				name: 'estado_reg',
 				fieldLabel: 'Estado Reg.',
 				allowBlank: true,
-				anchor: '80%',
+				anchor: '100%',
 				gwidth: 100,
 				maxLength:10
 			},
@@ -416,7 +447,7 @@ Phx.vista.Equipo=Ext.extend(Phx.gridInterfaz,{
 				name: 'usuario_ai',
 				fieldLabel: 'Funcionaro AI',
 				allowBlank: true,
-				anchor: '80%',
+				anchor: '100%',
 				gwidth: 100,
 				maxLength:300
 			},
@@ -431,7 +462,7 @@ Phx.vista.Equipo=Ext.extend(Phx.gridInterfaz,{
 				name: 'fecha_reg',
 				fieldLabel: 'Fecha creación',
 				allowBlank: true,
-				anchor: '80%',
+				anchor: '100%',
 				gwidth: 100,
 							format: 'd/m/Y', 
 							renderer:function (value,p,record){return value?value.dateFormat('d/m/Y H:i:s'):''}
@@ -447,7 +478,7 @@ Phx.vista.Equipo=Ext.extend(Phx.gridInterfaz,{
 				name: 'usr_reg',
 				fieldLabel: 'Creado por',
 				allowBlank: true,
-				anchor: '80%',
+				anchor: '100%',
 				gwidth: 100,
 				maxLength:4
 			},
@@ -462,7 +493,7 @@ Phx.vista.Equipo=Ext.extend(Phx.gridInterfaz,{
 				name: 'id_usuario_ai',
 				fieldLabel: 'Creado por',
 				allowBlank: true,
-				anchor: '80%',
+				anchor: '100%',
 				gwidth: 100,
 				maxLength:4
 			},
@@ -477,7 +508,7 @@ Phx.vista.Equipo=Ext.extend(Phx.gridInterfaz,{
 				name: 'fecha_mod',
 				fieldLabel: 'Fecha Modif.',
 				allowBlank: true,
-				anchor: '80%',
+				anchor: '100%',
 				gwidth: 100,
 							format: 'd/m/Y', 
 							renderer:function (value,p,record){return value?value.dateFormat('d/m/Y H:i:s'):''}
@@ -493,7 +524,7 @@ Phx.vista.Equipo=Ext.extend(Phx.gridInterfaz,{
 				name: 'usr_mod',
 				fieldLabel: 'Modificado por',
 				allowBlank: true,
-				anchor: '80%',
+				anchor: '100%',
 				gwidth: 100,
 				maxLength:4
 			},
@@ -538,7 +569,7 @@ Phx.vista.Equipo=Ext.extend(Phx.gridInterfaz,{
 		{name:'fecha_mod', type: 'date',dateFormat:'Y-m-d H:i:s.u'},
 		{name:'id_usuario_mod', type: 'numeric'},
 		{name:'usr_reg', type: 'string'},
-		{name:'usr_mod', type: 'string'},'desc_tipo_equipo','id_marca','desc_modelo','desc_marca'
+		{name:'usr_mod', type: 'string'},'desc_tipo_equipo','id_marca','desc_modelo','desc_marca','uniqueid','deviceid'
 		
 	],
 	sortInfo:{

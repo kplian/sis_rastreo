@@ -9,7 +9,7 @@ insert into segu.tsubsistema(codigo,nombre,prefijo,nombre_carpeta) values
 select pxp.f_insert_tgui ('Rastreo Satelital', '', 'RAS', 'si', 1, '', 1, '../../../lib/imagenes/gema32x32.png', '', 'RAS');
 select pxp.f_insert_tgui ('Tipos de Vehículos', 'Registro de Tipos de Vehículos', 'RAS.1', 'si', 2, 'sis_rastreo/vista/tipo_equipo/TipoEquipo.php', 2, '', 'TipoEquipo', 'RAS');
 select pxp.f_insert_tgui ('Condutores', 'Registro Conductores', 'RAS.2', 'si', 4, 'sis_rastreo/vista/responsable/Responsable.php', 2, '', 'Responsable', 'RAS');
-select pxp.f_insert_tgui ('Vehículos', 'Registro de Vehículos', 'RAS.3', 'si', 5, 'sis_rastreo/vista/localizacion/Localizacion.php', 2, '', 'Localizacion', 'RAS');
+select pxp.f_insert_tgui ('Vehículos', 'Registro de Vehículos', 'RAS.3', 'si', 5, 'sis_rastreo/vista/equipo/Equipo.php', 2, '', 'Equipo', 'RAS');
 select pxp.f_insert_tgui ('Ubicación de Vehículos', 'Búsqueda de vehículos por diferentes criterios', 'RAS.4', 'si', 1, '', 2, '', '', 'RAS');
 select pxp.f_insert_tgui ('Posiciones capturadas', 'Posiciones capturadas', 'RAS.5', 'si', 2, 'sis_rastreo/vista/posicion/Posicion.php', 3, '', 'Posicion', 'RAS');
 select pxp.f_insert_tgui ('Consultas', 'Consultas', 'RAS.6', 'si', 4, 'sis_rastreo/vista/posicion/Consultas.php', 3, '', 'Consultas', 'RAS');
@@ -31,3 +31,8 @@ select pxp.f_insert_testructura_gui ('RAS.8', 'RAS');
 select pxp.f_insert_testructura_gui ('RAS.9', 'RAS');
 
 /***********************************F-DAT-RCM-RAS-0-05/07/2017****************************************/
+
+/***********************************I-DAT-RCM-RAS-0-06/07/2017****************************************/
+select pxp.f_add_catalog('RAS','tequipo__traccion','2WD','2WD','');
+select pxp.f_add_catalog('RAS','tequipo__traccion','4WD','4WD','');
+/***********************************I-DAT-RCM-RAS-0-06/07/2017****************************************/

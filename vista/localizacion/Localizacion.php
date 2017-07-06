@@ -28,6 +28,15 @@ header("content-type: text/javascript; charset=UTF-8");
 		},
 		{
 			config:{
+					labelSeparator:'',
+					inputType:'hidden',
+					name: 'id_localizacion_fk'
+			},
+			type:'Field',
+			form:true 
+		},
+		{
+			config:{
 				name: 'estado_reg',
 				fieldLabel: 'Estado Reg.',
 				allowBlank: true,
@@ -43,25 +52,10 @@ header("content-type: text/javascript; charset=UTF-8");
 		},
 		{
 			config:{
-				name: 'nombre',
-				fieldLabel: 'nombre',
-				allowBlank: true,
-				anchor: '80%',
-				gwidth: 100,
-				maxLength:150
-			},
-				type:'TextField',
-				filters:{pfiltro:'local.nombre',type:'string'},
-				id_grupo:1,
-				grid:true,
-				form:true
-		},
-		{
-			config:{
 				name: 'codigo',
-				fieldLabel: 'codigo',
-				allowBlank: true,
-				anchor: '80%',
+				fieldLabel: 'Código',
+				allowBlank: false,
+				anchor: '95%',
 				gwidth: 100,
 				maxLength:30
 			},
@@ -73,14 +67,30 @@ header("content-type: text/javascript; charset=UTF-8");
 		},
 		{
 			config:{
+				name: 'nombre',
+				fieldLabel: 'Nombre',
+				allowBlank: false,
+				anchor: '95%',
+				gwidth: 100,
+				maxLength:150
+			},
+				type:'TextField',
+				filters:{pfiltro:'local.nombre',type:'string'},
+				id_grupo:1,
+				grid:true,
+				form:true
+		},
+		
+		{
+			config:{
 				name: 'latitud',
-				fieldLabel: 'latitud',
+				fieldLabel: 'Latitud',
 				allowBlank: true,
 				anchor: '80%',
 				gwidth: 100,
 				maxLength:8
 			},
-				type:'TextField',
+				type:'NumberField',
 				filters:{pfiltro:'local.latitud',type:'string'},
 				id_grupo:1,
 				grid:true,
@@ -89,60 +99,17 @@ header("content-type: text/javascript; charset=UTF-8");
 		{
 			config:{
 				name: 'longitud',
-				fieldLabel: 'longitud',
+				fieldLabel: 'Longitud',
 				allowBlank: true,
 				anchor: '80%',
 				gwidth: 100,
 				maxLength:8
 			},
-				type:'TextField',
+				type:'NumberField',
 				filters:{pfiltro:'local.longitud',type:'string'},
 				id_grupo:1,
 				grid:true,
 				form:true
-		},
-		{
-			config: {
-				name: 'id_localizacion_fk',
-				fieldLabel: 'id_localizacion_fk',
-				allowBlank: true,
-				emptyText: 'Elija una opción...',
-				store: new Ext.data.JsonStore({
-					url: '../../sis_/control/Clase/Metodo',
-					id: 'id_',
-					root: 'datos',
-					sortInfo: {
-						field: 'nombre',
-						direction: 'ASC'
-					},
-					totalProperty: 'total',
-					fields: ['id_', 'nombre', 'codigo'],
-					remoteSort: true,
-					baseParams: {par_filtro: 'movtip.nombre#movtip.codigo'}
-				}),
-				valueField: 'id_',
-				displayField: 'nombre',
-				gdisplayField: 'desc_',
-				hiddenName: 'id_localizacion_fk',
-				forceSelection: true,
-				typeAhead: false,
-				triggerAction: 'all',
-				lazyRender: true,
-				mode: 'remote',
-				pageSize: 15,
-				queryDelay: 1000,
-				anchor: '100%',
-				gwidth: 150,
-				minChars: 2,
-				renderer : function(value, p, record) {
-					return String.format('{0}', record.data['desc_']);
-				}
-			},
-			type: 'ComboBox',
-			id_grupo: 0,
-			filters: {pfiltro: 'movtip.nombre',type: 'string'},
-			grid: true,
-			form: true
 		},
 		{
 			config:{
@@ -237,10 +204,10 @@ header("content-type: text/javascript; charset=UTF-8");
 				form:false
 		}
 	],
-		title:'Areas',
+	title:'Areas',
 	ActSave:'../../sis_rastreo/control/Localizacion/insertarLocalizacion',
 	ActDel:'../../sis_rastreo/control/Localizacion/eliminarLocalizacion',
-	ActList:'../../sis_rastreo/control/Localizacion/listarLocalizacion',
+	ActList:'../../sis_rastreo/control/Localizacion/listarLocalizacionArb',
 	id_store:'id_localizacion',
 		textRoot : 'Áreas',
 		id_nodo : 'id_localizacion',
@@ -322,10 +289,10 @@ header("content-type: text/javascript; charset=UTF-8");
 			resp.argument.node.reload();
 		},
 		east: {
-			url: '../../../sis_kactivos_fijos/vista/equipo/Equipo.php',
+			url: '../../../sis_rastreo/vista/equipo/EquipoLoc.php',
 			title: 'Vehículos',
 			width: '30%',
-			cls: 'Equipo'
+			cls: 'EquipoLoc'
 		}
 	}); 
 </script>

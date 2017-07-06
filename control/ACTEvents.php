@@ -10,9 +10,13 @@
 class ACTEvents extends ACTbase{    
 			
 	function listarEvents(){
-		$this->objParam->defecto('ordenacion','id');
+		$this->objParam->defecto('ordenacion','servertime');
+		$this->objParam->defecto('dir_ordenacion','desc');
 
-		$this->objParam->defecto('dir_ordenacion','asc');
+		if($this->objParam->getParametro('deviceid')!=''){
+			$this->objParam->addFiltro("event.deviceid = ".$this->objParam->getParametro('deviceid'));
+		}
+
 		if($this->objParam->getParametro('tipoReporte')=='excel_grid' || $this->objParam->getParametro('tipoReporte')=='pdf_grid'){
 			$this->objReporte = new Reporte($this->objParam,$this);
 			$this->res = $this->objReporte->generarReporteListado('MODEvents','listarEvents');

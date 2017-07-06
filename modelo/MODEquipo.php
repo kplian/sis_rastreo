@@ -52,6 +52,8 @@ class MODEquipo extends MODbase{
 		$this->captura('id_marca','integer');
 		$this->captura('desc_modelo','varchar');
 		$this->captura('desc_marca','varchar');
+		$this->captura('uniqueid','varchar');
+		$this->captura('deviceid','integer');
 		
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -87,6 +89,7 @@ class MODEquipo extends MODbase{
 		$this->setParametro('gestion','gestion','int4');
 		$this->setParametro('fecha_baja','fecha_baja','date');
 		$this->setParametro('monto','monto','numeric');
+		$this->setParametro('uniqueid','uniqueid','varchar');
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -123,6 +126,7 @@ class MODEquipo extends MODbase{
 		$this->setParametro('gestion','gestion','int4');
 		$this->setParametro('fecha_baja','fecha_baja','date');
 		$this->setParametro('monto','monto','numeric');
+		$this->setParametro('uniqueid','uniqueid','varchar');
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();

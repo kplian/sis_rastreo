@@ -47,8 +47,21 @@ BEGIN
 						event.servertime,
 						event.attributes,
 						event.type,
-						event.positionid
+						event.positionid,
+						pos.latitude,
+						pos.longitude,
+						case event.type
+							when ''deviceStopped'' then ''Detenido''::varchar
+							when ''deviceOffline'' then ''Desconectado''::varchar
+							when ''deviceUnknown'' then ''Desconocido''::varchar
+							when ''deviceMoving'' then ''En Movimiento''::varchar
+							when ''deviceOnline'' then ''Online''::varchar
+							when ''alarm'' then ''Alarma''::varchar
+							else event.type
+						end as desc_type
 						from events event
+						inner join positions pos
+						on pos.id = event.positionid
 				        where  ';
 			
 			--Definicion de la respuesta
@@ -71,8 +84,10 @@ BEGIN
 
 		begin
 			--Sentencia de la consulta de conteo de registros
-			v_consulta:='select count(id)
+			v_consulta:='select count(event.id)
 					    from events event
+					    inner join positions pos
+						on pos.id = event.positionid
 					    where ';
 			
 			--Definicion de la respuesta		    

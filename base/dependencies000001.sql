@@ -9,7 +9,7 @@ alter table ras.tequipo
 add constraint fk_tequipo__id_modelo foreign key (id_modelo) references ras.tmodelo(id_modelo);
 
 alter table ras.tequipo
-add constraint fk_tequipo__id_localizacion foreign key (id_localizacoin) references ras.tlocalizacion(id_localizacion);
+add constraint fk_tequipo__id_localizacion foreign key (id_localizacion) references ras.tlocalizacion(id_localizacion);
 
 alter table ras.tresponsable
 add constraint fk_tresponsable__id_persona foreign key (id_persona) references segu.tpersona(id_persona);

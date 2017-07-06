@@ -53,7 +53,7 @@ class ACTLocalizacion extends ACTbase{
 		} else {
 			$this->objParam->addFiltro("local.id_localizacion_fk is null ");
 		}
-		$this->objFunc=$this->create('MODLocalizacionacion');
+		$this->objFunc=$this->create('MODLocalizacion');
 		$this->res=$this->objFunc->listarLocalizacionArb($this->objParam);
 		$this->res->setTipoRespuestaArbol();
 		$arreglo=array();

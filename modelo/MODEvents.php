@@ -27,8 +27,9 @@ class MODEvents extends MODbase{
 		$this->captura('attributes','varchar');
 		$this->captura('type','varchar');
 		$this->captura('positionid','int4');
-		$this->captura('usr_reg','varchar');
-		$this->captura('usr_mod','varchar');
+		$this->captura('latitude','float8');
+		$this->captura('longitude','float8');
+		$this->captura('desc_type','varchar');
 		
 		//Ejecuta la instruccion
 		$this->armarConsulta();
