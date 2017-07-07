@@ -186,7 +186,10 @@ BEGIN
 							when ''deviceOnline'' then ''Online''::varchar
 							when ''alarm'' then ''Alarma''::varchar
 							else ev.type
-						end as desc_type
+						end as desc_type,
+						cast(pos.attributes as json)->>''distance'',
+						pos.servertime,
+						teq.nombre as desc_tipo_equipo
 						from ras.vequipo eq
 						inner join devices de
 						on de.uniqueid = eq.uniqueid
@@ -201,6 +204,8 @@ BEGIN
 						on per.id_persona = re.id_persona
 						left join events ev
 						on ev.positionid = pos.id
+						inner join ras.ttipo_equipo teq
+						on teq.id_tipo_equipo = eq.id_tipo_equipo
 						where eq.id_equipo in ('||v_parametros.ids||')'||'
 						and to_char(pos.servertime,''dd-mm-yyyy HH24:MI:00'')::timestamp with time zone between '''||v_parametros.fecha_ini||'''::timestamp with time zone and '''||v_parametros.fecha_fin||'''::timestamp with time zone and ';
 
@@ -243,6 +248,8 @@ BEGIN
 						on per.id_persona = re.id_persona
 						left join events ev
 						on ev.positionid = pos.id
+						inner join ras.ttipo_equipo teq
+						on teq.id_tipo_equipo = eq.id_tipo_equipo
 						where eq.id_equipo in ('||v_parametros.ids||')'||'
 						and to_char(pos.servertime,''dd-mm-yyyy HH24:MI:00'')::timestamp with time zone between '''||v_parametros.fecha_ini||'''::timestamp with time zone and '''||v_parametros.fecha_fin||'''::timestamp with time zone and ';
 

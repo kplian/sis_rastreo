@@ -96,7 +96,7 @@ Phx.vista.ReporteDist=Ext.extend(Phx.gridInterfaz,{
             grid:true
         }, {
             config:{
-                name: 'tipo_equipo',
+                name: 'desc_tipo_equipo',
                 fieldLabel: 'Tipo',
                 gwidth: 100
             },
@@ -218,7 +218,7 @@ Phx.vista.ReporteDist=Ext.extend(Phx.gridInterfaz,{
         {name:'attributes_event', type: 'string'},
         {name:'desc_type', type: 'string'},
         {name:'tipo_equipo', type: 'string'},
-        {name:'servertime', type: 'date',dateFormat:'Y-m-d H:i:s.u'}
+        {name:'servertime', type: 'date',dateFormat:'Y-m-d H:i:s.u'},'distance','desc_tipo_equipo'
     ],
     sortInfo:{
         field: 'pos.servertime',

@@ -17,7 +17,14 @@ Phx.vista.Equipo=Ext.extend(Phx.gridInterfaz,{
     	//llama al constructor de la clase padre
 		Phx.vista.Equipo.superclass.constructor.call(this,config);
 		this.init();
-		this.load({params:{start:0, limit:this.tam_pag}})
+		this.load({params:{start:0, limit:this.tam_pag}});
+
+		//Eventos
+		this.Cmp.id_marca.on('select',function(combo,record,index){
+			this.Cmp.id_modelo.setValue('');
+			this.Cmp.id_modelo.store.baseParams.id_marca = this.Cmp.id_marca.getValue();
+            this.Cmp.id_modelo.modificado=true;
+		},this);
 	},
 			
 	Atributos:[
@@ -43,7 +50,7 @@ Phx.vista.Equipo=Ext.extend(Phx.gridInterfaz,{
 		{
 			config: {
 				name: 'id_tipo_equipo',
-				fieldLabel: 'Tipo Equipo',
+				fieldLabel: 'Tipo',
 				allowBlank: false,
 				emptyText: 'Elija una opción...',
 				store: new Ext.data.JsonStore({
@@ -71,10 +78,15 @@ Phx.vista.Equipo=Ext.extend(Phx.gridInterfaz,{
 				pageSize: 15,
 				queryDelay: 1000,
 				anchor: '100%',
-				gwidth: 150,
+				gwidth: 130,
 				minChars: 2,
 				renderer : function(value, p, record) {
-					return String.format('{0}', record.data['desc_tipo_equipo']);
+					return '<tpl for="."><div class="x-combo-list-item">\
+								<p><b>Tipo: </b>'+record.data['desc_tipo_equipo']+'</p>\
+								<p><b>Marca: </b>'+record.data['desc_marca']+'</p>\
+								<p><b>Modelo: </b>'+record.data['desc_modelo']+'</p>\
+								<p><b>Año: </b>'+record.data['gestion']+'\
+							</p></div></tpl>';
 				}
 			},
 			type: 'ComboBox',
@@ -85,12 +97,46 @@ Phx.vista.Equipo=Ext.extend(Phx.gridInterfaz,{
 		},
 		{
 			config:{
-				name: 'ultimo_envio',
-				fieldLabel: 'Ultimo envio',
+				name: 'placa',
+				fieldLabel: 'Descripción',
 				allowBlank: false,
 				anchor: '100%',
-				gwidth: 100,
-				maxLength:128
+				gwidth: 150,
+				maxLength:20,
+				renderer: function(value,p,record){
+					return '<tpl for="."><div class="x-combo-list-item">\
+								<p><b>Placa: </b>'+record.data['placa']+'</p>\
+								<p><b>PTA: </b>'+record.data['pta']+'</p>\
+								<p><b>Nro.Chasis: </b>'+record.data['nro_chasis']+'\
+								<p><b>IMEI: </b>'+record.data['uniqueid']+'\
+							</p></div></tpl>';
+				}
+			},
+				type:'TextField',
+				filters:{pfiltro:'equip.placa',type:'string'},
+				id_grupo:1,
+				grid:true,
+				form:false
+		},
+		{
+			config:{
+				name: 'ultimo_envio',
+				fieldLabel: 'Último Sincronización',
+				allowBlank: false,
+				anchor: '100%',
+				gwidth: 200,
+				maxLength:128,
+				renderer: function(value,p,record){
+					return '<tpl for=".">\
+								<div class="x-combo-list-item">\
+									<p><b>Fecha Ult. Sinc.: </b> '+record.data['ultimo_envio']+'</p>\
+									<p><b>Conductor: </b>'+record.data['responsable']+'</p>\
+									<p>\
+										<div><img src=\'../../../lib/imagenes/wifi1.png\' width=24 height=24><span>&nbsp;&nbsp;&nbsp;Conectado</span></div>\
+									<p>\
+								</div>\
+							</tpl>';
+				}
 			},
 				type:'TextField',
 				id_grupo:1,
@@ -137,7 +183,7 @@ Phx.vista.Equipo=Ext.extend(Phx.gridInterfaz,{
 			type: 'ComboBox',
 			id_grupo: 0,
 			filters: {pfiltro: 'marca.nombre',type: 'string'},
-			grid: true,
+			grid: false,
 			form: true
 		},
 		{
@@ -157,7 +203,7 @@ Phx.vista.Equipo=Ext.extend(Phx.gridInterfaz,{
 					totalProperty: 'total',
 					fields: ['id_modelo', 'nombre', 'codigo'],
 					remoteSort: true,
-					baseParams: {par_filtro: 'model.nombre#model.codigo'}
+					baseParams: {par_filtro: 'model.nombre#model.codigo',id_marca:'-1'}
 				}),
 				valueField: 'id_modelo',
 				displayField: 'nombre',
@@ -180,7 +226,7 @@ Phx.vista.Equipo=Ext.extend(Phx.gridInterfaz,{
 			type: 'ComboBox',
 			id_grupo: 0,
 			filters: {pfiltro: 'model.nombre',type: 'string'},
-			grid: true,
+			grid: false,
 			form: true
 		},
 		{
@@ -197,22 +243,7 @@ Phx.vista.Equipo=Ext.extend(Phx.gridInterfaz,{
 				type:'NumberField',
 				filters:{pfiltro:'equip.gestion',type:'numeric'},
 				id_grupo:1,
-				grid:true,
-				form:true
-		},
-		{
-			config:{
-				name: 'uniqueid',
-				fieldLabel: 'IMEI',
-				allowBlank: false,
-				anchor: '100%',
-				gwidth: 100,
-				maxLength:128
-			},
-				type:'TextField',
-				filters:{pfiltro:'equip.uniqueid',type:'string'},
-				id_grupo:1,
-				grid:true,
+				grid:false,
 				form:true
 		},
 		{
@@ -227,7 +258,22 @@ Phx.vista.Equipo=Ext.extend(Phx.gridInterfaz,{
 				type:'TextField',
 				filters:{pfiltro:'equip.placa',type:'string'},
 				id_grupo:1,
-				grid:true,
+				grid:false,
+				form:true
+		},
+		{
+			config:{
+				name: 'uniqueid',
+				fieldLabel: 'IMEI',
+				allowBlank: false,
+				anchor: '100%',
+				gwidth: 100,
+				maxLength:128
+			},
+				type:'TextField',
+				filters:{pfiltro:'equip.uniqueid',type:'string'},
+				id_grupo:1,
+				grid:false,
 				form:true
 		},
 		{
@@ -257,7 +303,7 @@ Phx.vista.Equipo=Ext.extend(Phx.gridInterfaz,{
 				type:'TextField',
 				filters:{pfiltro:'equip.pta',type:'string'},
 				id_grupo:1,
-				grid:true,
+				grid:false,
 				form:true
 		},
 		{
@@ -272,7 +318,7 @@ Phx.vista.Equipo=Ext.extend(Phx.gridInterfaz,{
 				type:'TextField',
 				filters:{pfiltro:'equip.nro_chasis',type:'string'},
 				id_grupo:1,
-				grid:true,
+				grid:false,
 				form:true
 		},
 		{
@@ -584,7 +630,7 @@ Phx.vista.Equipo=Ext.extend(Phx.gridInterfaz,{
 		{name:'id_usuario_mod', type: 'numeric'},
 		{name:'usr_reg', type: 'string'},
 		{name:'usr_mod', type: 'string'},'desc_tipo_equipo','id_marca','desc_modelo','desc_marca','uniqueid','deviceid','ultimo_envio',
-		'latitude','longitude','speed','attributes','address','desc_type','desc_equipo'
+		'latitude','longitude','speed','attributes','address','desc_type','desc_equipo','responsable'
 		
 	],
 	sortInfo:{

@@ -91,7 +91,8 @@ BEGIN
 							when ''alarm'' then ''Alarma''::varchar
 							else event.type
 						end as desc_type,
-						equip.desc_equipo
+						equip.desc_equipo,
+						per.nombre_completo1 as responsable
 						from ras.vequipo equip
 						left join ras.ttipo_equipo tipeq
 						on tipeq.id_tipo_equipo = equip.id_tipo_equipo
@@ -107,6 +108,8 @@ BEGIN
 						on pos.id = de.positionid
 						left join events event
 						on event.positionid = pos.id
+						left join segu.vpersona per
+						on per.id_persona = ras.f_get_responsable_ultimo(equip.id_equipo)
 				        where  ';
 			
 			--Definicion de la respuesta
@@ -145,6 +148,8 @@ BEGIN
 						on pos.id = de.positionid
 						left join events event
 						on event.positionid = pos.id
+						left join segu.vpersona per
+						on per.id_persona = ras.f_get_responsable_ultimo(equip.id_equipo)
 				        where  ';
 			
 			--Definicion de la respuesta		    

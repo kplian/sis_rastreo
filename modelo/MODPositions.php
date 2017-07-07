@@ -204,6 +204,9 @@ class MODPositions extends MODbase{
 		$this->captura('type','varchar');
 		$this->captura('attributes_event','varchar');
 		$this->captura('desc_type','varchar');
+		$this->captura('distance','text');
+		$this->captura('servertime','timestamp');
+		$this->captura('desc_tipo_equipo','varchar');
 		
 		//Ejecuta la instruccion
 		$this->armarConsulta();
