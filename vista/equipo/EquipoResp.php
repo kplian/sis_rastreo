@@ -19,12 +19,17 @@ Phx.vista.EquipoResp = {
         Phx.vista.EquipoResp.superclass.constructor.call(this,config);
         this.init;
     },
-    south: {
+    tabeast: [{
+        url: '../../../sis_rastreo/vista/positions/PositionsUlt.php',
+        title: 'Ultima informacion',
+        width: '40%',
+        cls: 'PositionsUlt'
+    }, {
         url: '../../../sis_rastreo/vista/equipo_responsable/EquipoResponsable.php',
         title: 'Conductores',
-        height: '50%',
+        width: '40%',
         cls: 'EquipoResponsable'
-    }
+    }]
     
 };
 </script>

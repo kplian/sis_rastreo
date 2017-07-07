@@ -84,6 +84,20 @@ Phx.vista.Equipo=Ext.extend(Phx.gridInterfaz,{
 			form: true
 		},
 		{
+			config:{
+				name: 'ultimo_envio',
+				fieldLabel: 'Ultimo envio',
+				allowBlank: false,
+				anchor: '100%',
+				gwidth: 100,
+				maxLength:128
+			},
+				type:'TextField',
+				id_grupo:1,
+				grid:true,
+				form:false
+		},
+		{
 			config: {
 				name: 'id_marca',
 				fieldLabel: 'Marca',
@@ -569,7 +583,7 @@ Phx.vista.Equipo=Ext.extend(Phx.gridInterfaz,{
 		{name:'fecha_mod', type: 'date',dateFormat:'Y-m-d H:i:s.u'},
 		{name:'id_usuario_mod', type: 'numeric'},
 		{name:'usr_reg', type: 'string'},
-		{name:'usr_mod', type: 'string'},'desc_tipo_equipo','id_marca','desc_modelo','desc_marca','uniqueid','deviceid'
+		{name:'usr_mod', type: 'string'},'desc_tipo_equipo','id_marca','desc_modelo','desc_marca','uniqueid','deviceid','ultimo_envio'
 		
 	],
 	sortInfo:{

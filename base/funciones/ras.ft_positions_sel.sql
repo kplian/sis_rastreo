@@ -386,8 +386,43 @@ BEGIN
 						on ev.positionid = pos.id
 						where eq.id_equipo in ('||v_parametros.ids||')'||'
 						and to_char(pos.servertime,''dd-mm-yyyy HH24:MI:00'')::timestamp with time zone between '''||v_parametros.fecha_ini||'''::timestamp with time zone and '''||v_parametros.fecha_fin||'''::timestamp with time zone
-						and (pos.speed * 1.852) between ' || v_parametros.velocidad_ini || ' and '||v_parametros.velocidad_fin || '
-						order by pos.servertime';
+						and (pos.speed * 1.852) between ' || v_parametros.velocidad_ini || ' and '||v_parametros.velocidad_fin||' and ';
+
+			v_consulta:=v_consulta||v_parametros.filtro;
+			v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
+
+			--Devuelve la respuesta
+			return v_consulta;
+
+		end;
+
+	/*********************************    
+ 	#TRANSACCION:  'PB_POSVEL_CONT'
+ 	#DESCRIPCION:	Devuelve conteo del rango de velocidades en un rango de fechas para los equipos enviados
+ 	#AUTOR:			RCM
+ 	#FECHA:			13/07/2017
+	***********************************/
+
+	elsif(p_transaccion='PB_POSVEL_CONT')then
+
+		begin
+
+			--Sentencia de la consulta
+			v_consulta:='select
+						count(1) as total
+						from ras.vequipo eq
+						inner join devices de
+						on de.uniqueid = eq.uniqueid
+						inner join positions pos
+						on pos.deviceid = de.id
+						left join events ev
+						on ev.positionid = pos.id
+						where eq.id_equipo in ('||v_parametros.ids||')'||'
+						and to_char(pos.servertime,''dd-mm-yyyy HH24:MI:00'')::timestamp with time zone between '''||v_parametros.fecha_ini||'''::timestamp with time zone and '''||v_parametros.fecha_fin||'''::timestamp with time zone
+						and (pos.speed * 1.852) between ' || v_parametros.velocidad_ini || ' and '||v_parametros.velocidad_fin || ' and ';
+
+
+			v_consulta:=v_consulta||v_parametros.filtro;
 
 			--Devuelve la respuesta
 			return v_consulta;

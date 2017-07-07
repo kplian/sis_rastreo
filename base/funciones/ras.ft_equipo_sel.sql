@@ -74,7 +74,8 @@ BEGIN
 						model.nombre as desc_modelo,
 						marca.nombre as desc_marca,
 						equip.uniqueid,
-						de.id as deviceid
+						de.id as deviceid,
+						ras.f_get_time(pos.servertime::timestamp,CURRENT_TIMESTAMP::timestamp) as ultimo_envio
 						from ras.tequipo equip
 						left join ras.ttipo_equipo tipeq
 						on tipeq.id_tipo_equipo = equip.id_tipo_equipo
@@ -86,6 +87,8 @@ BEGIN
 						left join segu.tusuario usu2 on usu2.id_usuario = equip.id_usuario_mod
 						left join devices de
 						on de.uniqueid = equip.uniqueid
+						left join positions pos
+						on pos.id = de.positionid
 				        where  ';
 			
 			--Definicion de la respuesta
@@ -120,6 +123,8 @@ BEGIN
 						left join segu.tusuario usu2 on usu2.id_usuario = equip.id_usuario_mod
 						left join devices de
 						on de.uniqueid = equip.uniqueid
+						left join positions pos
+						on pos.id = de.positionid
 				        where  ';
 			
 			--Definicion de la respuesta		    

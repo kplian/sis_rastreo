@@ -237,7 +237,7 @@ Phx.vista.Reporte=Ext.extend(Phx.gridInterfaz,{
         {name:'accuracy', type: 'numeric'}
     ],
     sortInfo:{
-        field: 'servertime',
+        field: 'pos.servertime',
         direction: 'ASC'
     },
     bdel: false,

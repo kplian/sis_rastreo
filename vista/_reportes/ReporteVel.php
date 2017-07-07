@@ -222,7 +222,7 @@ Phx.vista.ReporteVel=Ext.extend(Phx.gridInterfaz,{
         {name:'servertime', type: 'date',dateFormat:'Y-m-d H:i:s.u'}
     ],
     sortInfo:{
-        field: 'servertime',
+        field: 'pos.servertime',
         direction: 'ASC'
     },
     bdel: false,

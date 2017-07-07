@@ -105,7 +105,6 @@ class MODEvents extends MODbase{
 		//Definicion de variables para ejecucion del procedimientp
 		$this->procedimiento='ras.ft_events_sel';
 		$this->transaccion='PB_EVRAN_SEL';
-		$this->setCount(false);
 		$this->tipo_procedimiento='SEL';//tipo de transaccion
 
 		//Define los parametros para la funcion

@@ -141,13 +141,63 @@ BEGIN
                         left join positions pos
                         on pos.id = ev.positionid
 						where eq.id_equipo in ('||v_parametros.ids||')'||'
-						and to_char(pos.servertime,''dd-mm-yyyy HH24:MI:00'')::timestamp with time zone between '''||v_parametros.fecha_ini||'''::timestamp with time zone and '''||v_parametros.fecha_fin||'''::timestamp with time zone';
+						and to_char(pos.servertime,''dd-mm-yyyy HH24:MI:00'')::timestamp with time zone between '''||v_parametros.fecha_ini||'''::timestamp with time zone and '''||v_parametros.fecha_fin||'''::timestamp with time zone ';
                         
 			if v_parametros.events <> '' then
-            	v_consulta = v_consulta || ' and ev.type in ('||v_eventos||')';
+            	v_consulta = v_consulta || ' and ev.type in ('||v_eventos||') and ';
+            else
+            	v_consulta = v_consulta || ' and ';
+            end if;
+
+            --Definicion de la respuesta
+			v_consulta:=v_consulta||v_parametros.filtro;
+			v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
+
+			--Devuelve la respuesta
+			return v_consulta;
+
+		end;
+
+	/*********************************    
+ 	#TRANSACCION:  'PB_EVRAN_CONT'
+ 	#DESCRIPCION:	Devuelve conteo de los eventos en un rango de tiempo
+ 	#AUTOR:			RCM
+ 	#FECHA:			13/07/2017
+	***********************************/
+
+	elsif(p_transaccion='PB_EVRAN_CONT')then
+
+		begin
+
+			--Procesa el parámetro de eventos
+			v_eventos = replace(v_parametros.events,'1','''deviceStopped''');
+			v_eventos = replace(v_eventos,'2','''deviceOffline''');
+			v_eventos = replace(v_eventos,'3','''deviceUnknown''');
+			v_eventos = replace(v_eventos,'4','''deviceMoving''');
+			v_eventos = replace(v_eventos,'5','''deviceOnline''');
+			v_eventos = replace(v_eventos,'6','''alarm''');
+
+			--Sentencia de la consulta
+			v_consulta:='select
+                        count(1) as total
+                        from events ev
+                        inner join devices dev
+                        on dev.id = ev.deviceid
+                        left join ras.vequipo eq
+                        on eq.uniqueid = dev.uniqueid
+                        left join positions pos
+                        on pos.id = ev.positionid
+						where eq.id_equipo in ('||v_parametros.ids||')'||'
+						and to_char(pos.servertime,''dd-mm-yyyy HH24:MI:00'')::timestamp with time zone between '''||v_parametros.fecha_ini||'''::timestamp with time zone and '''||v_parametros.fecha_fin||'''::timestamp with time zone ';
+                        
+			if v_parametros.events <> '' then
+            	v_consulta = v_consulta || ' and ev.type in ('||v_eventos||') and ';
+            else
+            	v_consulta = v_consulta || ' and ';
             end if;                        
 
-			v_consulta = v_consulta ||' order by pos.servertime';
+			--Definicion de la respuesta
+			v_consulta:=v_consulta||v_parametros.filtro;
 
 			--Devuelve la respuesta
 			return v_consulta;

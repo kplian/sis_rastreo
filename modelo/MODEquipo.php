@@ -54,6 +54,7 @@ class MODEquipo extends MODbase{
 		$this->captura('desc_marca','varchar');
 		$this->captura('uniqueid','varchar');
 		$this->captura('deviceid','integer');
+		$this->captura('ultimo_envio','varchar');
 		
 		//Ejecuta la instruccion
 		$this->armarConsulta();
