@@ -15,6 +15,8 @@ Phx.vista.ParametrosDistancia = {
     requireclase: 'Phx.vista.Parametros',
     title: 'Distancia',
     tipoReporte: 'distance',
+    pathReporte: '../../../sis_rastreo/vista/_reportes/ReporteDist.php',
+    clsReporte: 'ReporteDist',
     constructor: function(config) {
         Phx.vista.ParametrosDistancia.superclass.constructor.call(this,config);
         this.init;

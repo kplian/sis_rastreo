@@ -173,7 +173,6 @@ class MODPositions extends MODbase{
 		//Definicion de variables para ejecucion del procedimientp
 		$this->procedimiento='ras.ft_positions_sel';
 		$this->transaccion='PB_POSRAN_SEL';
-		$this->setCount(false);
 		$this->tipo_procedimiento='SEL';//tipo de transaccion
 
 		//Define los parametros para la funcion

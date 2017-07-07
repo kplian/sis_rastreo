@@ -201,8 +201,52 @@ BEGIN
 						left join events ev
 						on ev.positionid = pos.id
 						where eq.id_equipo in ('||v_parametros.ids||')'||'
-						and to_char(pos.servertime,''dd-mm-yyyy HH24:MI:00'')::timestamp with time zone between '''||v_parametros.fecha_ini||'''::timestamp with time zone and '''||v_parametros.fecha_fin||'''::timestamp with time zone
-						order by pos.servertime';
+						and to_char(pos.servertime,''dd-mm-yyyy HH24:MI:00'')::timestamp with time zone between '''||v_parametros.fecha_ini||'''::timestamp with time zone and '''||v_parametros.fecha_fin||'''::timestamp with time zone and ';
+
+
+			--Definicion de la respuesta
+			v_consulta:=v_consulta||v_parametros.filtro;
+			v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
+
+			--Devuelve la respuesta
+			return v_consulta;
+
+		end;
+
+
+	/*********************************    
+ 	#TRANSACCION:  'PB_POSRAN_CONT'
+ 	#DESCRIPCION:	Devuelve el conteo de las posiciones en un rango de fechas de los ids de equipos enviados
+ 	#AUTOR:			RCM
+ 	#FECHA:			16/07/2017
+	***********************************/
+
+	elsif(p_transaccion='PB_POSRAN_CONT')then
+
+		begin
+
+			--Sentencia de la consulta
+			v_consulta:='select
+						count(1) as total
+						from ras.vequipo eq
+						inner join devices de
+						on de.uniqueid = eq.uniqueid
+						inner join positions pos
+						on pos.deviceid = de.id
+						left join ras.tequipo_responsable eres
+						on eres.id_equipo = eq.id_equipo
+						and eres.estado_reg = ''activo''
+						left join ras.tresponsable re
+						on re.id_responsable = eres.id_responsable
+						left join segu.vpersona per
+						on per.id_persona = re.id_persona
+						left join events ev
+						on ev.positionid = pos.id
+						where eq.id_equipo in ('||v_parametros.ids||')'||'
+						and to_char(pos.servertime,''dd-mm-yyyy HH24:MI:00'')::timestamp with time zone between '''||v_parametros.fecha_ini||'''::timestamp with time zone and '''||v_parametros.fecha_fin||'''::timestamp with time zone and ';
+
+			--Definicion de la respuesta
+			v_consulta:=v_consulta||v_parametros.filtro;
 
 			--Devuelve la respuesta
 			return v_consulta;
