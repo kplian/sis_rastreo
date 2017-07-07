@@ -45,6 +45,8 @@ Ext.define('Phx.vista.PositionsUlt', {
 							<b>Rssi:</b> {12}</br>\
 							<b>Direccion:</b> {13}</br></br>\
 						</div>";
+		this.panelResumen.update(String.format(plantilla));
+		
 		if(data){
 			var  reg = Ext.util.JSON.decode(Ext.util.Format.trim(data.attributes));
 			this.panelResumen.update( String.format(plantilla,data.placa, 
