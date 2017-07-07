@@ -583,7 +583,8 @@ Phx.vista.Equipo=Ext.extend(Phx.gridInterfaz,{
 		{name:'fecha_mod', type: 'date',dateFormat:'Y-m-d H:i:s.u'},
 		{name:'id_usuario_mod', type: 'numeric'},
 		{name:'usr_reg', type: 'string'},
-		{name:'usr_mod', type: 'string'},'desc_tipo_equipo','id_marca','desc_modelo','desc_marca','uniqueid','deviceid','ultimo_envio'
+		{name:'usr_mod', type: 'string'},'desc_tipo_equipo','id_marca','desc_modelo','desc_marca','uniqueid','deviceid','ultimo_envio',
+		'latitude','longitude','speed','attributes','address','desc_type','desc_equipo'
 		
 	],
 	sortInfo:{

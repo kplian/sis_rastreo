@@ -31,6 +31,7 @@ DECLARE
 	v_detenido 			boolean;
 	v_total_distancia	numeric;
 	v_distance 			text;
+	v_factor_vel		numeric = 1.852;
 			    
 BEGIN
 
@@ -56,7 +57,7 @@ BEGIN
 						posic.course,
 						posic.altitude,
 						posic.protocol,
-						posic.speed,
+						posic.speed * '||v_factor_vel||',
 						posic.network,
 						posic.servertime,
 						posic.longitude,
@@ -115,7 +116,8 @@ BEGIN
 						eq.id_equipo, eq.uniqueid,
 						eq.marca, eq.modelo, eq.placa, per.nombre_completo1 as responsable, per.ci,
 						per.celular1, per.correo,
-						pos.latitude, pos.longitude, pos.altitude, pos.speed, pos.course,
+						pos.latitude, pos.longitude, pos.altitude, pos.speed * '||v_factor_vel||',
+						pos.course,
 						pos.address, pos.attributes, pos.accuracy,
 						eq.desc_equipo,
 						ev.id as eventid,
@@ -168,7 +170,8 @@ BEGIN
 						eq.id_equipo, eq.uniqueid,
 						eq.marca, eq.modelo, eq.placa,per.nombre_completo1 as responsable, per.ci,
 						per.celular1, per.correo,
-						pos.latitude, pos.longitude, pos.altitude, pos.speed, pos.course,
+						pos.latitude, pos.longitude, pos.altitude, pos.speed * '||v_factor_vel||',
+						pos.course,
 						pos.address, pos.attributes, pos.accuracy,
 						eq.desc_equipo,
 						ev.id as eventid,
@@ -276,7 +279,8 @@ BEGIN
 						eq.id_equipo, eq.uniqueid,
 						eq.marca, eq.modelo, eq.placa,per.nombre_completo1 as responsable, per.ci,
 						per.celular1, per.correo,
-						pos.latitude, pos.longitude, pos.altitude, pos.speed, pos.course,
+						pos.latitude, pos.longitude, pos.altitude, pos.speed * '||v_factor_vel||',
+						pos.course,
 						pos.address, pos.attributes, pos.accuracy,
 						eq.desc_equipo,
 						ev.id as eventid,
@@ -359,7 +363,7 @@ BEGIN
 			v_consulta:='select
 						eq.id_equipo, eq.uniqueid,
 						eq.marca, eq.modelo, eq.placa,
-						pos.latitude, pos.longitude, pos.altitude, round(pos.speed::numeric * 1.852,2),
+						pos.latitude, pos.longitude, pos.altitude, round(pos.speed::numeric * '||v_factor_vel||',2),
 						pos.course,
 						pos.address, pos.attributes, pos.accuracy,
 						eq.desc_equipo,
@@ -386,7 +390,7 @@ BEGIN
 						on ev.positionid = pos.id
 						where eq.id_equipo in ('||v_parametros.ids||')'||'
 						and to_char(pos.servertime,''dd-mm-yyyy HH24:MI:00'')::timestamp with time zone between '''||v_parametros.fecha_ini||'''::timestamp with time zone and '''||v_parametros.fecha_fin||'''::timestamp with time zone
-						and (pos.speed * 1.852) between ' || v_parametros.velocidad_ini || ' and '||v_parametros.velocidad_fin||' and ';
+						and (pos.speed  * '||v_factor_vel||') between ' || v_parametros.velocidad_ini || ' and '||v_parametros.velocidad_fin||' and ';
 
 			v_consulta:=v_consulta||v_parametros.filtro;
 			v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
@@ -419,7 +423,7 @@ BEGIN
 						on ev.positionid = pos.id
 						where eq.id_equipo in ('||v_parametros.ids||')'||'
 						and to_char(pos.servertime,''dd-mm-yyyy HH24:MI:00'')::timestamp with time zone between '''||v_parametros.fecha_ini||'''::timestamp with time zone and '''||v_parametros.fecha_fin||'''::timestamp with time zone
-						and (pos.speed * 1.852) between ' || v_parametros.velocidad_ini || ' and '||v_parametros.velocidad_fin || ' and ';
+						and (pos.speed  * '||v_factor_vel||') between ' || v_parametros.velocidad_ini || ' and '||v_parametros.velocidad_fin || ' and ';
 
 
 			v_consulta:=v_consulta||v_parametros.filtro;

@@ -23,6 +23,7 @@ DECLARE
 	v_parametros  		record;
 	v_nombre_funcion   	text;
 	v_resp				varchar;
+	v_factor_vel		numeric = 1.852;
 			    
 BEGIN
 
@@ -75,8 +76,23 @@ BEGIN
 						marca.nombre as desc_marca,
 						equip.uniqueid,
 						de.id as deviceid,
-						ras.f_get_time(pos.servertime::timestamp,CURRENT_TIMESTAMP::timestamp) as ultimo_envio
-						from ras.tequipo equip
+						ras.f_get_time(pos.servertime::timestamp,CURRENT_TIMESTAMP::timestamp) as ultimo_envio,
+						pos.latitude,
+						pos.longitude,
+						pos.speed * '||v_factor_vel||',
+						pos.attributes,
+						pos.address,
+						case event.type
+							when ''deviceStopped'' then ''Detenido''::varchar
+							when ''deviceOffline'' then ''Desconectado''::varchar
+							when ''deviceUnknown'' then ''Desconocido''::varchar
+							when ''deviceMoving'' then ''En Movimiento''::varchar
+							when ''deviceOnline'' then ''Online''::varchar
+							when ''alarm'' then ''Alarma''::varchar
+							else event.type
+						end as desc_type,
+						equip.desc_equipo
+						from ras.vequipo equip
 						left join ras.ttipo_equipo tipeq
 						on tipeq.id_tipo_equipo = equip.id_tipo_equipo
 						left join ras.tmodelo model
@@ -89,6 +105,8 @@ BEGIN
 						on de.uniqueid = equip.uniqueid
 						left join positions pos
 						on pos.id = de.positionid
+						left join events event
+						on event.positionid = pos.id
 				        where  ';
 			
 			--Definicion de la respuesta
@@ -112,7 +130,7 @@ BEGIN
 		begin
 			--Sentencia de la consulta de conteo de registros
 			v_consulta:='select count(id_equipo)
-					    from ras.tequipo equip
+					    from ras.vequipo equip
 					    left join ras.ttipo_equipo tipeq
 						on tipeq.id_tipo_equipo = equip.id_tipo_equipo
 						left join ras.tmodelo model
@@ -125,6 +143,8 @@ BEGIN
 						on de.uniqueid = equip.uniqueid
 						left join positions pos
 						on pos.id = de.positionid
+						left join events event
+						on event.positionid = pos.id
 				        where  ';
 			
 			--Definicion de la respuesta		    

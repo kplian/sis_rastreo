@@ -55,6 +55,13 @@ class MODEquipo extends MODbase{
 		$this->captura('uniqueid','varchar');
 		$this->captura('deviceid','integer');
 		$this->captura('ultimo_envio','varchar');
+		$this->captura('latitude','float8');
+		$this->captura('longitude','float8');
+		$this->captura('speed','float8');
+		$this->captura('attributes','varchar');
+		$this->captura('address','varchar');
+		$this->captura('desc_type','varchar');
+		$this->captura('desc_equipo','text');
 		
 		//Ejecuta la instruccion
 		$this->armarConsulta();

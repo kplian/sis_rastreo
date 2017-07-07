@@ -24,6 +24,7 @@ DECLARE
 	v_nombre_funcion   	text;
 	v_resp				varchar;
 	v_eventos			varchar;
+	v_factor_vel		numeric = 1.852;
 			    
 BEGIN
 
@@ -131,7 +132,8 @@ BEGIN
                             when ''alarm'' then ''Alarma''::varchar
                             else ev.type
                         end as desc_type,
-                        pos.latitude, pos.longitude, pos.altitude, pos.speed, pos.course,
+                        pos.latitude, pos.longitude, pos.altitude, pos.speed * '||v_factor_vel||',
+                        pos.course,
 						pos.address, pos.attributes as attributes_pos, pos.accuracy
                         from events ev
                         inner join devices dev
