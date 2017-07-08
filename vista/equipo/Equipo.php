@@ -121,20 +121,31 @@ Phx.vista.Equipo=Ext.extend(Phx.gridInterfaz,{
 		{
 			config:{
 				name: 'ultimo_envio',
-				fieldLabel: 'Último Sincronización',
+				fieldLabel: 'Última Sincronización',
 				allowBlank: false,
 				anchor: '100%',
 				gwidth: 200,
 				maxLength:128,
 				renderer: function(value,p,record){
-					return '<tpl for=".">\
-								<div class="x-combo-list-item">\
-									<p><b>Fecha Ult. Sinc.: </b> '+record.data['ultimo_envio']+'</p>\
-									<p><b>Conductor: </b>'+record.data['responsable']+'</p>\
-									<p>\
-										<div><img src=\'../../../lib/imagenes/wifi1.png\' width=24 height=24><span>&nbsp;&nbsp;&nbsp;Conectado</span></div>\
-									<p>\
-								</div>\
+					var icon='wifi1.png';
+					if(record.data['type']=='deviceOffline'||record.data['type']=='deviceUnknown'){
+						icon='nowifi2.png';
+					}
+					return	'<tpl for=".">\
+								<table>\
+								  <tr>\
+								    <th style="vertical-align:middle;">\
+										<img src=\'../../../lib/imagenes/'+icon+'\' width=32 height=32>\
+								    </th>\
+								    <th>\
+								    	<div class="x-combo-list-item" style="font-size: x-small">\
+											<p><b>Fecha Ult. Sinc.: </b> '+record.data['ultimo_envio']+'</p>\
+											<p><b>Conductor: </b>'+record.data['responsable']+'</p>\
+											<p><b>Evento: </b>'+record.data['desc_type']+'</p>\
+										</div>\
+								    </th>\
+								  </tr>\
+								</table>\
 							</tpl>';
 				}
 			},
@@ -630,7 +641,7 @@ Phx.vista.Equipo=Ext.extend(Phx.gridInterfaz,{
 		{name:'id_usuario_mod', type: 'numeric'},
 		{name:'usr_reg', type: 'string'},
 		{name:'usr_mod', type: 'string'},'desc_tipo_equipo','id_marca','desc_modelo','desc_marca','uniqueid','deviceid','ultimo_envio',
-		'latitude','longitude','speed','attributes','address','desc_type','desc_equipo','responsable'
+		'latitude','longitude','speed','attributes','address','desc_type','desc_equipo','responsable','type'
 		
 	],
 	sortInfo:{

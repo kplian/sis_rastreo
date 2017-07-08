@@ -114,8 +114,8 @@ BEGIN
 			--Sentencia de la consulta
 			v_consulta:='select
 						eq.id_equipo, eq.uniqueid,
-						eq.marca, eq.modelo, eq.placa, per.nombre_completo1 as responsable, per.ci,
-						per.celular1, per.correo,
+						eq.marca, eq.modelo, eq.placa,
+						per.nombre_completo1 as responsable, per.ci, per.celular1, per.correo,
 						pos.latitude, pos.longitude, pos.altitude, pos.speed * '||v_factor_vel||',
 						pos.course,
 						pos.address, pos.attributes, pos.accuracy,
@@ -138,13 +138,8 @@ BEGIN
 						on dev.uniqueid = eq.uniqueid
 						inner join positions pos
 						on pos.id = dev.positionid
-						left join ras.tequipo_responsable eres
-						on eres.id_equipo = eq.id_equipo
-						and eres.estado_reg = ''activo''
-						left join ras.tresponsable re
-						on re.id_responsable = eres.id_responsable
 						left join segu.vpersona per
-						on per.id_persona = re.id_persona
+						on per.id_persona = ras.f_get_responsable_ultimo(eq.id_equipo)
 						left join events ev
 						on ev.positionid = pos.id
 						where eq.id_equipo in ('||v_parametros.ids||')';
@@ -195,13 +190,8 @@ BEGIN
 						on de.uniqueid = eq.uniqueid
 						inner join positions pos
 						on pos.deviceid = de.id
-						left join ras.tequipo_responsable eres
-						on eres.id_equipo = eq.id_equipo
-						and eres.estado_reg = ''activo''
-						left join ras.tresponsable re
-						on re.id_responsable = eres.id_responsable
 						left join segu.vpersona per
-						on per.id_persona = re.id_persona
+						on per.id_persona = ras.f_get_responsable_fecha(eq.id_equipo,pos.servertime::date)
 						left join events ev
 						on ev.positionid = pos.id
 						inner join ras.ttipo_equipo teq
@@ -239,13 +229,8 @@ BEGIN
 						on de.uniqueid = eq.uniqueid
 						inner join positions pos
 						on pos.deviceid = de.id
-						left join ras.tequipo_responsable eres
-						on eres.id_equipo = eq.id_equipo
-						and eres.estado_reg = ''activo''
-						left join ras.tresponsable re
-						on re.id_responsable = eres.id_responsable
 						left join segu.vpersona per
-						on per.id_persona = re.id_persona
+						on per.id_persona = ras.f_get_responsable_fecha(eq.id_equipo,pos.servertime::date)
 						left join events ev
 						on ev.positionid = pos.id
 						inner join ras.ttipo_equipo teq
@@ -353,13 +338,8 @@ BEGIN
 						on de.uniqueid = eq.uniqueid
 						inner join positions pos
 						on pos.deviceid = de.id
-						left join ras.tequipo_responsable eres
-						on eres.id_equipo = eq.id_equipo
-						and eres.estado_reg = ''activo''
-						left join ras.tresponsable re
-						on re.id_responsable = eres.id_responsable
 						left join segu.vpersona per
-						on per.id_persona = re.id_persona
+						on per.id_persona = ras.f_get_responsable_fecha(eq.id_equipo,pos.servertime::date)
 						left join events ev
 						on ev.positionid = pos.id
 						where eq.id_equipo in ('||v_parametros.ids||')'||'

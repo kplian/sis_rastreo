@@ -92,7 +92,8 @@ BEGIN
 							else event.type
 						end as desc_type,
 						equip.desc_equipo,
-						per.nombre_completo1 as responsable
+						per.nombre_completo1 as responsable,
+						event.type
 						from ras.vequipo equip
 						left join ras.ttipo_equipo tipeq
 						on tipeq.id_tipo_equipo = equip.id_tipo_equipo
@@ -107,7 +108,7 @@ BEGIN
 						left join positions pos
 						on pos.id = de.positionid
 						left join events event
-						on event.positionid = pos.id
+						on event.id = ras.f_get_evento_ultimo(equip.id_equipo)
 						left join segu.vpersona per
 						on per.id_persona = ras.f_get_responsable_ultimo(equip.id_equipo)
 				        where  ';
@@ -147,7 +148,7 @@ BEGIN
 						left join positions pos
 						on pos.id = de.positionid
 						left join events event
-						on event.positionid = pos.id
+						on event.positionid = ras.f_get_evento_ultimo(equip.id_equipo)
 						left join segu.vpersona per
 						on per.id_persona = ras.f_get_responsable_ultimo(equip.id_equipo)
 				        where  ';
