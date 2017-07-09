@@ -50,7 +50,7 @@ Ext.define('Phx.vista.car', {
     },
     
     setPos: function(config){
-    	
+    	Ext.apply(this,config);
     	var aux = [parseFloat(config.longitud),parseFloat(config.latitud)];
         var point = ol.proj.fromLonLat(aux);
     	
@@ -129,7 +129,7 @@ Ext.define('Phx.vista.Monitoreo', {
         this.panelMapa = new Ext.Panel({  
             padding: '0 0 0 0',
             tbar: this.tbar,
-            html:'<div id="map-'+this.idContenedor +'"></div>',
+            html:'<div id="map-'+this.idContenedor +'" style="width: 100%;height: 100%;"></div>',
             region:'center',
             split: true, 
             layout:  'fit' })
@@ -159,6 +159,11 @@ Ext.define('Phx.vista.Monitoreo', {
 		    interval:parseInt(5)*1000,
 		    scope:this
 		});
+		
+		this.panel.on('resize', function(){
+			 this.map.updateSize();
+		},this);
+		
 				
 		//this.combo_segundos.on('select',this.evento_combo,this);
     	//this.combo_segundos.setValue('10');	
@@ -178,6 +183,7 @@ Ext.define('Phx.vista.Monitoreo', {
     
     
     winInfo: undefined,
+    panelResumen: undefined,
     showMap: function(){
     	var me = this;
         this.vectorSource = new ol.source.Vector();
@@ -202,31 +208,22 @@ Ext.define('Phx.vista.Monitoreo', {
         });
         
         this.map.on('click', function(e){
-            console.log('map click',e)
             me.map.forEachFeatureAtPixel(e.pixel, function(feature, layer) {
-                console.log('ffff',feature,layer)
-                if(feature.O.car){
-                	console.log('........', feature.O.car)
-                	//alert(feature.O.car.desc_equipo)
-                	
-                	 if(!me.winInfo){
+               if(feature.O.car){
+                	if(!me.winInfo){
+                	 	me.panelResumen = new Ext.Panel({  
+			    		    padding: '0 0 0 20',
+			    		    html: '',
+			    		    split: true, 
+			    		    layout:  'fit' });
+			    		    
 			            me.winInfo = new Ext.Window({
-			               
 			                layout:'fit',
 			                width:500,
 			                height:300,
 			                closeAction:'hide',
 			                plain: true,
-			                html:'<b>HOLA ,,,,<b>',
-			
-			                items: new Ext.TabPanel({
-			                    
-			                    autoTabs:true,
-			                    activeTab:0,
-			                    deferredRender:false,
-			                    border:false
-			                }),
-			
+			                items: me.panelResumen,			
 			                buttons: [{
 			                    text: 'Close',
 			                    handler: function(){
@@ -236,6 +233,7 @@ Ext.define('Phx.vista.Monitoreo', {
 			            });
 			        }
 			        me.winInfo.show();
+			        me.updateResumen(feature.O.car);
 			      }
             });
         });
@@ -273,11 +271,7 @@ Ext.define('Phx.vista.Monitoreo', {
     successCarga: function(resp, a, b, c, d) {
     	resp.responseText =resp.responseText.replace('<pre>','').replace('</pre>','')
     	var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
-    	
-    	console.log('posiciones..', reg)
     	var me = this;
-    	
-    	
     	reg.datos.forEach(function(element) {
     		me.dibujarPunto({   latitud : element.latitude  ,
 	    			            longitud: element.longitude,
@@ -289,7 +283,9 @@ Ext.define('Phx.vista.Monitoreo', {
 	    			            id_equipo: element.id_equipo,
 	    			            modelo: element.modelo,
 	    			            marca: element.marca,
-	    			            estado: element.estado });
+	    			            estado: element.estado,
+	    			            address: element.address,
+	    			            altitud: element.altitude });
     	});
     	
     	//elimar los los marcadores que no fueron considerados
@@ -363,10 +359,9 @@ Ext.define('Phx.vista.Monitoreo', {
     	  	   if(me.vectorSource.getFeatureById(e.feature.getId())){
     	  	   		me.vectorSource.removeFeature(e.feature);
     	  	   		me.vectorSource.removeFeature(e.featureLine);
-    	  	   		console.log('despeus de eliminar feature id', e.feature.getId());
     	  	   }
     	  	   
-    	  	   console.log('despeus de eliminar feature id', e.feature.getId())
+    	  	   console.log('despues de eliminar feature id', e.feature.getId())
     	  	   
     	  });
     },
@@ -431,7 +426,48 @@ Ext.define('Phx.vista.Monitoreo', {
 			minChars : 2
 		}),
 		
+	updateResumen:function(datos){
+		var plantilla = "<div style='overflow-y: initial;'><br><b>PLACA {0}</b><br></b> \
+		       					<b>Posicion:</b> (Lat {1}, Lon  {2}, Alt {14})</br>\
+								<b>Estado:</b> {3}</br>\
+								<b>Responsable:</b> {4}</br>\
+								<b>Descripcion:</b> {5}</br>\
+								<b>Velocidad:</b> {6}</br>\
+								<b>Distancia:</b> {7}</br>\
+								<b>Total Distancia:</b> {8}</br>\
+								<b>Odometro:</b> {9}</br>\
+								<b>Consumo de combustible:</b> {10}</br>\
+								<b>Battery:</b> {11}</br>\
+								<b>Rssi:</b> {12}</br>\
+								<b>Direccion:</b> {13}</br></br></div>";
+								
+								
+		var  reg   = Ext.util.JSON.decode(Ext.util.Format.trim(datos.attributes));						
+		       
+		     
+		this.panelResumen.update( String.format(plantilla,
+			                                           datos.codigo, 
+			                                           datos.longitud,
+			                                           datos.latitud,
+			                                           datos.estado||'desconocido',
+			                                           datos.responsable||'no designado',
+			                                           datos.desc_equipo||'sin descripcion',
+			                                           datos.speed||0,
+			                                           reg.distance||0,
+			                                           reg.totalDistance||0,
+			                                           reg.odometer||0,
+			                                           reg.fuelConsumption||0,			                                           
+			                                           reg.battery||0,
+			                                           reg.rssi||0,
+			                                           datos.address||'',
+			                                           datos.altitud||0
+			                                           
+			                                           ));
+			                                           
+			                                           
+			                                         
 		
+	}	
        
 		
     
