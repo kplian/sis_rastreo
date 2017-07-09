@@ -17,6 +17,12 @@ Phx.vista.Events=Ext.extend(Phx.gridInterfaz,{
     	//llama al constructor de la clase padre
 		Phx.vista.Events.superclass.constructor.call(this,config);
 		this.init();
+		if(Phx.CP.getPagina(this.idContenedorPadre)){
+	         var dataMaestro=Phx.CP.getPagina(this.idContenedorPadre).getSelectedData();
+	         if(dataMaestro){ 
+	            this.onEnablePanel(this,dataMaestro)
+	         }
+        }
 	},
 			
 	Atributos:[

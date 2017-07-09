@@ -124,6 +124,85 @@ class MODPositions extends MODbase{
 		//Devuelve la respuesta
 		return $this->respuesta;
 	}
+
+	function listarUltimaPosicion(){
+		//Definicion de variables para ejecucion del procedimientp
+		$this->procedimiento='ras.ft_positions_sel';
+		$this->transaccion='PB_POSIC_ULT';
+		$this->setCount(false);
+		$this->tipo_procedimiento='SEL';//tipo de transaccion
+
+		//Define los parametros para la funcion
+		$this->setParametro('ids','ids','varchar');
+		$this->setParametro('contador','contador','integer');
+				
+		//Definicion de la lista del resultado del query
+		$this->captura('id_equipo','integer');
+		$this->captura('uniqueid','varchar');
+		$this->captura('marca','varchar');
+		$this->captura('modelo','varchar');
+		$this->captura('placa','varchar');
+		$this->captura('responsable','text');
+		$this->captura('ci','varchar');
+		$this->captura('celular1','varchar');
+		$this->captura('correo','varchar');
+		$this->captura('latitude','float8');
+		$this->captura('longitude','float8');
+		$this->captura('altitude','float8');
+		$this->captura('speed','float8');
+		$this->captura('course','float8');
+		$this->captura('address','varchar');
+		$this->captura('attributes','varchar');
+		$this->captura('accuracy','float8');
+		$this->captura('desc_equipo','text');
+		
+		//Ejecuta la instruccion
+		$this->armarConsulta();
+		$this->ejecutarConsulta();
+		
+		//Devuelve la respuesta
+		return $this->respuesta;
+	}
+
+	function listarPosicionesRango(){
+		//Definicion de variables para ejecucion del procedimientp
+		$this->procedimiento='ras.ft_positions_sel';
+		$this->transaccion='PB_POSRAN_SEL';
+		$this->setCount(false);
+		$this->tipo_procedimiento='SEL';//tipo de transaccion
+
+		//Define los parametros para la funcion
+		$this->setParametro('ids','ids','varchar');
+		$this->setParametro('fecha_ini','ids','varchar');
+		$this->setParametro('fecha_fin','ids','varchar');
+				
+		//Definicion de la lista del resultado del query
+		$this->captura('id_equipo','integer');
+		$this->captura('uniqueid','varchar');
+		$this->captura('marca','varchar');
+		$this->captura('modelo','varchar');
+		$this->captura('placa','varchar');
+		$this->captura('responsable','text');
+		$this->captura('ci','varchar');
+		$this->captura('celular1','varchar');
+		$this->captura('correo','varchar');
+		$this->captura('latitude','float8');
+		$this->captura('longitude','float8');
+		$this->captura('altitude','float8');
+		$this->captura('speed','float8');
+		$this->captura('course','float8');
+		$this->captura('address','varchar');
+		$this->captura('attributes','varchar');
+		$this->captura('accuracy','float8');
+		$this->captura('desc_equipo','text');
+		
+		//Ejecuta la instruccion
+		$this->armarConsulta();
+		$this->ejecutarConsulta();
+		
+		//Devuelve la respuesta
+		return $this->respuesta;
+	}
 			
 }
 ?>

@@ -21,3 +21,76 @@ alter table ras.tlocalizacion
 add constraint fk_tlocalizacion__id_localizacion_fk foreign key (id_localizacion_fk) references ras.tlocalizacion(id_localizacion);
 
 /***********************************F-DEP-RCM-RAS-0-15/17/2017*****************************************/
+
+/***********************************I-DEP-RCM-RAS-0-06/07/2017*****************************************/
+
+CREATE VIEW ras.vequipo (
+    id_usuario_reg,
+    id_usuario_mod,
+    fecha_reg,
+    fecha_mod,
+    estado_reg,
+    id_usuario_ai,
+    usuario_ai,
+    id_equipo,
+    id_tipo_equipo,
+    id_modelo,
+    id_localizacion,
+    pta,
+    nro_chasis,
+    nro_motor,
+    cilindrada,
+    nro_movil,
+    traccion,
+    color,
+    cabina,
+    monto,
+    propiedad,
+    placa,
+    estado,
+    fecha_alta,
+    fecha_baja,
+    gestion,
+    uniqueid,
+    marca,
+    modelo,
+    tipo_equipo,
+    desc_equipo)
+AS
+SELECT eq.id_usuario_reg,
+    eq.id_usuario_mod,
+    eq.fecha_reg,
+    eq.fecha_mod,
+    eq.estado_reg,
+    eq.id_usuario_ai,
+    eq.usuario_ai,
+    eq.id_equipo,
+    eq.id_tipo_equipo,
+    eq.id_modelo,
+    eq.id_localizacion,
+    eq.pta,
+    eq.nro_chasis,
+    eq.nro_motor,
+    eq.cilindrada,
+    eq.nro_movil,
+    eq.traccion,
+    eq.color,
+    eq.cabina,
+    eq.monto,
+    eq.propiedad,
+    eq.placa,
+    eq.estado,
+    eq.fecha_alta,
+    eq.fecha_baja,
+    eq.gestion,
+    eq.uniqueid,
+    mar.nombre AS marca,
+    mod.nombre AS modelo,
+    teq.nombre AS tipo_equipo,
+    (((((((((COALESCE(teq.nombre, ''::character varying)::text || ' '::text) ||
+        COALESCE(mar.nombre, ''::character varying)::text) || ' '::text) || COALESCE(mod.nombre, ''::character varying)::text) || ' '::text) || COALESCE(eq.gestion::character varying, ''::character varying)::text) || ' '::text) || COALESCE(eq.color, ''::character varying)::text) || ' Placa '::text) || eq.placa::text AS desc_equipo
+FROM ras.tequipo eq
+     JOIN ras.tmodelo mod ON mod.id_modelo = eq.id_modelo
+     JOIN ras.tmarca mar ON mar.id_marca = mod.id_marca
+     JOIN ras.ttipo_equipo teq ON teq.id_tipo_equipo = eq.id_tipo_equipo;
+/***********************************F-DEP-RCM-RAS-0-06/07/2017*****************************************/     

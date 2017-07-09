@@ -16,8 +16,14 @@ Phx.vista.EquipoResponsable=Ext.extend(Phx.gridInterfaz,{
 		this.maestro=config.maestro;
     	//llama al constructor de la clase padre
 		Phx.vista.EquipoResponsable.superclass.constructor.call(this,config);
-		this.init();
-		this.load({params:{start:0, limit:this.tam_pag}})
+		this.bloquearMenus();
+        this.init();
+        if(Phx.CP.getPagina(this.idContenedorPadre)){
+         	var dataMaestro=Phx.CP.getPagina(this.idContenedorPadre).getSelectedData();
+         	if(dataMaestro){ 
+            	this.onEnablePanel(this,dataMaestro)
+         	}
+        }
 	},
 			
 	Atributos:[
@@ -30,6 +36,57 @@ Phx.vista.EquipoResponsable=Ext.extend(Phx.gridInterfaz,{
 			},
 			type:'Field',
 			form:true 
+		},
+		{
+			config:{
+					labelSeparator:'',
+					inputType:'hidden',
+					name: 'id_equipo'
+			},
+			type:'Field',
+			form:true 
+		},
+		{
+			config: {
+				name: 'id_responsable',
+				fieldLabel: 'Conductor',
+				allowBlank: false,
+				emptyText: 'Elija una opción...',
+				store: new Ext.data.JsonStore({
+					url: '../../sis_rastreo/control/Responsable/listarResponsable',
+					id: 'id_responsable',
+					root: 'datos',
+					sortInfo: {
+						field: 'id_responsable',
+						direction: 'ASC'
+					},
+					totalProperty: 'total',
+					fields: ['id_responsable', 'desc_persona'],
+					remoteSort: true
+				}),
+				valueField: 'id_responsable',
+				displayField: 'desc_persona',
+				gdisplayField: 'desc_responsable',
+				hiddenName: 'id_responsable',
+				forceSelection: true,
+				typeAhead: false,
+				triggerAction: 'all',
+				lazyRender: true,
+				mode: 'remote',
+				pageSize: 15,
+				queryDelay: 1000,
+				anchor: '100%',
+				gwidth: 150,
+				minChars: 2,
+				renderer : function(value, p, record) {
+					return String.format('{0}', record.data['desc_responsable']);
+				}
+			},
+			type: 'ComboBox',
+			id_grupo: 0,
+			filters: {pfiltro: 'per.nombre_completo1',type: 'string'},
+			grid: true,
+			form: true
 		},
 		{
 			config:{
@@ -47,68 +104,9 @@ Phx.vista.EquipoResponsable=Ext.extend(Phx.gridInterfaz,{
 				form:false
 		},
 		{
-			config: {
-				name: 'id_responsable',
-				fieldLabel: 'id_responsable',
-				allowBlank: false,
-				emptyText: 'Elija una opción...',
-				store: new Ext.data.JsonStore({
-					url: '../../sis_/control/Clase/Metodo',
-					id: 'id_',
-					root: 'datos',
-					sortInfo: {
-						field: 'nombre',
-						direction: 'ASC'
-					},
-					totalProperty: 'total',
-					fields: ['id_', 'nombre', 'codigo'],
-					remoteSort: true,
-					baseParams: {par_filtro: 'movtip.nombre#movtip.codigo'}
-				}),
-				valueField: 'id_',
-				displayField: 'nombre',
-				gdisplayField: 'desc_',
-				hiddenName: 'id_responsable',
-				forceSelection: true,
-				typeAhead: false,
-				triggerAction: 'all',
-				lazyRender: true,
-				mode: 'remote',
-				pageSize: 15,
-				queryDelay: 1000,
-				anchor: '100%',
-				gwidth: 150,
-				minChars: 2,
-				renderer : function(value, p, record) {
-					return String.format('{0}', record.data['desc_']);
-				}
-			},
-			type: 'ComboBox',
-			id_grupo: 0,
-			filters: {pfiltro: 'movtip.nombre',type: 'string'},
-			grid: true,
-			form: true
-		},
-		{
-			config:{
-				name: 'fecha_fin',
-				fieldLabel: 'fecha_fin',
-				allowBlank: true,
-				anchor: '80%',
-				gwidth: 100,
-							format: 'd/m/Y', 
-							renderer:function (value,p,record){return value?value.dateFormat('d/m/Y'):''}
-			},
-				type:'DateField',
-				filters:{pfiltro:'equcon.fecha_fin',type:'date'},
-				id_grupo:1,
-				grid:true,
-				form:true
-		},
-		{
 			config:{
 				name: 'fecha_ini',
-				fieldLabel: 'fecha_ini',
+				fieldLabel: 'Desde',
 				allowBlank: true,
 				anchor: '80%',
 				gwidth: 100,
@@ -122,47 +120,20 @@ Phx.vista.EquipoResponsable=Ext.extend(Phx.gridInterfaz,{
 				form:true
 		},
 		{
-			config: {
-				name: 'id_equipo',
-				fieldLabel: 'id_equipo',
-				allowBlank: false,
-				emptyText: 'Elija una opción...',
-				store: new Ext.data.JsonStore({
-					url: '../../sis_/control/Clase/Metodo',
-					id: 'id_',
-					root: 'datos',
-					sortInfo: {
-						field: 'nombre',
-						direction: 'ASC'
-					},
-					totalProperty: 'total',
-					fields: ['id_', 'nombre', 'codigo'],
-					remoteSort: true,
-					baseParams: {par_filtro: 'movtip.nombre#movtip.codigo'}
-				}),
-				valueField: 'id_',
-				displayField: 'nombre',
-				gdisplayField: 'desc_',
-				hiddenName: 'id_equipo',
-				forceSelection: true,
-				typeAhead: false,
-				triggerAction: 'all',
-				lazyRender: true,
-				mode: 'remote',
-				pageSize: 15,
-				queryDelay: 1000,
-				anchor: '100%',
-				gwidth: 150,
-				minChars: 2,
-				renderer : function(value, p, record) {
-					return String.format('{0}', record.data['desc_']);
-				}
+			config:{
+				name: 'fecha_fin',
+				fieldLabel: 'Hasta',
+				allowBlank: true,
+				anchor: '80%',
+				gwidth: 100,
+							format: 'd/m/Y', 
+							renderer:function (value,p,record){return value?value.dateFormat('d/m/Y'):''}
 			},
-			type: 'ComboBox',
-			id_grupo: 0,
-			filters: {pfiltro: 'movtip.nombre',type: 'string'},
-			grid: true,
-			form: true
+				type:'DateField',
+				filters:{pfiltro:'equcon.fecha_fin',type:'date'},
+				id_grupo:1,
+				grid:true,
+				form:true
 		},
 		{
 			config:{
@@ -277,7 +248,7 @@ Phx.vista.EquipoResponsable=Ext.extend(Phx.gridInterfaz,{
 		{name:'id_usuario_mod', type: 'numeric'},
 		{name:'fecha_mod', type: 'date',dateFormat:'Y-m-d H:i:s.u'},
 		{name:'usr_reg', type: 'string'},
-		{name:'usr_mod', type: 'string'},
+		{name:'usr_mod', type: 'string'},'desc_responsable'
 		
 	],
 	sortInfo:{
@@ -285,9 +256,17 @@ Phx.vista.EquipoResponsable=Ext.extend(Phx.gridInterfaz,{
 		direction: 'ASC'
 	},
 	bdel:true,
-	bsave:true
+	bsave:true,
+	loadValoresIniciales: function() {
+		Phx.vista.EquipoResponsable.superclass.loadValoresIniciales.call(this);
+		this.getComponente('id_equipo').setValue(this.maestro.id_equipo);
+	},
+	onReloadPage: function(m) {
+		this.maestro=m;	
+		this.store.baseParams={id_equipo: this.maestro.id_equipo};
+		this.load({params:{start:0, limit:this.tam_pag}});	
 	}
-)
+})
 </script>
 		
 		

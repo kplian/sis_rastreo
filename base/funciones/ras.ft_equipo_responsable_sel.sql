@@ -54,10 +54,15 @@ BEGIN
 						equcon.id_usuario_mod,
 						equcon.fecha_mod,
 						usu1.cuenta as usr_reg,
-						usu2.cuenta as usr_mod	
+						usu2.cuenta as usr_mod,
+						per.nombre_completo1 as desc_responsable
 						from ras.tequipo_responsable equcon
 						inner join segu.tusuario usu1 on usu1.id_usuario = equcon.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = equcon.id_usuario_mod
+						inner join ras.tresponsable resp
+						on resp.id_responsable = equcon.id_responsable
+						inner join segu.vpersona per
+						on per.id_persona = resp.id_persona
 				        where  ';
 			
 			--Definicion de la respuesta
@@ -84,6 +89,10 @@ BEGIN
 					    from ras.tequipo_responsable equcon
 					    inner join segu.tusuario usu1 on usu1.id_usuario = equcon.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = equcon.id_usuario_mod
+						inner join ras.tresponsable resp
+						on resp.id_responsable = equcon.id_responsable
+						inner join segu.vpersona per
+						on per.id_persona = resp.id_persona
 					    where ';
 			
 			--Definicion de la respuesta		    

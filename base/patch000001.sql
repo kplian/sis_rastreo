@@ -167,4 +167,22 @@ ALTER TABLE ras.tequipo
 ALTER TABLE ras.tequipo
   ADD CONSTRAINT uq_tequipo__placa 
     UNIQUE (placa) NOT DEFERRABLE; 
-/***********************************F-SCP-RCM-RAS-0-06/07/2017****************************************/  
+
+CREATE INDEX tequipo_idx ON ras.tequipo
+  USING btree (id_equipo);
+
+CREATE INDEX tmodelo_idx ON ras.tequipo
+  USING btree (id_modelo);  
+
+CREATE INDEX tmarca_idx ON ras.tmarca
+  USING btree (id_marca);
+
+CREATE INDEX tmodelo_idx ON ras.tmodelo
+  USING btree (id_modelo);  
+
+CREATE INDEX devices_idx ON public.devices
+  USING btree (uniqueid);
+
+CREATE INDEX positions_idx ON public.positions
+  USING btree (id);
+/***********************************F-SCP-RCM-RAS-0-06/07/2017****************************************/    

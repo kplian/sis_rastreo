@@ -91,6 +91,82 @@ BEGIN
 			return v_consulta;
 
 		end;
+
+	/*********************************    
+ 	#TRANSACCION:  'PB_POSIC_ULT'
+ 	#DESCRIPCION:	Devuelve la posición actual de los ids de equipos enviados
+ 	#AUTOR:			RCM
+ 	#FECHA:			06/07/2017
+	***********************************/
+
+	elsif(p_transaccion='PB_POSIC_ULT')then
+
+		begin
+			--Sentencia de la consulta
+			v_consulta:='select
+						eq.id_equipo, eq.uniqueid,
+						eq.marca, eq.modelo, eq.placa, per.nombre_completo1 as responsable, per.ci,
+						per.celular1, per.correo,
+						pos.latitude, pos.longitude, pos.altitude, pos.speed, pos.course,
+						pos.address, pos.attributes, pos.accuracy,
+						eq.desc_equipo
+						from ras.vequipo eq
+						inner join devices dev
+						on dev.uniqueid = eq.uniqueid
+						on pos.id = dev.positionid
+						left join ras.tequipo_responsable eres
+						on eres.id_equipo = eq.id_equipo
+						and eres.estado_reg = ''activo''
+						left join ras.tresponsable re
+						on re.id_responsable = eres.id_responsable
+						left join segu.vpersona per
+						on per.id_persona = re.id_persona
+						where eq.id_equipo in ('||v_parametros.ids||')';
+
+
+			--Devuelve la respuesta
+			return v_consulta;
+
+		end;
+
+	/*********************************    
+ 	#TRANSACCION:  'PB_POSRAN_SEL'
+ 	#DESCRIPCION:	Devuelve las posiciones en un rango de fechas de los ids de equipos enviados
+ 	#AUTOR:			RCM
+ 	#FECHA:			07/07/2017
+	***********************************/
+
+	elsif(p_transaccion='PB_POSRAN_SEL')then
+
+		begin
+
+			--Sentencia de la consulta
+			v_consulta:='select
+						eq.id_equipo, eq.uniqueid,
+						eq.marca, eq.modelo, eq.placa,per.nombre_completo1 as responsable, per.ci,
+						per.celular1, per.correo,
+						pos.latitude, pos.longitude, pos.altitude, pos.speed, pos.course,
+						pos.address, pos.attributes, pos.accuracy,
+						eq.desc_equipo
+						from ras.vequipo eq
+						inner join devices de
+						on de.uniqueid = eq.uniqueid
+						inner join positions pos
+						on pos.deviceid = de.id
+						left join ras.tequipo_responsable eres
+						on eres.id_equipo = eq.id_equipo
+						and eres.estado_reg = ''activo''
+						left join ras.tresponsable re
+						on re.id_responsable = eres.id_responsable
+						left join segu.vpersona per
+						on per.id_persona = re.id_persona
+						where eq.id_equipo in ('||v_parametros.ids||')'||'
+						and to_char(pos.servertime,''dd-mm-yyyy HH24:MI:00'')::timestamp with time zone between '||v_parametros.fecha_ini||'::timestamp with time zone and '||v_parametros.fecha_fin||'::timestamp with time zone';
+
+			--Devuelve la respuesta
+			return v_consulta;
+
+		end;
 					
 	else
 					     
