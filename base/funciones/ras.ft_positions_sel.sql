@@ -113,6 +113,7 @@ BEGIN
 						from ras.vequipo eq
 						inner join devices dev
 						on dev.uniqueid = eq.uniqueid
+						inner join positions po
 						on pos.id = dev.positionid
 						left join ras.tequipo_responsable eres
 						on eres.id_equipo = eq.id_equipo
