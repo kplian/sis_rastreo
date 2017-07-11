@@ -38,7 +38,7 @@ select pxp.f_add_catalog('RAS','tequipo__traccion','4WD','4WD','');
 
 select pxp.f_add_catalog('RAS','tequipo__cabina','Simple','simple','');
 select pxp.f_add_catalog('RAS','tequipo__cabina','Doble','doble','');
-/***********************************I-DAT-RCM-RAS-0-06/07/2017****************************************/
+/***********************************F-DAT-RCM-RAS-0-06/07/2017****************************************/
 
 /***********************************I-DAT-RCM-RAS-0-07/07/2017****************************************/
 select pxp.f_insert_tgui ('Eventos', 'Eventos sucedidos', 'RAS.10', 'si', 1, 'sis_rastreo/vista/reportes/EventoReporte.php', 3, '', 'EventoReporte', 'RAS');
