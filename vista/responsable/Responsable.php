@@ -18,6 +18,22 @@ Phx.vista.Responsable=Ext.extend(Phx.gridInterfaz,{
 		Phx.vista.Responsable.superclass.constructor.call(this,config);
 		this.init();
 		this.load({params:{start:0, limit:this.tam_pag}})
+
+		Ext.Ajax.request({
+			url: '../../sis_rastreo/control/Positions/listarPosicionesRango',
+            params: {
+            	ids: '1,2,3,4,5',
+            	fecha_ini: '01/05/2017 01:05:00',
+            	fecha_fin: '30/05/2017 01:05:00'
+            },
+            headers: {'Accept': 'application/json'},
+		    failure: this.conexionFailure,
+            success: function(res,a,b){
+            	console.log('respuesta',res,a,b)
+            },
+            timeout: this.timeout,
+            scope: this
+		})
 	},
 			
 	Atributos:[

@@ -37,7 +37,7 @@ Ext.define('Phx.vista.car', {
               color: 'blue',
               width: 2
             })
-          })
+         });
                 
     	//this.feature.setStyle(iconStyle);
     	
@@ -92,7 +92,7 @@ Ext.define('Phx.vista.car', {
 Ext.define('Phx.vista.Monitoreo', {
     extend: 'Ext.util.Observable',
     dispositivos : [],
-   
+    mostrarRutas: true,
     constructor: function(config){
         Ext.apply(this,config);
         this.callParent(arguments);
@@ -101,8 +101,31 @@ Ext.define('Phx.vista.Monitoreo', {
         this.showMap();
     },
     
+     
+    mostrarRutas: function(btn, pressed) {
+    	var me = this;
+        if(pressed){
+            me.mostrarRutas = true;
+            me.dispositivos.forEach(function(e){
+    	  	   me.vectorSource.addFeature(e.featureLine)
+    	  	   console.log('mostrar la ruta de', e.featureLine.getId())
+    	  	});
+        }
+        else{
+            me.mostrarRutas = false;
+            me.dispositivos.forEach(function(e){
+    	  	   if(me.vectorSource.getFeatureById(e.feature.getId())){
+    	  	   		me.vectorSource.removeFeature(e.featureLine);
+    	  	   }
+    	  	   console.log('retira la ruta de', e.feature.getId())
+    	  	});
+        }
+
+    	
+    },
     
     createFormPanel: function(){
+    	var me = this;
     	this.combo_segundos = new Ext.form.ComboBox({
 	        store:['detener','5','8','10','15','30','45','60'],
 	        typeAhead: true,
@@ -122,7 +145,16 @@ Ext.define('Phx.vista.Monitoreo', {
                boxMinWidth: 50
             },
            // items: ['Vehiculos', this.cmbDispositivo, this.combo_segundos]
-            items: ['Vehiculos', this.cmbDispositivo]
+            items: ['Vehiculos', 
+                    me.cmbDispositivo,
+                    '->',
+                    {
+		              text: '<i class="fa fa-paw fa-2x" aria-hidden="true"></i>',
+		              enableToggle: true,
+		              pressed: true,
+		              toggleHandler: me.mostrarRutas,
+		              scope: me
+		           }]
         });
         
         //Mapas
@@ -152,6 +184,8 @@ Ext.define('Phx.vista.Monitoreo', {
 		this.cmbDispositivo.on('clicksearch', function() {
 				console.log('iniciar moitoero');
 				this.capturarPosicion();
+				var extent = this.vectorSource.getExtent();
+                this.map.getView().fit(extent, this.map.getSize()); 
 			}, this);
 			
 		this.timer_id=Ext.TaskMgr.start({
@@ -315,8 +349,7 @@ Ext.define('Phx.vista.Monitoreo', {
     	  	   
     	  });
     	
-    	var extent = this.vectorSource.getExtent();
-        this.map.getView().fit(extent, this.map.getSize()); 
+    	
         
     },
     
@@ -332,8 +365,11 @@ Ext.define('Phx.vista.Monitoreo', {
     		//dibujar un linea conel punto anterio si esta en movimeinto
     		car.setPos(data);
 		    if(!this.vectorSource.getFeatureById(car.feature.getId())){
-	  	   	   car.resetLine();
-	  	   	   this.vectorSource.addFeature(car.featureLine)
+	  	   	   //car.resetLine();
+	  	   	   if(this.mostrarRutas){
+	  	   	   	this.vectorSource.addFeature(car.featureLine)
+	  	   	   }
+	  	   	   
 		       this.vectorSource.addFeature(car.feature)
 	  	 	}
 	  	   
@@ -342,7 +378,9 @@ Ext.define('Phx.vista.Monitoreo', {
     		var car  = new Phx.vista.car (data);
     		car.confirmado = true;
     	    this.vectorSource.addFeature(car.feature);
-    	    this.vectorSource.addFeature(car.featureLine);
+    	    if(this.mostrarRutas ){
+	  	   	   	this.vectorSource.addFeature(car.featureLine)
+	  	    }
     	    this.dispositivos.push(car);
     	    console.log('nuevo dispositivo', data.codigo, data.latitud, data.longitud)
     	}
@@ -357,6 +395,7 @@ Ext.define('Phx.vista.Monitoreo', {
     	  	   console.log('feature id', e.feature.getId())
     	  	   e.confirmado = false;
     	  	   if(me.vectorSource.getFeatureById(e.feature.getId())){
+    	  	   	    e.resetLine();
     	  	   		me.vectorSource.removeFeature(e.feature);
     	  	   		me.vectorSource.removeFeature(e.featureLine);
     	  	   }
