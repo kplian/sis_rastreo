@@ -23,6 +23,7 @@ DECLARE
 	v_parametros  		record;
 	v_nombre_funcion   	text;
 	v_resp				varchar;
+	v_eventos			varchar;
 			    
 BEGIN
 
@@ -92,6 +93,61 @@ BEGIN
 			
 			--Definicion de la respuesta		    
 			v_consulta:=v_consulta||v_parametros.filtro;
+
+			--Devuelve la respuesta
+			return v_consulta;
+
+		end;
+
+	/*********************************    
+ 	#TRANSACCION:  'PB_EVRAN_SEL'
+ 	#DESCRIPCION:	Devuelve los eventos en un rango de tiempo
+ 	#AUTOR:			RCM
+ 	#FECHA:			13/07/2017
+	***********************************/
+
+	elsif(p_transaccion='PB_EVRAN_SEL')then
+
+		begin
+
+			--Procesa el parámetro de eventos
+			v_eventos = replace(v_parametros.events,'1','''deviceStopped''');
+			v_eventos = replace(v_eventos,'2','''deviceOffline''');
+			v_eventos = replace(v_eventos,'3','''deviceUnknown''');
+			v_eventos = replace(v_eventos,'4','''deviceMoving''');
+			v_eventos = replace(v_eventos,'5','''deviceOnline''');
+			v_eventos = replace(v_eventos,'6','''alarm''');
+
+			--Sentencia de la consulta
+			v_consulta:='select
+                        eq.id_equipo, eq.uniqueid, eq.desc_equipo, eq.placa,eq.tipo_equipo, eq.marca, eq.modelo,
+                        ev.id as eventid, ev.servertime, ev.deviceid, ev.attributes,
+                        case ev.type
+                            when ''deviceStopped'' then ''Detenido''::varchar
+                            when ''deviceOffline'' then ''Desconectado''::varchar
+                            when ''deviceUnknown'' then ''Desconocido''::varchar
+                            when ''deviceMoving'' then ''En Movimiento''::varchar
+                            when ''deviceOnline'' then ''Online''::varchar
+                            when ''alarm'' then ''Alarma''::varchar
+                            else ev.type
+                        end as desc_type,
+                        pos.latitude, pos.longitude, pos.altitude, pos.speed, pos.course,
+						pos.address, pos.attributes as attributes_pos, pos.accuracy
+                        from events ev
+                        inner join devices dev
+                        on dev.id = ev.deviceid
+                        left join ras.vequipo eq
+                        on eq.uniqueid = dev.uniqueid
+                        left join positions pos
+                        on pos.id = ev.positionid
+						where eq.id_equipo in ('||v_parametros.ids||')'||'
+						and to_char(pos.servertime,''dd-mm-yyyy HH24:MI:00'')::timestamp with time zone between '''||v_parametros.fecha_ini||'''::timestamp with time zone and '''||v_parametros.fecha_fin||'''::timestamp with time zone';
+                        
+			if v_parametros.events <> '' then
+            	v_consulta = v_consulta || ' and ev.type in ('||v_eventos||')';
+            end if;                        
+
+			v_consulta = v_consulta ||' order by pos.servertime';
 
 			--Devuelve la respuesta
 			return v_consulta;

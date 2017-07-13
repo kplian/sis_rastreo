@@ -48,3 +48,9 @@ select pxp.f_insert_testructura_gui ('RAS.10', 'RAS.7');
 select pxp.f_insert_testructura_gui ('RAS.11', 'RAS.7');
 select pxp.f_insert_testructura_gui ('RAS.12', 'RAS.7');
 /***********************************F-DAT-RCM-RAS-0-07/07/2017****************************************/
+
+/***********************************I-DAT-RCM-RAS-0-13/07/2017****************************************/
+select pxp.f_insert_tgui ('Eventos', 'Eventos sucedidos', 'RAS.10', 'si', 1, 'sis_rastreo/vista/_reportes/ParametrosEvento.php', 3, '', 'ParametrosEvento', 'RAS');
+select pxp.f_insert_tgui ('Velocidades', 'Velocidades registradas', 'RAS.11', 'si', 2, 'sis_rastreo/vista/_reportes/ParametrosVelocidad.php', 3, '', 'ParametrosVelocidad', 'RAS');
+select pxp.f_insert_tgui ('Distancias', 'Distancias recorridas', 'RAS.12', 'si', 3, 'sis_rastreo/vista/_reportes/ParametrosDistancia.php', 3, '', 'ParametrosDistancia', 'RAS');
+/***********************************F-DAT-RCM-RAS-0-13/07/2017****************************************/

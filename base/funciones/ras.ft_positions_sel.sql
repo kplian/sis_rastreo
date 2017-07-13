@@ -343,6 +343,55 @@ BEGIN
 			return v_consulta;
 
 		end;
+
+	/*********************************    
+ 	#TRANSACCION:  'PB_POSVEL_SEL'
+ 	#DESCRIPCION:	Devuelve rango de velocidades en un rango de fechas para los equipos enviados
+ 	#AUTOR:			RCM
+ 	#FECHA:			13/07/2017
+	***********************************/
+
+	elsif(p_transaccion='PB_POSVEL_SEL')then
+
+		begin
+
+			--Sentencia de la consulta
+			v_consulta:='select
+						eq.id_equipo, eq.uniqueid,
+						eq.marca, eq.modelo, eq.placa,
+						pos.latitude, pos.longitude, pos.altitude, pos.speed, pos.course,
+						pos.address, pos.attributes, pos.accuracy,
+						eq.desc_equipo,
+						ev.id as eventid,
+						ev.type,
+						ev.attributes as attributes_event,
+						case ev.type
+							when ''deviceStopped'' then ''Detenido''::varchar
+							when ''deviceOffline'' then ''Desconectado''::varchar
+							when ''deviceUnknown'' then ''Desconocido''::varchar
+							when ''deviceMoving'' then ''En Movimiento''::varchar
+							when ''deviceOnline'' then ''Online''::varchar
+							when ''alarm'' then ''Alarma''::varchar
+							else ev.type
+						end as desc_type,
+						pos.servertime,
+						eq.tipo_equipo
+						from ras.vequipo eq
+						inner join devices de
+						on de.uniqueid = eq.uniqueid
+						inner join positions pos
+						on pos.deviceid = de.id
+						left join events ev
+						on ev.positionid = pos.id
+						where eq.id_equipo in ('||v_parametros.ids||')'||'
+						and to_char(pos.servertime,''dd-mm-yyyy HH24:MI:00'')::timestamp with time zone between '''||v_parametros.fecha_ini||'''::timestamp with time zone and '''||v_parametros.fecha_fin||'''::timestamp with time zone
+						and pos.speed between ' || v_parametros.velocidad_ini || ' and '||v_parametros.velocidad_fin || '
+						order by pos.servertime';
+
+			--Devuelve la respuesta
+			return v_consulta;
+
+		end;
 					
 	else
 					     
