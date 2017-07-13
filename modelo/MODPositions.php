@@ -284,7 +284,7 @@ class MODPositions extends MODbase{
 		$this->captura('latitude','float8');
 		$this->captura('longitude','float8');
 		$this->captura('altitude','float8');
-		$this->captura('speed','float8');
+		$this->captura('speed','numeric');
 		$this->captura('course','float8');
 		$this->captura('address','varchar');
 		$this->captura('attributes','varchar');

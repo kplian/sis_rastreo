@@ -359,7 +359,8 @@ BEGIN
 			v_consulta:='select
 						eq.id_equipo, eq.uniqueid,
 						eq.marca, eq.modelo, eq.placa,
-						pos.latitude, pos.longitude, pos.altitude, pos.speed, pos.course,
+						pos.latitude, pos.longitude, pos.altitude, round(pos.speed::numeric * 1.852,2),
+						pos.course,
 						pos.address, pos.attributes, pos.accuracy,
 						eq.desc_equipo,
 						ev.id as eventid,
@@ -385,7 +386,7 @@ BEGIN
 						on ev.positionid = pos.id
 						where eq.id_equipo in ('||v_parametros.ids||')'||'
 						and to_char(pos.servertime,''dd-mm-yyyy HH24:MI:00'')::timestamp with time zone between '''||v_parametros.fecha_ini||'''::timestamp with time zone and '''||v_parametros.fecha_fin||'''::timestamp with time zone
-						and pos.speed between ' || v_parametros.velocidad_ini || ' and '||v_parametros.velocidad_fin || '
+						and (pos.speed * 1.852) between ' || v_parametros.velocidad_ini || ' and '||v_parametros.velocidad_fin || '
 						order by pos.servertime';
 
 			--Devuelve la respuesta

@@ -71,7 +71,7 @@ Phx.vista.ReporteVel=Ext.extend(Phx.gridInterfaz,{
         }, {
             config:{
                 name: 'speed',
-                fieldLabel: 'Velocidad',
+                fieldLabel: 'Velocidad (Km/h)',
                 gwidth: 100
             },
             type:'Field',
