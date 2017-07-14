@@ -118,7 +118,6 @@ Ext.define('Phx.vista.Parametros', {
         this.addEvents('init'); 
     },
     onSubmit: function(){
-        console.log('ooooo',this.formParam.getForm().isValid());
         if (this.formParam.getForm().isValid()) {
             //Obtener los parámetros para generar los reportes
             var params = this.setBaseParams(),
