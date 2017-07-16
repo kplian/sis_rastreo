@@ -258,23 +258,35 @@ Ext.define('Phx.vista.Consultas', {
     	var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
     	var me = this;
     	me.enProceso = false;
-    	//this.limpiarTodos()
+    	if(me.vectorSource.getFeatureById(me.car.featureLine.getId())){
+    	     me.vectorSource.removeFeature(me.car.featureLine);
+    	}
     	console.log(reg.datos);
     	var sw = true;
+    	var latitud_tmp = 0, 
+    	    longitud_tmp = 0;
     	if(reg.datos.length > 0){
 		    	reg.datos.forEach(function(element) {
-		    		var data = { latitud : element.latitude,
-		    						longitud: element.longitude};
+		    		var data = { latitud : element.latitude, longitud: element.longitude};
 		    		if(sw){
-		    			me.car.resetPos(data);
-		    			sw = false;
-		    		}
-		    		else{
-		    			me.car.addPos(data);
-		    		}
-		    		console.log(element.latitude, element.longitude, element )
+			    			me.car.resetPos(data);
+			    			sw = false;
+			    	}				
+		    		if( latitud_tmp != element.latitude ||
+		    			longitud_tmp != element.longitude){
+			    		
+			    		me.car.addPos(data);
+			    		console.log(element.latitude, element.longitude, element )
+			    		latitud_tmp = element.latitude;
+			    		longitud_tmp = element.longitude;
+			    		
+		    		}				
+		    		
 		    						
 		    	});
+		    	
+		    	
+		    	
 		    	me.vectorSource.addFeature(me.car.featureLine)
 		    	var extent = this.vectorSource.getExtent();
 				try {
