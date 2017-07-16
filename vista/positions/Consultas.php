@@ -2,313 +2,396 @@
 header("content-type: text/javascript; charset=UTF-8");
 ?>
 <script>
+
+Ext.define('Phx.vista.carRuta', {
+	extend: 'Ext.util.Observable',
+	ultimasPosiciones: [],
+	estado: 'detenido',
+	confirmado: false,
+	enProceso: false,
+	constructor: function(config){
+        Ext.apply(this,config);
+        this.callParent(arguments);
+        var aux = [parseFloat(0),parseFloat(0)];
+        var point = ol.proj.fromLonLat(aux);
+    	//this.featureLine = new ol.Feature(new ol.geom.LineString([point, point]));
+    	
+    	this.featureLine = new ol.Feature(new ol.geom.LineString());
+    	this.featureLine.setId('line');
+    	
+        var lineStyle = new ol.style.Style({
+            stroke: new ol.style.Stroke({
+              color: 'blue',
+              width: 2
+            })
+         });
+                
+    	this.featureLine.setStyle([lineStyle]);
+    	
+        
+        
+    },
+    
+    addPos: function(config){
+    	
+    	var aux = [parseFloat(config.longitud),parseFloat(config.latitud)];
+        var point = ol.proj.fromLonLat(aux);
+    	this.featureLine.getGeometry().appendCoordinate(point);
+    	this.ultimasPosiciones.push(point);
+    	
+    	
+    },
+    resetPos: function(config){
+    	
+    	var aux = [parseFloat(config.longitud),parseFloat(config.latitud)];
+        var point = ol.proj.fromLonLat(aux);
+    	this.featureLine.getGeometry().setCoordinates([point, point])
+    	this.ultimasPosiciones = [];
+    	this.ultimasPosiciones.push(point);
+    	
+    	
+    },
+    
+    resetLine: function(){
+    	//var point = this.getPos();
+    	//this.featureLine.getGeometry().setCoordinates([point, point])
+    	this.featureLine.getGeometry().setCoordinates()
+    },
+   
+    
+    getPos: function(){
+    	return this.ultimasPosiciones[this.ultimasPosiciones.length-1];
+    },
+    
+    getImageIcon: function (m) {
+	        var image = new ol.style.Icon({
+                    anchor: [0.5, 46],
+                    anchorXUnits: 'fraction',
+                    anchorYUnits: 'pixels',
+                    opacity: 0.75,
+                    src: '../../../sis_rastreo/vista/positions/car.svg'
+                })
+	
+	        return image;
+   },
+   
+    
+	
+	
+});
+
 Ext.define('Phx.vista.Consultas', {
     extend: 'Ext.util.Observable',
+    dispositivos : [],
     constructor: function(config){
         Ext.apply(this,config);
         this.callParent(arguments);
         this.panel = Ext.getCmp(this.idContenedor);
         this.createFormPanel();
-        this.setEventos();
         this.showMap();
+        this.car  = new Phx.vista.carRuta();
     },
+    
+     
+    
+    
     createFormPanel: function(){
-        //Creación de componentes del panel de parámetros
-        this.fechaIni = new Ext.form.DateField({
-            fieldLabel: 'Desde'
+    	var me = this;
+    	this.combo_segundos = new Ext.form.ComboBox({
+	        store:['detener','5','8','10','15','30','45','60'],
+	        typeAhead: true,
+	        mode: 'local',
+	        //triggerAction: 'all',
+	        emptyText:'Periodo...',
+	        selectOnFocus:true,
+	        width:135
+	    });
+	    
+	    this.dateFechaIni = new Ext.form.DateField({
+            fieldLabel: 'Desde',
+            allowBlank: false,
+            format: 'd/m/Y'
         });
-        this.fechaFin = new Ext.form.DateField({
-            fieldLabel: 'Hasta'
+        this.dateFechaFin = new Ext.form.DateField({
+            fieldLabel: 'Hasta',
+            allowBlank: false
         });
-        //Botones
-        this.btnGraficar = new Ext.Button({
-            text: 'Generar',
-            width: '100%'
+        this.timeHoraIni = new Ext.form.TimeField({
+            fieldLabel: 'Desde',
+            allowBlank: false,
+            width:70,
+            format: 'H:i'
         });
-
-        this.btnGraficarRoutes = new Ext.Button({
-            text: 'Generar'
+        this.timeHoraFin = new Ext.form.TimeField({
+            fieldLabel: 'Hasta',
+            allowBlank: false,
+            width:70,
+            format: 'H:i'
         });
-        //Componentes
-        this.treeVehiculos = new Ext.tree.TreePanel({
-            region: 'west',
-            scale: 'large',
-            singleClickExpand: true,
-            rootVisible: true,
-            root: new Ext.tree.AsyncTreeNode({
-                text: 'Vehiculos',
-                expandable: true
-            }),
-            animate: true,
-            singleExpand: true,
-            useArrows: true,
-            autoScroll: false,
-            containerScroll: true,
-            forceLayout: true,
-            loader: new Ext.tree.TreeLoader({
-                url: '../../sis_mantenimiento/control/Localizacion/listarLocalizacionArbRastreo',
-                clearOnLoad: true,
-                baseParams: {
-                    tipo_nodo:'',
-                    vista:'loc',
-                    id_localizacion:'',
-                    node: 'id'
-                }
-            }),
-            containerScroll: true,
-            border: false
+        
+    	 this.tbar = new Ext.Toolbar({
+        	enableOverflow: true,
+        	defaults: {
+               scale: 'large',
+               iconAlign:'top',
+               minWidth: 50,
+               boxMinWidth: 50
+            },
+           // items: ['Vehiculos', this.cmbDispositivo, this.combo_segundos]
+            items: ['Vehiculos', 
+                    me.cmbDispositivo,
+                    '-',
+                    'Desde: ',
+                    this.dateFechaIni,
+                    this.timeHoraIni,
+                    'Hasta: ',
+                    this.dateFechaFin,
+                    this.timeHoraFin,
+                    '->',
+                    {
+		              text: '<i class="fa fa-paw   fa-2x" aria-hidden="true"></i>',
+		              handler: me.mostrarRutas,
+		              scope: me
+		           }]
         });
-
-        //Arbol para rutas
-        this.treeVehiculosRoutes = new Ext.tree.TreePanel({
-            scale: 'large',
-            singleClickExpand: true,
-            rootVisible: true,
-            root: new Ext.tree.AsyncTreeNode({
-                text: 'Vehiculos',
-                expandable: true
-            }),
-            padding: '10 10 10 10',
-            animate: true,
-            singleExpand: true,
-            useArrows: true,
-            autoScroll: false,
-            containerScroll: true,
-            forceLayout: true,
-            loader: new Ext.tree.TreeLoader({
-                url: '../../sis_mantenimiento/control/Localizacion/listarLocalizacionArbRastreo',
-                clearOnLoad: true,
-                baseParams: {
-                    tipo_nodo:'',
-                    vista:'loc',
-                    id_localizacion:'',
-                    node: 'id'
-                }
-            }),
-            containerScroll: true,
-            border: false
-        });
-
-        this.treeVehiculos.getLoader().on('loadexception', function(cmp,node,response){
-            var resp = Ext.decode(response.responseText).ROOT.detalle;
-            Ext.MessageBox.alert(response.status+' - '+response.statusText,resp.mensaje)
-        },this);
-
-        this.treeVehiculosRoutes.getLoader().on('loadexception', function(cmp,node,response){
-            var resp = Ext.decode(response.responseText).ROOT.detalle;
-            Ext.MessageBox.alert(response.status+' - '+response.statusText,resp.mensaje)
-        },this);
-
+        
         //Mapas
         this.panelMapa = new Ext.Panel({  
             padding: '0 0 0 0',
-            tbar: this.tb,
-            html:'<div id="map-'+this.idContenedor +'"></div>',
+            tbar: this.tbar,
+            html:'<div id="map-'+this.idContenedor +'" style="width: 100%;height: 100%;"></div>',
             region:'center',
             split: true, 
-            layout:  'fit' ,
-            title: 'Mapa'
-        });
+            layout:  'fit' })
 
         //Creación del panel de parámetros
         this.viewPort = new Ext.Container({
             layout: 'border',
-            items: [
-                {
-                    region: 'west',
-                    title:'Parametros',
-                    layout: {
-                        type: 'accordion',
-                        animate: true
-                    },
-                    items: [{
-                            layout: 'form',
-                            title: 'Posicion Actual',
-                            items: [
-                                this.btnGraficar,
-                                this.treeVehiculos
-                            ]
-                        },
-
-                        
-                        {
-                            layout: 'form',
-                            title: 'Rutas',
-                            items: [
-                                this.btnGraficarRoutes,
-                                this.fechaIni,
-                                this.fechaFin,
-                                this.treeVehiculosRoutes
-                            ]
-                        }
-                        
-                    ],
-                    width: 250,
-                    minSize: 150,
-                    maxSize: 400,
-                    collapsible: true,
-                    split: true
-                },
-                this.panelMapa
-            ]
+            items: [this.panelMapa]
         });
 
         this.panel.add(this.viewPort);
         this.panel.doLayout();
-        this.addEvents('init'); 
+        //this.addEvents('init'); 
+        
+        this.cmbDispositivo.on('clearcmb', function() {
+				this.limpiarTodos();
+			}, this);
+			
+		this.panel.on('resize', function(){
+			 this.map.updateSize();
+		},this);
+		
+				
+			
+        
     },
-    setEventos: function(){
-        this.btnGraficar.on('click', this.obtenerTreeIds/*, this.dibujar*/,this);
-        this.treeVehiculos.loader.on('beforeload', function(treeLoader,node){
-            Ext.apply(this.treeVehiculos.loader.baseParams,{
-                id_localizacion: node.attributes['id_localizacion'],
-                tipo_nodo: node.attributes['tipo_nodo'],
-            });
-        },this);
-        this.treeVehiculosRoutes.loader.on('beforeload', function(treeLoader,node){
-            Ext.apply(this.treeVehiculosRoutes.loader.baseParams,{
-                id_localizacion: node.attributes['id_localizacion'],
-                tipo_nodo: node.attributes['tipo_nodo'],
-            });
-        },this);
-        this.treeVehiculos.on('click', function(node){
-            console.log('click - ',node)
-        },this);
-    },
+    
+     
+    
+    
+    winInfo: undefined,
+    panelResumen: undefined,
     showMap: function(){
+    	var me = this;
         this.vectorSource = new ol.source.Vector();
-        this.vectorLayer = new ol.layer.Vector({
-          source: this.vectorSource
-        });
+        this.vectorLayer = new ol.layer.Vector({source: this.vectorSource});
+        
+        this.layer = new ol.layer.Tile({
+                    style: 'Aerial',
+                    source: new ol.source.OSM()
+                });
+        
         this.olview = new ol.View({
             center: [0, 0],
             zoom: 2,
             minZoom: 2,
             maxZoom: 20
         }),
+        
         this.map = new ol.Map({
             target: document.getElementById('map-'+this.idContenedor),
             view: this.olview,
-            layers: [
-                new ol.layer.Tile({
-                    style: 'Aerial',
-                    source: new ol.source.OSM()
-                }),
-                this.vectorLayer
-            ]
+            layers: [this.layer,this.vectorLayer]
         });
-
-        this.map.getView().setZoom(17);
-        this.map.getView().setCenter(ol.proj.fromLonLat([-68.131096, -16.514822]));
-
-        this.map.on('click', function(e){
-            console.log('map click',e)
-            this.map.forEachFeatureAtPixel(e.pixel, function(feature, layer) {
-                console.log('ffff',feature,layer)
-            });
-        },this);
+        
+        
     },
-    obtenerTreeIds: function(){
-        //Verifica si hay algun nodo seleccionado
-        var selected = this.treeVehiculos.getSelectionModel().selNode;
-        if(selected&&!selected.isRoot){
-            var obj={};
-            if(selected.attributes.id_uni_cons){
-                obj.tipo='uc';
-                obj.id_uni_cons = selected.attributes.id_uni_cons;
-            } else {
-                obj.tipo='loc';
-                obj.id_localizacion = selected.attributes.id_localizacion;
-            }
-            this.obtenerGeoData(obj);
+   
+   
+    mostrarRutas: function(btn, pressed) {
+    	var me = this;
+    	
+    	if( this.cmbDispositivo.isValid()&&
+	        this.dateFechaIni.isValid()&&
+	        this.timeHoraIni.isValid()&&
+	        this.dateFechaFin.isValid()&&
+	        this.timeHoraFin.isValid()){
+	        	
+	        	
+        	if(me.cmbDispositivo.getValue()!=''){
+	    		    var fecha_ini  =  this.dateFechaIni.getValue().dateFormat('d-m-Y') + ' ' +this.timeHoraIni.getValue( ) ;
+	    		    var fecha_fin  =  this.dateFechaFin.getValue().dateFormat('d-m-Y')+  ' '+this.timeHoraFin.getValue( );
+		    		Phx.CP.loadingShow();
+		    		Ext.Ajax.request({
+		                    url: '../../sis_rastreo/control/Positions/listarPosicionesRangoProcesado',
+		                    params: { 
+		                    	       ids: me.cmbDispositivo.getValue(),
+		                    	       fecha_ini: fecha_ini,
+		                    	       fecha_fin: fecha_fin
+		                    	     },
+		                    headers: {'Accept': 'application/json'},
+						    failure: me.conexionFailure,
+		                    success: me.successCarga,
+		                    timeout: me.timeout,
+		                    scope: me
+		               });
+	    	}
         }
+        else{
+	    	this.limpiarTodos();
+	    }
     },
-    obtenerGeoData: function(obj){
-        var today = new Date();
-        Phx.CP.loadingShow();
-        Ext.Ajax.request({
-            url:'../../sis_mantenimiento/control/EquipoMedicion/listarMediciones',
-            params: {
-                id_localizacion: obj.id_localizacion,
-                id_uni_cons: obj.id_uni_cons,
-                tipo: obj.tipo,
-                fecha_ini: today.format('d-m-Y'),
-                fecha_fin: today.format('d-m-Y'),
-                solo_un_registro: 'si',
-                start:0,
-                limit:150,
-                sort:'fecha_medicion',
-                dir:'ASC'
-            },
-            success: this.reloadMap,
-            failure: function(response,opts){
-                Phx.CP.loadingHide();
-                var resp = Ext.decode(response.responseText).ROOT.detalle;
-                Ext.MessageBox.alert(response.status+' - '+response.statusText,resp.mensaje)
-            },
-            timeout: this.timeout,
-            scope: this
-        });
+    successCarga: function(resp, a, b, c, d) {
+    	Phx.CP.loadingHide();
+    	resp.responseText =resp.responseText.replace('<pre>','').replace('</pre>','')
+    	var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
+    	var me = this;
+    	me.enProceso = false;
+    	//this.limpiarTodos()
+    	console.log(reg.datos);
+    	var sw = true;
+    	if(reg.datos.length > 0){
+		    	reg.datos.forEach(function(element) {
+		    		var data = { latitud : element.latitude,
+		    						longitud: element.longitude};
+		    		if(sw){
+		    			me.car.resetPos(data);
+		    			sw = false;
+		    		}
+		    		else{
+		    			me.car.addPos(data);
+		    		}
+		    		console.log(element.latitude, element.longitude, element )
+		    						
+		    	});
+		    	me.vectorSource.addFeature(me.car.featureLine)
+		    	var extent = this.vectorSource.getExtent();
+				try {
+		        	this.map.getView().fit(extent, this.map.getSize()); 
+		        }
+				catch(err) {
+				   console.log('Error al centrar mapa', err)
+				}	
+    	}
+    	
+    	
+    	
+    	
+        
     },
-    points: [
-        [-68.131096, -16.514822],
-        [-68.131155, -16.514339],
-        [-68.130651, -16.514051],
-        [-68.130597, -16.513516],
-        [-68.131134, -16.512745],
-        [-68.131499, -16.511222],
-        [-68.131692, -16.510554],
-        [-68.132572, -16.509258],
-        [-68.132378, -16.508393],
-        [-68.132872, -16.506706],
-        [-68.133087, -16.506861],
-        [-68.133923, -16.506418],
-        [-68.134170, -16.506737],
-        [-68.135179, -16.506737]
-    ],
-    reloadMap: function(resp,params){
-        var data = Ext.decode(resp.responseText);
-        this.vectorSource = new ol.source.Vector();
-        Phx.CP.loadingHide();
-        for(var i=0;i<data.datos.length;i++){
-            var aux = [parseFloat(data.datos[i].latitud),parseFloat(data.datos[i].longitud)];
-            var feature = new ol.Feature(
-              new ol.geom.Point(ol.proj.fromLonLat(aux))
-            );
-
-            var iconStyle = new ol.style.Style({
-                image: new ol.style.Icon({
-                    anchor: [0.5, 46],
-                    anchorXUnits: 'fraction',
-                    anchorYUnits: 'pixels',
-                    opacity: 0.75,
-                    src: '//openlayers.org/en/v3.8.2/examples/data/icon.png'
-                }),
-                text: new ol.style.Text({
-                    font: '12px Calibri,sans-serif',
-                    fill: new ol.style.Fill({ color: '#000' }),
-                    stroke: new ol.style.Stroke({
-                        color: '#fff', width: 2
-                    }),
-                    text: data.datos[i].codigo+' '+data.datos[i].nombre
-                })
-            });
-
-            feature.setStyle(iconStyle);
-            this.vectorSource.addFeature(feature);
-        }
-        if(data&&data.datos[0]&&data.datos[0].latitud&&data.datos[0].longitud){
-            var aux = [parseFloat(data.datos[0].latitud),parseFloat(data.datos[0].longitud)];
-            this.map.getView().setZoom(17);
-            this.map.getView().setCenter(ol.proj.fromLonLat(aux));    
-        }
+    
+    conexionFailure: function(resp){
+    	Phx.CP.conexionFailure(resp)
     },
-    addFeatureClick: function(){
-        var feature = new ol.Feature(
-                new ol.geom.Point(evt.coordinate)
-            );
-        feature.setStyle(this.iconStyle);
-        this.vectorSource.addFeature(feature);
-    }
+    
+  
+    
+    limpiarTodos : function(){
+    	var me = this;
+    	if(me.vectorSource.getFeatureById(me.car.featureLine.getId())){
+    	  	me.car.resetLine();
+    	  	me.vectorSource.removeFeature(me.car.featureLine);
+    	 }
+    },
+    
+    
+    
+    
+    cmbDispositivo : new Ext.form.AwesomeCombo({
+			name : 'id_equipo',
+			fieldLabel : 'Dispositivos',
+			typeAhead : false,
+			forceSelection : true,
+			allowBlank : false,
+			disableSearchButton : true,
+			emptyText : 'seleccione un dispositivo ...',
+			store : new Ext.data.JsonStore({
+				url : '../../sis_rastreo/control/Equipo/listarEquipo',
+				id : 'id_equipo',
+				root : 'datos',
+				sortInfo : {
+					field : 'placa',
+					direction : 'ASC'
+				},
+				totalProperty : 'total',
+				fields : ['id_equipo','id_tipo_equipo','id_modelo', 'id_localizacion', 'nro_motor', 'placa', 'estado', 
+				'nro_movil','fecha_alta','cabina','propiedad', 'nro_chasis', 'cilindrada', 'color', 'pta', 'traccion', 'gestion',
+				'desc_tipo_equipo','id_marca','desc_modelo','desc_marca','uniqueid','deviceid'],
+				// turn on remote sorting
+				remoteSort : true,
+				baseParams : {par_filtro : 'placa#nro_movil#desc_tipo_equipo'}
+			}),
+			tpl: '<tpl for="."><div class="x-combo-list-item" ><div class="awesomecombo-item {checked}">{placa}-{desc_tipo_equipo}</div> </div></tpl>',
+			valueField : 'id_equipo',
+			displayField : 'placa',
+			hiddenName : 'id_equipo',
+			enableMultiSelect : false,
+			triggerAction : 'all',
+			lazyRender : true,
+			mode : 'remote',
+			pageSize : 20,
+			queryDelay : 200,
+			anchor : '80%',
+			listWidth : '280',
+			resizable : true,
+			minChars : 2
+		}),
+		
+	updateResumen:function(datos){
+		var plantilla = "<div style='overflow-y: initial;'><br><b>PLACA {0}</b><br></b> \
+		       					<b>Posicion:</b> (Lat {1}, Lon  {2}, Alt {14})</br>\
+								<b>Estado:</b> {3}</br>\
+								<b>Responsable:</b> {4}</br>\
+								<b>Descripcion:</b> {5}</br>\
+								<b>Velocidad:</b> {6}</br>\
+								<b>Distancia:</b> {7}</br>\
+								<b>Total Distancia:</b> {8}</br>\
+								<b>Odometro:</b> {9}</br>\
+								<b>Consumo de combustible:</b> {10}</br>\
+								<b>Battery:</b> {11}</br>\
+								<b>Rssi:</b> {12}</br>\
+								<b>Direccion:</b> {13}</br></br></div>";
+								
+								
+		var  reg   = Ext.util.JSON.decode(Ext.util.Format.trim(datos.attributes));						
+		       
+		     
+		this.panelResumen.update( String.format(plantilla,
+			                                           datos.codigo, 
+			                                           datos.longitud,
+			                                           datos.latitud,
+			                                           datos.estado||'desconocido',
+			                                           datos.responsable||'no designado',
+			                                           datos.desc_equipo||'sin descripcion',
+			                                           datos.speed||0,
+			                                           reg.distance||0,
+			                                           reg.totalDistance||0,
+			                                           reg.odometer||0,
+			                                           reg.fuelConsumption||0,			                                           
+			                                           reg.battery||0,
+			                                           reg.rssi||0,
+			                                           datos.address||'',
+			                                           datos.altitud||0
+			                                           
+			                                           ));
+			                                           
+			                                           
+			                                         
+		
+	}	
+       
+		
+    
 });
 </script>

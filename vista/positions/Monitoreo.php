@@ -7,8 +7,8 @@ Ext.define('Phx.vista.car', {
 	extend: 'Ext.util.Observable',
 	ultimasPosiciones: [],
 	estado: 'detenido',
-	confirmado: true,
-	
+	confirmado: false,
+	enProceso: false,
 	constructor: function(config){
         Ext.apply(this,config);
         this.callParent(arguments);
@@ -102,19 +102,22 @@ Ext.define('Phx.vista.Monitoreo', {
     },
     
      
-    mostrarRutas: function(btn, pressed) {
+    dibujarRutas: function(btn, pressed) {
     	var me = this;
         if(pressed){
             me.mostrarRutas = true;
             me.dispositivos.forEach(function(e){
-    	  	   me.vectorSource.addFeature(e.featureLine)
+               if(!me.vectorSource.getFeatureById(e.featureLine.getId())){
+    	  	   		 me.vectorSource.addFeature(e.featureLine)
+    	  	   }
+    	  	  
     	  	   console.log('mostrar la ruta de', e.featureLine.getId())
     	  	});
         }
         else{
             me.mostrarRutas = false;
             me.dispositivos.forEach(function(e){
-    	  	   if(me.vectorSource.getFeatureById(e.feature.getId())){
+    	  	   if(me.vectorSource.getFeatureById(e.featureLine.getId())){
     	  	   		me.vectorSource.removeFeature(e.featureLine);
     	  	   }
     	  	   console.log('retira la ruta de', e.feature.getId())
@@ -123,6 +126,16 @@ Ext.define('Phx.vista.Monitoreo', {
 
     	
     },
+	
+	centrarPuntos: function(){
+		var extent = this.vectorSource.getExtent();
+		try {
+        	this.map.getView().fit(extent, this.map.getSize()); 
+        }
+		catch(err) {
+		   console.log('Error al centrar mapa', err)
+		}
+	},
     
     createFormPanel: function(){
     	var me = this;
@@ -149,10 +162,15 @@ Ext.define('Phx.vista.Monitoreo', {
                     me.cmbDispositivo,
                     '->',
                     {
+		              text: '<i class="fa fa-dot-circle-o fa-2x" aria-hidden="true"></i>',
+		              handler: me.centrarPuntos,
+		              scope: me
+		           },
+                   {
 		              text: '<i class="fa fa-paw fa-2x" aria-hidden="true"></i>',
 		              enableToggle: true,
 		              pressed: true,
-		              toggleHandler: me.mostrarRutas,
+		              toggleHandler: function(btn, pressed){me.dibujarRutas(btn, pressed)},
 		              scope: me
 		           }]
         });
@@ -182,10 +200,16 @@ Ext.define('Phx.vista.Monitoreo', {
 			
 		
 		this.cmbDispositivo.on('clicksearch', function() {
-				console.log('iniciar moitoero');
+				console.log('iniciar monitoreo');
 				this.capturarPosicion();
 				var extent = this.vectorSource.getExtent();
-                this.map.getView().fit(extent, this.map.getSize()); 
+				try {
+                	this.map.getView().fit(extent, this.map.getSize()); 
+                }
+				catch(err) {
+				   console.log('Error al centrar mapa', err)
+				}
+                
 			}, this);
 			
 		this.timer_id=Ext.TaskMgr.start({
@@ -285,15 +309,19 @@ Ext.define('Phx.vista.Monitoreo', {
     	var me = this;
     	if(me.cmbDispositivo.getValue()!=''){
     		this.contador ++;
-    		Ext.Ajax.request({
-                    url: '../../sis_rastreo/control/Positions/listarUltimaPosicion',
-                    params: {ids: me.cmbDispositivo.getValue(), contador: this.contador},
-                    headers: {'Accept': 'application/json'},
-				    failure: me.conexionFailure,
-                    success: me.successCarga,
-                    timeout: me.timeout,
-                    scope: me
-               });
+    		if(!me.enProceso){
+    			me.enProceso = true;
+	    		Ext.Ajax.request({
+	                    url: '../../sis_rastreo/control/Positions/listarUltimaPosicion',
+	                    params: {ids: me.cmbDispositivo.getValue(), contador: this.contador},
+	                    headers: {'Accept': 'application/json'},
+					    failure: me.conexionFailure,
+	                    success: me.successCarga,
+	                    timeout: me.timeout,
+	                    scope: me
+	               });
+    		}
+    		
     	}
     	else{
     		this.limpiarTodos();
@@ -303,9 +331,11 @@ Ext.define('Phx.vista.Monitoreo', {
     },
     
     successCarga: function(resp, a, b, c, d) {
+    	
     	resp.responseText =resp.responseText.replace('<pre>','').replace('</pre>','')
     	var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
     	var me = this;
+    	me.enProceso = false;
     	reg.datos.forEach(function(element) {
     		me.dibujarPunto({   latitud : element.latitude  ,
 	    			            longitud: element.longitude,
@@ -325,20 +355,15 @@ Ext.define('Phx.vista.Monitoreo', {
     	//elimar los los marcadores que no fueron considerados
     	this.dispositivos.forEach(function(e){
     	  	   if(!e.confirmado){
-    	  	   	console.log('eliminar....', e)
-    	  	   	var index = me.dispositivos.indexOf(e);
-    	  	   	//me.dispositivos.splice(index, 1);
-    	  	   	console.log('feature id', e.feature.getId());
-    	  	   	if(me.vectorSource.getFeatureById(e.feature.getId())){
-    	  	   		me.vectorSource.removeFeature(e.feature);
-    	  	   		me.vectorSource.removeFeature(e.featureLine);
-    	  	   		console.log('despeus de eliminar feature id', e.feature.getId());
-    	  	   	}
-    	  	   	else{
-    	  	   		console.log('no esta en el mapa feature id', e.feature.getId());
-    	  	   	}
-    	  	   	
-    	  	   	
+	    	  	   	console.log('eliminar....', e,  e.feature.getId())
+	    	  	   	var index = me.dispositivos.indexOf(e);
+	    	  	   	if(me.vectorSource.getFeatureById(e.feature.getId())){
+	    	  	   		me.vectorSource.removeFeature(e.feature);
+	    	  	   	}
+	    	  	   	
+	    	  	   	if(me.vectorSource.getFeatureById(e.featureLine.getId())){
+	    	  	   		me.vectorSource.removeFeature(e.featureLine);
+	    	  	   	}
     	  	   } 
     	  });
     	
@@ -365,23 +390,26 @@ Ext.define('Phx.vista.Monitoreo', {
     		//dibujar un linea conel punto anterio si esta en movimeinto
     		car.setPos(data);
 		    if(!this.vectorSource.getFeatureById(car.feature.getId())){
+	  	   	   this.vectorSource.addFeature(car.feature)
+	  	 	}
+	  	 	
+	  	 	if(!this.vectorSource.getFeatureById(car.featureLine.getId())){
 	  	   	   //car.resetLine();
 	  	   	   if(this.mostrarRutas){
 	  	   	   	this.vectorSource.addFeature(car.featureLine)
 	  	   	   }
-	  	   	   
-		       this.vectorSource.addFeature(car.feature)
 	  	 	}
 	  	   
     	}
     	else{
     		var car  = new Phx.vista.car (data);
+    		this.dispositivos.push(car);
     		car.confirmado = true;
     	    this.vectorSource.addFeature(car.feature);
     	    if(this.mostrarRutas ){
 	  	   	   	this.vectorSource.addFeature(car.featureLine)
 	  	    }
-    	    this.dispositivos.push(car);
+    	    
     	    console.log('nuevo dispositivo', data.codigo, data.latitud, data.longitud)
     	}
     	
@@ -393,13 +421,15 @@ Ext.define('Phx.vista.Monitoreo', {
     	this.dispositivos.forEach(function(e){
     	  	  
     	  	   console.log('feature id', e.feature.getId())
-    	  	   e.confirmado = false;
+    	  	   
     	  	   if(me.vectorSource.getFeatureById(e.feature.getId())){
+    	  	   	    me.vectorSource.removeFeature(e.feature);
+    	  	   }
+    	  	   if(me.vectorSource.getFeatureById(e.featureLine.getId())){
     	  	   	    e.resetLine();
-    	  	   		me.vectorSource.removeFeature(e.feature);
     	  	   		me.vectorSource.removeFeature(e.featureLine);
     	  	   }
-    	  	   
+    	  	   e.confirmado = false;
     	  	   console.log('despues de eliminar feature id', e.feature.getId())
     	  	   
     	  });
@@ -506,7 +536,7 @@ Ext.define('Phx.vista.Monitoreo', {
 			                                           
 			                                         
 		
-	}	
+	}
        
 		
     
