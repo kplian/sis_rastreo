@@ -230,11 +230,12 @@ Ext.define('Phx.vista.Consultas', {
 	        	
 	        	
         	if(me.cmbDispositivo.getValue()!=''){
-	    		    var fecha_ini  =  this.dateFechaIni.getValue().dateFormat('d-m-Y') + ' ' +this.timeHoraIni.getValue( ) ;
-	    		    var fecha_fin  =  this.dateFechaFin.getValue().dateFormat('d-m-Y')+  ' '+this.timeHoraFin.getValue( );
-                    //Convierte fechas a UTC
-                    fecha_ini = moment(fecha_ini).utc().format('DD/MM/YYYY HH:mm:00');
-                    fecha_fin = moment(fecha_fin).utc().format('DD/MM/YYYY HH:mm:00');
+                    var fecha_ini  =  this.dateFechaIni.getValue().dateFormat('Y-m-d') + ' ' +this.timeHoraIni.getValue( ) ;
+                    var fecha_fin  =  this.dateFechaFin.getValue().dateFormat('Y-m-d')+  ' '+this.timeHoraFin.getValue( );
+
+                     //Convierte fechas a UTC
+                    fecha_ini = moment(new Date(fecha_ini+':00')).utc().format('DD/MM/YYYY HH:mm:00');
+                    fecha_fin = moment(new Date(fecha_fin+':00')).utc().format('DD/MM/YYYY HH:mm:00');
 
 		    		Phx.CP.loadingShow();
 		    		Ext.Ajax.request({
