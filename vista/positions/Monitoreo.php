@@ -331,12 +331,15 @@ Ext.define('Phx.vista.Monitoreo', {
     },
     
     successCarga: function(resp, a, b, c, d) {
+
+        console.log('carga',resp)
     	
-    	resp.responseText =resp.responseText.replace('<pre>','').replace('</pre>','')
+    	resp.responseText = resp.responseText.replace('<pre>','').replace('</pre>','')
     	var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
     	var me = this;
     	me.enProceso = false;
     	reg.datos.forEach(function(element) {
+            //var el = moment(element.servertime).utc().format('DD/MM/YYYY HH:mm:00');
     		me.dibujarPunto({   latitud : element.latitude  ,
 	    			            longitud: element.longitude,
 	    			            codigo: element.placa ,

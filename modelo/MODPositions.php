@@ -159,6 +159,7 @@ class MODPositions extends MODbase{
 		$this->captura('type','varchar');
 		$this->captura('attributes_event','varchar');
 		$this->captura('desc_type','varchar');
+		$this->captura('servertime','timestamp');
 
 		
 		//Ejecuta la instruccion

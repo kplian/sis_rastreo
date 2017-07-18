@@ -232,6 +232,10 @@ Ext.define('Phx.vista.Consultas', {
         	if(me.cmbDispositivo.getValue()!=''){
 	    		    var fecha_ini  =  this.dateFechaIni.getValue().dateFormat('d-m-Y') + ' ' +this.timeHoraIni.getValue( ) ;
 	    		    var fecha_fin  =  this.dateFechaFin.getValue().dateFormat('d-m-Y')+  ' '+this.timeHoraFin.getValue( );
+                    //Convierte fechas a UTC
+                    fecha_ini = moment(fecha_ini).utc().format('DD/MM/YYYY HH:mm:00');
+                    fecha_fin = moment(fecha_fin).utc().format('DD/MM/YYYY HH:mm:00');
+
 		    		Phx.CP.loadingShow();
 		    		Ext.Ajax.request({
 		                    url: '../../sis_rastreo/control/Positions/listarPosicionesRangoProcesado',
@@ -266,6 +270,11 @@ Ext.define('Phx.vista.Consultas', {
     	var latitud_tmp = 0, 
     	    longitud_tmp = 0;
     	if(reg.datos.length > 0){
+                /*reg.datos.forEach(function(element) {
+                    var el = moment(element.servertime).utc().format('DD/MM/YYYY HH:mm:00');
+                    reg.datos.servertime = el;
+                });*/
+
 		    	reg.datos.forEach(function(element) {
 		    		var data = { latitud : element.latitude, longitud: element.longitude};
 		    		if(sw){

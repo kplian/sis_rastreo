@@ -131,7 +131,8 @@ BEGIN
 							when ''deviceOnline'' then ''Online''::varchar
 							when ''alarm'' then ''Alarma''::varchar
 							else ev.type
-						end as desc_type
+						end as desc_type,
+						pos.servertime
 						from ras.vequipo eq
 						inner join devices dev
 						on dev.uniqueid = eq.uniqueid
