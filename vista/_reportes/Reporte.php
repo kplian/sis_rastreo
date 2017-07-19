@@ -17,6 +17,14 @@ Phx.vista.Reporte=Ext.extend(Phx.gridInterfaz,{
         //llama al constructor de la clase padre
         Phx.vista.Reporte.superclass.constructor.call(this,config);
         this.init();
+
+        this.store.setBaseParam('start', 0);
+        this.store.setBaseParam('limit', this.tam_pag);
+        this.store.setBaseParam('fecha_ini', this.maestro.fecha_ini);
+        this.store.setBaseParam('fecha_fin',this.maestro.fecha_fin);
+        this.store.setBaseParam('ids',this.maestro.ids);
+        this.store.setBaseParam('events', this.maestro.events);
+
         this.load({
             params:{
                 start:0,

@@ -17,15 +17,21 @@ Phx.vista.ReporteDist=Ext.extend(Phx.gridInterfaz,{
         //llama al constructor de la clase padre
         Phx.vista.ReporteDist.superclass.constructor.call(this,config);
         this.init();
+
+        this.store.setBaseParam('start', 0);
+        this.store.setBaseParam('limit', this.tam_pag);
+        this.store.setBaseParam('fecha_ini', this.maestro.fecha_ini);
+        this.store.setBaseParam('fecha_fin',this.maestro.fecha_fin);
+        this.store.setBaseParam('ids',this.maestro.ids);
+
+
         this.load({
             params:{
                 start:0,
                 limit:this.tam_pag,
                 fecha_ini: this.maestro.fecha_ini,
                 fecha_fin: this.maestro.fecha_fin,
-                ids: this.maestro.ids,
-                velocidad_ini: this.maestro.velocidad_ini,
-                velocidad_fin: this.maestro.velocidad_fin
+                ids: this.maestro.ids
             }
         });
     },
