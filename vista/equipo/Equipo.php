@@ -56,7 +56,8 @@ Phx.vista.Equipo=Ext.extend(Phx.gridInterfaz,{
 				gwidth: 23
 			},
 			type: 'Field',
-			grid: true
+			grid: true,
+			form: false
 		},
 		{
 			config: {
@@ -336,8 +337,8 @@ Phx.vista.Equipo=Ext.extend(Phx.gridInterfaz,{
 			type: 'ComboBox',
 			id_grupo: 0,
 			filters: {pfiltro: 'tipeq.nombre',type: 'string'},
-			grid: true,
-			form: false
+			grid: false,
+			form: true
 		},
 		{
 			config:{
