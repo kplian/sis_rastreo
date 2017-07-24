@@ -54,3 +54,8 @@ select pxp.f_insert_tgui ('Eventos', 'Eventos sucedidos', 'RAS.10', 'si', 1, 'si
 select pxp.f_insert_tgui ('Velocidades', 'Velocidades registradas', 'RAS.11', 'si', 2, 'sis_rastreo/vista/_reportes/ParametrosVelocidad.php', 3, '', 'ParametrosVelocidad', 'RAS');
 select pxp.f_insert_tgui ('Distancias', 'Distancias recorridas', 'RAS.12', 'si', 3, 'sis_rastreo/vista/_reportes/ParametrosDistancia.php', 3, '', 'ParametrosDistancia', 'RAS');
 /***********************************F-DAT-RCM-RAS-0-13/07/2017****************************************/
+
+/***********************************F-DAT-RCM-RAS-0-23/07/2017****************************************/
+select pxp.f_insert_tgui ('Grupos', 'Grupos de Vehículos', 'RAS.20', 'si', 8, 'sis_rastreo/vista/grupo/Grupo.php', 2, '', 'Grupo', 'RAS');
+select pxp.f_insert_testructura_gui ('RAS.20', 'RAS');
+/***********************************F-DAT-RCM-RAS-0-13/23/2017****************************************/

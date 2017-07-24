@@ -143,8 +143,13 @@ Ext.define('Phx.vista.Parametros', {
 
     },
     setBaseParams: function(){
-        var fechaIni = this.dateFechaIni.getValue().format('d-m-Y')+' '+this.timeHoraIni.getValue()+':00',
-            fechaFin = this.dateFechaFin.getValue().format('d-m-Y')+' '+this.timeHoraFin.getValue()+':00';
+        var fechaIni = this.dateFechaIni.getValue().format('Y-m-d')+' '+this.timeHoraIni.getValue()+':00',
+            fechaFin = this.dateFechaFin.getValue().format('Y-m-d')+' '+this.timeHoraFin.getValue()+':00';
+
+        //Convierte fechas a UTC
+        fechaIni = moment(new Date(fechaIni+':00')).utc().format('DD/MM/YYYY HH:mm:00');
+        fechaFin = moment(new Date(fechaFin+':00')).utc().format('DD/MM/YYYY HH:mm:00');
+
 
         return {
             fecha_ini: fechaIni,

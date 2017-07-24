@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<iframe id="myframe" src="demo_iframe.htm"></iframe>
+
+
+
+
+<p>Click the button to change the background color of the document contained in the iframe.</p>
+
+<p id="demo"></p>
+
+<button onclick="myFunction()">Try it</button>
+
+<script>
+
+ function clone(item, cloneDom) {
+            if (item == null) {
+                return item;
+            }
+ 
+            // DOM nodes 
+            // TODO proxy this to Ext.Element.clone to handle automatic id attribute changing 
+            // recursively 
+            if (cloneDom !== false && item.nodeType && item.cloneNode) {
+                return item.cloneNode(true);
+            }
+ 
+            var type = toString.call(item),
+                i, j, k, clone, key;
+ 
+            // Date 
+            if (type === '[object Date]') {
+                return new Date(item.getTime());
+            }
+ 
+            // Array 
+            if (type === '[object Array]') {
+                i = item.length;
+ 
+                clone = [];
+ 
+                while (i--) {
+                    clone[i] = Ext.clone(item[i], cloneDom);
+                }
+            }
+            // Object 
+            else if (type === '[object Object]' && item.constructor === Object) {
+                clone = {};
+ 
+                for (key in item) {
+                    clone[key] = Ext.clone(item[key], cloneDom);
+                }
+ 
+                if (enumerables) {
+                    for (j = enumerables.length; j--;) {
+                        k = enumerables[j];
+                        if (item.hasOwnProperty(k)) {
+                            clone[k] = item[k];
+                        }
+                    }
+                }
+            }
+ 
+            return clone || item;
+        };
+
+ function cloneDocument(svgDocument) {
+        var newDocument, newNode;
+        newDocument = svgDocument.implementation.createDocument(svgDocument.namespaceURI, null, null);
+        newNode = newDocument.importNode(svgDocument.documentElement, true);
+        newDocument.appendChild(newNode);
+        return newDocument;
+    }
+    
+var svg = document.createElement('object');
+svg.setAttribute('id', 'arrowSvg');
+svg.setAttribute('data', 'http://www.ccbinfo.org/images/arrow.svg');
+svg.setAttribute('type', 'image/svg+xml');
+svg.setAttribute('style', 'visibility:hidden;position:absolute;left:-100px;');
+
+
+document.body.appendChild(svg);
+
+
+window.setTimeout(cuerpo, 4000);
+
+ function cuerpo(){
+	
+	var yyy = document.getElementById('arrowSvg').contentDocument
+	
+	
+	console.log('yyy',yyy)
+	//var xxx = cloneDocument(yyy);
+	var xxx = clone(yyy);
+	//var xxx = yyy;
+	
+	        width = parseFloat(xxx.documentElement.getAttribute('width'));
+	        height = parseFloat(xxx.documentElement.getAttribute('height'));
+	
+	console.log('width', 'height')
+	console.log(width, height)
+	
+	console.log('svg',svg)
+	
+	console.log('xxx',xxx)
+	
+	
+	rotateTransform = 'rotate(' + 190 + ' ' + (width / 2) + ' ' + (height / 2) + ')';
+	
+	
+	console.log('........',xxx.getElementById('arrow'))
+	
+	
+	xxx.getElementById('arrow').setAttribute('transform', rotateTransform);
+	
+}
+
+
+
+
+
+
+function myFunction() {
+    var x = document.getElementById("myframe");
+    var y = x.contentDocument;
+    y.body.style.backgroundColor = "red";
+}
+</script>
+
+</body>
+</html>

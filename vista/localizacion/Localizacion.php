@@ -14,6 +14,15 @@ header("content-type: text/javascript; charset=UTF-8");
 			this.maestro = config.maestro;
 			Phx.vista.Localizacion.superclass.constructor.call(this, config);
 			this.init();
+			//Agrega paletea de colores
+			this.color = new Ext.ColorPalette({
+				fieldLabel: 'Color'
+			});
+			this.form.add(this.color);
+
+			this.color.on('select',function(cmp,val){
+				//console.log('fvfvf',this.color.select('000000'));
+			},this);
 		},
 		Atributos:[
 		{

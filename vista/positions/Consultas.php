@@ -2,6 +2,114 @@
 header("content-type: text/javascript; charset=UTF-8");
 ?>
 <script>
+Ext.define('Phx.vista.DeviceImages', {
+    singleton: true,
+    constructor: function(config){
+     	Ext.apply(this,config);
+        this.callParent(arguments);
+        this.deviceStore = new Ext.data.JsonStore({
+						        fields: ['key', 'name', 'svg', 'fillId', 'rotateId', 'scaleId']
+						    });
+
+        this.deviceStore.loadData(this.genData());
+    
+    
+    },
+    
+    genData: function () {
+        var i, key, data = [];
+        
+        for (i = 0; i < window.Images.length; i++) {
+            key = window.Images[i];
+            console.log('xxxxx', 'category' + key.charAt(0).toUpperCase() + key.slice(1))
+            data.push({
+                key: key,
+                //name: Strings['category' + key.charAt(0).toUpperCase() + key.slice(1)],
+                name : 'category' + key.charAt(0).toUpperCase() + key.slice(1),
+                svg: document.getElementById(key + 'Svg').contentDocument,
+                //svg: document.getElementById(key + 'Svg')['#document'],
+                fillId: key === 'arrow' ? 'arrow' : 'background',
+                rotateId: key === 'arrow' ? 'arrow' : 'background',
+                scaleId: key === 'arrow' ? 'arrow' : 'layer1'
+            });
+        }
+        return data;
+    },
+        
+    getImageSvg: function (color, zoom, angle, category) {
+        var i, info, svg, width, height, rotateTransform, scaleTransform, fill;
+        info = this.deviceStore.getAt(this.deviceStore.find('key', category || 'default', 0, false, false, true));
+        svg = Ext.ux.clone(info.get('svg'));
+        if (!svg) {
+            svg = this.cloneDocument(info.get('svg'));
+        }
+        
+        width = parseFloat(svg.documentElement.getAttribute('width'));
+        height = parseFloat(svg.documentElement.getAttribute('height'));
+
+        fill = info.get('fillId');
+        if (!Ext.isArray(fill)) {
+            fill = [fill];
+        }
+        
+        for (i = 0; i < fill.length; i++) {
+            //svg.getElementById(fill[i]).style.fill = color;
+        }
+
+        rotateTransform = 'rotate(' + angle + ' ' + (width / 2) + ' ' + (height / 2) + ')';
+        svg.getElementById(info.get('rotateId')).setAttribute('transform', rotateTransform);
+
+        
+        width *= 1;
+        height *= 1;
+        scaleTransform = 'scale(' + 1 + ') ';
+       
+
+        if (info.get('scaleId') !== info.get('rotateId')) {
+            svg.getElementById(info.get('scaleId')).setAttribute('transform', scaleTransform);
+        } else {
+            svg.getElementById(info.get('scaleId')).setAttribute('transform', scaleTransform + ' ' + rotateTransform);
+        }
+
+        svg.documentElement.setAttribute('width', width);
+        svg.documentElement.setAttribute('height', height);
+        svg.documentElement.setAttribute('viewBox', '0 0 ' + width + ' ' + height);
+
+        return svg;
+    },
+
+    formatSrc: function (svg) {
+        return 'data:image/svg+xml;charset=utf-8,' +
+                encodeURIComponent(new XMLSerializer().serializeToString(svg.documentElement));
+    },
+
+    cloneDocument: function (svgDocument) {
+        var newDocument, newNode;
+        newDocument = svgDocument.implementation.createDocument(svgDocument.namespaceURI, null, null);
+        newNode = newDocument.importNode(svgDocument.documentElement, true);
+        newDocument.appendChild(newNode);
+        return newDocument;
+    },
+
+    getImageIcon: function (color, zoom, angle, category) {
+        var image, svg, width, height;
+
+        svg = this.getImageSvg(color, zoom, angle, category);
+        width = parseFloat(svg.documentElement.getAttribute('width'));
+        height = parseFloat(svg.documentElement.getAttribute('height'));
+
+        image =  new ol.style.Icon({
+            imgSize: [width, height],
+            src: this.formatSrc(svg)
+        });
+        image.fill = color;
+        image.zoom = zoom;
+        image.angle = angle;
+        image.category = category;
+
+        return image;
+    }
+});
 
 Ext.define('Phx.vista.carRuta', {
 	extend: 'Ext.util.Observable',
@@ -9,6 +117,7 @@ Ext.define('Phx.vista.carRuta', {
 	estado: 'detenido',
 	confirmado: false,
 	enProceso: false,
+	feature:[],
 	constructor: function(config){
         Ext.apply(this,config);
         this.callParent(arguments);
@@ -32,13 +141,40 @@ Ext.define('Phx.vista.carRuta', {
         
     },
     
-    addPos: function(config){
+    addPos: function(config, vectorSource){
     	
     	var aux = [parseFloat(config.longitud),parseFloat(config.latitud)];
         var point = ol.proj.fromLonLat(aux);
     	this.featureLine.getGeometry().appendCoordinate(point);
     	this.ultimasPosiciones.push(point);
     	
+    	var feature = new ol.Feature({ geometry: new ol.geom.Point(point), car: this})
+    	this.feature.push(feature);
+    	
+    	//return this.getMarkerStyle(false, Traccar.app.getReportColor(deviceId), angle, 'arrow');
+    	// getMarkerStyle: function (zoom, color, angle, category) 
+    	 
+    	 
+    	 
+    	//var image = Phx.vista.DeviceImages.getImageIcon(color, zoom, angle, category);arrow
+    	var image = Phx.vista.DeviceImages.getImageIcon('blue', false, config.course, 'arrow');
+    	
+    	var iconStyle = new ol.style.Style({
+                image: image,
+                text: new ol.style.Text({
+                    font: '12px Calibri,sans-serif',
+                    fill: new ol.style.Fill({ color: '#000' }),
+                    stroke: new ol.style.Stroke({
+                        color: '#fff', width: 2
+                    }),
+                    text: config.codigo
+                })
+            });
+            
+           
+    	feature.setStyle([iconStyle]);
+    	vectorSource.addFeature(feature);
+    	vectorSource.addFeature(this.featureLine)
     	
     },
     resetPos: function(config){
@@ -271,21 +407,20 @@ Ext.define('Phx.vista.Consultas', {
     	var latitud_tmp = 0, 
     	    longitud_tmp = 0;
     	if(reg.datos.length > 0){
-                /*reg.datos.forEach(function(element) {
-                    var el = moment(element.servertime).utc().format('DD/MM/YYYY HH:mm:00');
-                    reg.datos.servertime = el;
-                });*/
+                
+                 me.vectorSource.clear();
 
 		    	reg.datos.forEach(function(element) {
-		    		var data = { latitud : element.latitude, longitud: element.longitude};
+		    		var data = { latitud : element.latitude, longitud: element.longitude, course: element.course, data:element };
 		    		if(sw){
-			    			me.car.resetPos(data);
+			    			me.car.resetPos(data, me.vectorSource);
 			    			sw = false;
+			    			
 			    	}				
 		    		if( latitud_tmp != element.latitude ||
 		    			longitud_tmp != element.longitude){
 			    		
-			    		me.car.addPos(data);
+			    		me.car.addPos(data, me.vectorSource);
 			    		console.log(element.latitude, element.longitude, element )
 			    		latitud_tmp = element.latitude;
 			    		longitud_tmp = element.longitude;
@@ -297,7 +432,7 @@ Ext.define('Phx.vista.Consultas', {
 		    	
 		    	
 		    	
-		    	me.vectorSource.addFeature(me.car.featureLine)
+		    	//me.vectorSource.addFeature(me.car.featureLine)
 		    	var extent = this.vectorSource.getExtent();
 				try {
 		        	this.map.getView().fit(extent, this.map.getSize()); 
@@ -324,6 +459,7 @@ Ext.define('Phx.vista.Consultas', {
     	if(me.vectorSource.getFeatureById(me.car.featureLine.getId())){
     	  	me.car.resetLine();
     	  	me.vectorSource.removeFeature(me.car.featureLine);
+    	  	me.vectorSource.clear();
     	 }
     },
     
