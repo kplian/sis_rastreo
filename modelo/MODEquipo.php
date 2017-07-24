@@ -63,6 +63,7 @@ class MODEquipo extends MODbase{
 		$this->captura('desc_type','varchar');
 		$this->captura('desc_equipo','text');
 		$this->captura('responsable','text');
+		$this->captura('type','varchar');
 		
 		//Ejecuta la instruccion
 		$this->armarConsulta();

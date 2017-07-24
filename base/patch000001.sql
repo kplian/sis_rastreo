@@ -186,3 +186,10 @@ CREATE INDEX devices_idx ON public.devices
 CREATE INDEX positions_idx ON public.positions
   USING btree (id);
 /***********************************F-SCP-RCM-RAS-0-06/07/2017****************************************/    
+
+/***********************************I-SCP-RCM-RAS-0-19/07/2017****************************************/
+CREATE INDEX tequipo_responsable_idx1 ON ras.tequipo_responsable
+  USING btree (fecha_ini, fecha_fin, id_equipo);
+CREATE INDEX tequipo_responsable_idx ON ras.tequipo_responsable
+  USING btree (id_equipo_responsable);
+/***********************************F-SCP-RCM-RAS-0-19/07/2017****************************************/

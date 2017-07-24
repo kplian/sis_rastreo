@@ -1,14 +1,14 @@
-CREATE OR REPLACE FUNCTION ras.f_get_responsable_ultimo (
+CREATE FUNCTION ras.f_get_evento_ultimo (
   p_id_equipo INTEGER
 )
 RETURNS integer AS
 $body$
 /**************************************************************************
  SISTEMA:		Traccar
- FUNCION: 		ras.f_get_responsable_ultimo
- DESCRIPCION:   Devuelve el id persona del ultimo responsable asignado
+ FUNCION: 		ras.f_get_evento_ultimo
+ DESCRIPCION:   Devuelve el id evento del ultimo encontrado
  AUTOR: 		RCM
- FECHA:	        17/07/2017
+ FECHA:	        19/07/2017
  COMENTARIOS:	
 ***************************************************************************
  HISTORIAL DE MODIFICACIONES:
@@ -21,26 +21,25 @@ DECLARE
 
 	v_resp		            varchar;
 	v_nombre_funcion        text;
-    v_id_persona			integer;
+    v_eventoid	     		integer;
 
 BEGIN
 
-	v_nombre_funcion = 'ras.f_get_responsable_ultimo';
+	v_nombre_funcion = 'ras.f_get_evento_ultimo';
 
 	select
-    res.id_persona
-    into v_id_persona
+    ev.id
+    into v_eventoid
     from ras.vequipo eq
-    left join ras.tequipo_responsable eres
-    on eres.id_equipo = eq.id_equipo
-    left join ras.tresponsable res
-    on res.id_responsable = eres.id_responsable
+    inner join devices dev
+    on dev.uniqueid = eq.uniqueid
+    inner join events ev
+    on ev.deviceid = dev.id
     where eq.id_equipo = p_id_equipo
-    and eres.estado_reg = 'activo'
-    order by eres.id_equipo_responsable desc
+    order by ev.servertime desc
     limit 1;
     
-    return v_id_persona;
+    return v_eventoid;
     
 EXCEPTION
 				

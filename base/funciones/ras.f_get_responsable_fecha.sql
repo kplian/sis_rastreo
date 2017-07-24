@@ -1,4 +1,4 @@
-CREATE FUNCTION ras.f_get_responsable_fecha (
+CREATE OR REPLACE FUNCTION ras.f_get_responsable_fecha (
   p_id_equipo INTEGER,
   p_fecha DATE
 )
