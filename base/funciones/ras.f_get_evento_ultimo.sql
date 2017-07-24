@@ -1,4 +1,4 @@
-CREATE FUNCTION ras.f_get_evento_ultimo (
+CREATE OR REPLACE FUNCTION ras.f_get_evento_ultimo (
   p_id_equipo INTEGER
 )
 RETURNS integer AS

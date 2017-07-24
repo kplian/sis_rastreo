@@ -46,7 +46,7 @@ Phx.vista.Grupo=Ext.extend(Phx.gridInterfaz,{
 				gwidth: 23,
 				maxLength:15,
 				renderer: function(value,p,record){
-					return String.format("<div style='background-color: {0}'>&nbsp</div>",record.data['color']);
+					return String.format("<span style='background-color: {0}'>&nbsp&nbsp&nbsp&nbsp</span>",record.data['color']);
 				}
 			},
 			type:'TextField',

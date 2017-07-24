@@ -64,6 +64,9 @@ class MODEquipo extends MODbase{
 		$this->captura('desc_equipo','text');
 		$this->captura('responsable','text');
 		$this->captura('type','varchar');
+		$this->captura('id_grupo','integer');
+		$this->captura('desc_grupo','varchar');
+		$this->captura('color_grupo','varchar');
 		
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -100,6 +103,7 @@ class MODEquipo extends MODbase{
 		$this->setParametro('fecha_baja','fecha_baja','date');
 		$this->setParametro('monto','monto','numeric');
 		$this->setParametro('uniqueid','uniqueid','varchar');
+		$this->setParametro('id_grupo','id_grupo','int4');
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -137,6 +141,7 @@ class MODEquipo extends MODbase{
 		$this->setParametro('fecha_baja','fecha_baja','date');
 		$this->setParametro('monto','monto','numeric');
 		$this->setParametro('uniqueid','uniqueid','varchar');
+		$this->setParametro('id_grupo','id_grupo','int4');
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();

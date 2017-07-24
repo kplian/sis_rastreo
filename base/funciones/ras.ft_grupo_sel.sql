@@ -46,14 +46,14 @@ BEGIN
 						grupo.nombre,
 						grupo.color,
 						grupo.estado_reg,
-						grupo.id_usuario_reg,
-						grupo.id_usuario_ai,
 						grupo.fecha_reg,
-						grupo.usuario_ai,
+						grupo.fecha_mod,
+						grupo.id_usuario_reg,
 						grupo.id_usuario_mod,
-						grupo.fecha_mod
+						grupo.id_usuario_ai,
 						usu1.cuenta as usr_reg,
-						usu2.cuenta as usr_mod	
+						usu2.cuenta as usr_mod,
+						grupo.usuario_ai
 						from ras.tgrupo grupo
 						inner join segu.tusuario usu1 on usu1.id_usuario = grupo.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = grupo.id_usuario_mod

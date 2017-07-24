@@ -93,7 +93,10 @@ BEGIN
 						end as desc_type,
 						equip.desc_equipo,
 						per.nombre_completo1 as responsable,
-						event.type
+						event.type,
+						equip.id_grupo,
+						grup.nombre as desc_grupo,
+						grup.color as color_grupo
 						from ras.vequipo equip
 						left join ras.ttipo_equipo tipeq
 						on tipeq.id_tipo_equipo = equip.id_tipo_equipo
@@ -111,6 +114,8 @@ BEGIN
 						on event.id = ras.f_get_evento_ultimo(equip.id_equipo)
 						left join segu.vpersona per
 						on per.id_persona = ras.f_get_responsable_ultimo(equip.id_equipo)
+						left join ras.tgrupo grup
+						on grup.id_grupo = equip.id_grupo
 				        where  ';
 			
 			--Definicion de la respuesta
@@ -151,6 +156,8 @@ BEGIN
 						on event.positionid = ras.f_get_evento_ultimo(equip.id_equipo)
 						left join segu.vpersona per
 						on per.id_persona = ras.f_get_responsable_ultimo(equip.id_equipo)
+						left join ras.tgrupo grup
+						on grup.id_grupo = equip.id_grupo
 				        where  ';
 			
 			--Definicion de la respuesta		    

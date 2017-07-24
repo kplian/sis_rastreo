@@ -137,7 +137,7 @@ CREATE TABLE public.positions (
   course DOUBLE PRECISION NOT NULL,
   address VARCHAR(512),
   attributes VARCHAR(4000),
-  accuracy DOUBLE PRECISION DEFAULT 0 NOT NULL,
+  accuracy DOUBLE PRECISION DEFAULT 0 NOT NULL
   network VARCHAR(4000),
   CONSTRAINT pk_positions PRIMARY KEY(id)
 ) 
@@ -185,7 +185,7 @@ CREATE INDEX devices_idx ON public.devices
 
 CREATE INDEX positions_idx ON public.positions
   USING btree (id);
-/***********************************F-SCP-RCM-RAS-0-06/07/2017****************************************/    
+/***********************************F-SCP-RCM-RAS-0-06/07/2017****************************************/
 
 /***********************************I-SCP-RCM-RAS-0-19/07/2017****************************************/
 CREATE INDEX tequipo_responsable_idx1 ON ras.tequipo_responsable
@@ -193,3 +193,17 @@ CREATE INDEX tequipo_responsable_idx1 ON ras.tequipo_responsable
 CREATE INDEX tequipo_responsable_idx ON ras.tequipo_responsable
   USING btree (id_equipo_responsable);
 /***********************************F-SCP-RCM-RAS-0-19/07/2017****************************************/
+
+/***********************************I-SCP-RCM-RAS-0-23/07/2017****************************************/
+create table ras.tgrupo (
+  id_grupo serial,
+  codigo varchar(20),
+  nombre varchar(100),
+  color varchar(15),
+  constraint pk_tgrupo__id_grupo PRIMARY KEY (id_grupo)
+) inherits (pxp.tbase)
+with oids;
+
+alter table ras.tequipo
+add column id_grupo integer;
+/***********************************F-SCP-RCM-RAS-0-23/07/2017****************************************/

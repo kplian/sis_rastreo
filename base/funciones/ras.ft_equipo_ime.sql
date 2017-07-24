@@ -70,7 +70,8 @@ BEGIN
 			id_usuario_ai,
 			fecha_mod,
 			id_usuario_mod,
-			uniqueid
+			uniqueid,
+			id_grupo
           	) values(
 			v_parametros.id_tipo_equipo,
 			v_parametros.id_modelo,
@@ -97,7 +98,8 @@ BEGIN
 			v_parametros._id_usuario_ai,
 			null,
 			null,
-			v_parametros.uniqueid			
+			v_parametros.uniqueid,
+			v_parametros.id_grupo
 			)RETURNING id_equipo into v_id_equipo;
 			
 			--Definicion de la respuesta
@@ -143,7 +145,8 @@ BEGIN
 			id_usuario_mod = p_id_usuario,
 			id_usuario_ai = v_parametros._id_usuario_ai,
 			usuario_ai = v_parametros._nombre_usuario_ai,
-			uniqueid = v_parametros.uniqueid
+			uniqueid = v_parametros.uniqueid,
+			id_grupo = v_parametros.id_grupo
 			where id_equipo=v_parametros.id_equipo;
                
 			--Definicion de la respuesta

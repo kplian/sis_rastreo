@@ -31,21 +31,32 @@ Phx.vista.Equipo=Ext.extend(Phx.gridInterfaz,{
 		{
 			//configuracion del componente
 			config:{
-					labelSeparator:'',
-					inputType:'hidden',
-					name: 'id_equipo'
+				labelSeparator:'',
+				inputType:'hidden',
+				name: 'id_equipo'
 			},
 			type:'Field',
 			form:true 
 		},
 		{
 			config:{
-					labelSeparator:'',
-					inputType:'hidden',
-					name: 'id_localizacion'
+				labelSeparator:'',
+				inputType:'hidden',
+				name: 'id_localizacion'
 			},
 			type:'Field',
 			form:true 
+		},
+		{
+			config: {
+				fieldLabel: '',
+				renderer: function(value, p, record) {
+					return String.format("<span style='background-color: {0}'>&nbsp&nbsp&nbsp&nbsp</span>",record.data['color_grupo']);
+				},
+				gwidth: 23
+			},
+			type: 'Field',
+			grid: true
 		},
 		{
 			config: {
@@ -286,6 +297,47 @@ Phx.vista.Equipo=Ext.extend(Phx.gridInterfaz,{
 				id_grupo:1,
 				grid:false,
 				form:true
+		},
+		{
+			config: {
+				name: 'id_grupo',
+				fieldLabel: 'Grupo',
+				allowBlank: true,
+				emptyText: 'Elija una opción...',
+				store: new Ext.data.JsonStore({
+					url: '../../sis_rastreo/control/Grupo/listarGrupo',
+					id: 'id_grupo',
+					root: 'datos',
+					sortInfo: {
+						field: 'nombre',
+						direction: 'ASC'
+					},
+					totalProperty: 'total',
+					fields: ['id_grupo', 'nombre', 'codigo','color'],
+					remoteSort: true,
+					baseParams: {par_filtro: 'grupo.nombre#grupo.codigo'}
+				}),
+				valueField: 'id_grupo',
+				displayField: 'nombre',
+				gdisplayField: 'desc_grupo',
+				hiddenName: 'id_grupo',
+				forceSelection: true,
+				typeAhead: false,
+				triggerAction: 'all',
+				lazyRender: true,
+				mode: 'remote',
+				pageSize: 15,
+				queryDelay: 1000,
+				anchor: '100%',
+				gwidth: 130,
+				minChars: 2,
+				tpl:'<tpl for="."><div class="x-combo-list-item">Código: {codigo}<p>Nombre: <span style="background-color: {color}">&nbsp&nbsp&nbsp&nbsp</span> {nombre}</p> </div></tpl>',
+			},
+			type: 'ComboBox',
+			id_grupo: 0,
+			filters: {pfiltro: 'tipeq.nombre',type: 'string'},
+			grid: true,
+			form: false
 		},
 		{
 			config:{
@@ -641,7 +693,7 @@ Phx.vista.Equipo=Ext.extend(Phx.gridInterfaz,{
 		{name:'id_usuario_mod', type: 'numeric'},
 		{name:'usr_reg', type: 'string'},
 		{name:'usr_mod', type: 'string'},'desc_tipo_equipo','id_marca','desc_modelo','desc_marca','uniqueid','deviceid','ultimo_envio',
-		'latitude','longitude','speed','attributes','address','desc_type','desc_equipo','responsable','type'
+		'latitude','longitude','speed','attributes','address','desc_type','desc_equipo','responsable','type','id_grupo','desc_grupo','color_grupo'
 		
 	],
 	sortInfo:{
