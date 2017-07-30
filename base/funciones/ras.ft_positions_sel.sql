@@ -142,7 +142,15 @@ BEGIN
 						on per.id_persona = ras.f_get_responsable_ultimo(eq.id_equipo)
 						left join events ev
 						on ev.positionid = pos.id
-						where eq.id_equipo in ('||v_parametros.ids||')';
+						where ';
+
+						if(v_parametros.ids_grupo<>'') then
+							v_consulta = v_consulta || ' eq.id_grupo in ('||v_parametros.ids_grupo||')';
+						else
+							v_consulta = v_consulta || ' eq.id_equipo in ('||v_parametros.ids||')';
+
+						end if;
+						
 
 
 			--Devuelve la respuesta

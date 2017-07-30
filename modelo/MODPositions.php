@@ -135,6 +135,7 @@ class MODPositions extends MODbase{
 		//Define los parametros para la funcion
 		$this->setParametro('ids','ids','varchar');
 		$this->setParametro('contador','contador','integer');
+		$this->setParametro('ids_grupo','ids_grupo','varchar');
 				
 		//Definicion de la lista del resultado del query
 		$this->captura('id_equipo','integer');
