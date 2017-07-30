@@ -144,7 +144,8 @@ BEGIN
 						on ev.positionid = pos.id
 						where ';
 
-						if(v_parametros.ids_grupo<>'') then
+						--if(v_parametros.ids_grupo<>'') then
+						if(pxp.f_verifica_parametro(p_tabla,'ids_grupo')) then
 							v_consulta = v_consulta || ' eq.id_grupo in ('||v_parametros.ids_grupo||')';
 						else
 							v_consulta = v_consulta || ' eq.id_equipo in ('||v_parametros.ids||')';
