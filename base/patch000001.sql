@@ -207,3 +207,13 @@ with oids;
 alter table ras.tequipo
 add column id_grupo integer;
 /***********************************F-SCP-RCM-RAS-0-23/07/2017****************************************/
+
+/***********************************I-SCP-RCM-RAS-0-30/07/2017****************************************/
+create table ras.ttipo_evento (
+  id_tipo_evento serial,
+  codigo varchar(20),
+  nombre varchar(100),
+  constraint pk_ttipo_evento__id_tipo_evento PRIMARY KEY (id_tipo_evento)
+) inherits (pxp.tbase)
+with oids;
+/***********************************F-SCP-RCM-RAS-0-30/07/2017****************************************/

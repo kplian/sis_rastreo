@@ -125,7 +125,7 @@ class MODEvents extends MODbase{
         $this->captura('servertime','timestamp');
         $this->captura('deviceid','integer');
         $this->captura('attributes','varchar');
-        $this->captura('desc_type','varchar');
+        $this->captura('desc_type','text');
         $this->captura('latitude','float8');
         $this->captura('longitude','float8');
         $this->captura('altitude','float8');

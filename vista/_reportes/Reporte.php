@@ -231,7 +231,7 @@ Phx.vista.Reporte=Ext.extend(Phx.gridInterfaz,{
         {name:'marca', type: 'string'},
         {name:'modelo', type: 'string'},
         {name:'eventid', type: 'numeric'},
-        {name:'servertime', type: 'date',dateFormat:'Y-m-d H:i:s.u'},
+        {name:'servertime', type: 'date',dateFormat:'Y-m-d H:i:s'},
         {name:'deviceid', type: 'numeric'},
         {name:'attributes', type: 'string'},
         {name:'desc_type', type: 'string'},

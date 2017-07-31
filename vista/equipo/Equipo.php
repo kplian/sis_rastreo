@@ -300,6 +300,36 @@ Phx.vista.Equipo=Ext.extend(Phx.gridInterfaz,{
 				form:true
 		},
 		{
+			config:{
+				name: 'nro_movil',
+				fieldLabel: 'Nro.Móvil',
+				allowBlank: false,
+				anchor: '100%',
+				gwidth: 100,
+				maxLength:50
+			},
+				type:'TextField',
+				filters:{pfiltro:'equip.nro_movil',type:'string'},
+				id_grupo:1,
+				grid:true,
+				form:true
+		},
+		{
+			config:{
+				name: 'nro_celular',
+				fieldLabel: 'Nro.Celular GPS',
+				allowBlank: true,
+				anchor: '100%',
+				gwidth: 100,
+				maxLength:50
+			},
+				type:'TextField',
+				filters:{pfiltro:'equip.nro_celular',type:'string'},
+				id_grupo:1,
+				grid:true,
+				form:true
+		},
+		{
 			config: {
 				name: 'id_grupo',
 				fieldLabel: 'Grupo',
@@ -460,21 +490,6 @@ Phx.vista.Equipo=Ext.extend(Phx.gridInterfaz,{
 			filters:{pfiltro:'equip.traccion',type:'string'},
 			grid: true,
 			form: true
-		},
-		{
-			config:{
-				name: 'nro_movil',
-				fieldLabel: 'Nro.Móvil',
-				allowBlank: true,
-				anchor: '100%',
-				gwidth: 100,
-				maxLength:50
-			},
-				type:'TextField',
-				filters:{pfiltro:'equip.nro_movil',type:'string'},
-				id_grupo:1,
-				grid:true,
-				form:true
 		},
 		{
 			config:{
@@ -694,7 +709,7 @@ Phx.vista.Equipo=Ext.extend(Phx.gridInterfaz,{
 		{name:'id_usuario_mod', type: 'numeric'},
 		{name:'usr_reg', type: 'string'},
 		{name:'usr_mod', type: 'string'},'desc_tipo_equipo','id_marca','desc_modelo','desc_marca','uniqueid','deviceid','ultimo_envio',
-		'latitude','longitude','speed','attributes','address','desc_type','desc_equipo','responsable','type','id_grupo','desc_grupo','color_grupo'
+		'latitude','longitude','speed','attributes','address','desc_type','desc_equipo','responsable','type','id_grupo','desc_grupo','color_grupo','nro_celular'
 		
 	],
 	sortInfo:{

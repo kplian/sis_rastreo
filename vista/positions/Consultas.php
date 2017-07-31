@@ -141,14 +141,14 @@ Ext.define('Phx.vista.carRuta', {
         
     },
     
-    addPos: function(config, vectorSource){
+    addPos: function(config, vectorSource,color, tipoIcono){
     	
     	var aux = [parseFloat(config.longitud),parseFloat(config.latitud)];
         var point = ol.proj.fromLonLat(aux);
     	this.featureLine.getGeometry().appendCoordinate(point);
     	this.ultimasPosiciones.push(point);
     	
-    	var feature = new ol.Feature({ geometry: new ol.geom.Point(point), car: this})
+    	var feature = new ol.Feature({ geometry: new ol.geom.Point(point), car: this, pointData: config.data})
     	this.feature.push(feature);
     	
     	//return this.getMarkerStyle(false, Traccar.app.getReportColor(deviceId), angle, 'arrow');
@@ -157,7 +157,7 @@ Ext.define('Phx.vista.carRuta', {
     	 
     	 
     	//var image = Phx.vista.DeviceImages.getImageIcon(color, zoom, angle, category);arrow
-    	var image = Phx.vista.DeviceImages.getImageIcon('blue', false, config.course, 'arrow');
+    	var image = Phx.vista.DeviceImages.getImageIcon(color, false, config.course, tipoIcono);
     	
     	var iconStyle = new ol.style.Style({
                 image: image,
@@ -197,19 +197,7 @@ Ext.define('Phx.vista.carRuta', {
     
     getPos: function(){
     	return this.ultimasPosiciones[this.ultimasPosiciones.length-1];
-    },
-    
-    getImageIcon: function (m) {
-	        var image = new ol.style.Icon({
-                    anchor: [0.5, 46],
-                    anchorXUnits: 'fraction',
-                    anchorYUnits: 'pixels',
-                    opacity: 0.75,
-                    src: '../../../sis_rastreo/vista/positions/car.svg'
-                })
-	
-	        return image;
-   },
+    }
    
     
 	
@@ -328,6 +316,7 @@ Ext.define('Phx.vista.Consultas', {
     
     winInfo: undefined,
     panelResumen: undefined,
+    url: 'http://192.168.60.20:8080/webmap/elfec/wmts/webmap.cartography/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.png',
     showMap: function(){
     	var me = this;
         this.vectorSource = new ol.source.Vector();
@@ -337,7 +326,76 @@ Ext.define('Phx.vista.Consultas', {
                     style: 'Aerial',
                     source: new ol.source.OSM()
                 });
-        
+                
+         /*var osmSource = new ol.source.OSM();   */   
+        /*       
+         this.layer = new ol.layer.WMTS({
+                    style: 'Aerial',
+                    source: new ol.source.OSM({
+					          attributions: [
+					            'All maps © <a href="http://www.openseamap.org/">OpenSeaMap</a>',
+					            ol.source.OSM.ATTRIBUTION
+					          ],
+					          opaque: false,
+					          //url: 'https://tiles.openseamap.org/seamark/{z}/{x}/{y}.png'
+					          url: 'http://192.168.60.20:8080/webmap/elfec/wmts/webmap.cartography/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.png',
+					        })
+                });  */ 
+                
+        //layer = new OpenLayers.Layer.TMS( "OSM", "/tilecache/tilecache.py/", {layername: 'osm', type: 'png'} );
+               // map.addLayer(layer); 
+               
+       
+		/*
+		this.layer = new ol.layer.Tile({
+		        source: new ol.source.XYZ({
+		          //url: 'http://192.168.60.20:8080/webmap/elfec/wmts/webmap.cartography/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.png',
+		          url: 'http://192.168.60.20:8080/webmap/elfec/osm/{z}/{x}/{y}.png',
+		          crossOrigin: '',
+		          tilePixelRatio: 2,
+		          maxZoom: 15,
+		          attributions: 'Tiles © USGS, rendered with ' +
+		            '<a href="http://192.168.60.20/">Mapas Elfec</a>'
+		        })
+		      });		    
+					*/	
+		  var projection = ol.proj.get('EPSG:3857');
+	      var projectionExtent = projection.getExtent();
+	      var size = ol.extent.getWidth(projectionExtent) / 256;
+	      var resolutions = new Array(14);
+	      var matrixIds = new Array(14);
+	      for (var z = 0; z < 14; ++z) {
+	        // generate resolutions and matrixIds arrays for this WMTS
+	        resolutions[z] = size / Math.pow(2, z);
+	        matrixIds[z] = z;
+	      }			
+					
+		this.layer2 = new ol.layer.Tile({
+					        source: new ol.source.WMTS({
+					          attributions: '© <a href="http://www.geo.admin.ch/internet/geoportal/en/home.html">Elfec</a>',
+					          crossOrigin: 'anonymous',
+					          serverType: 'geoserver',
+					           tileOptions: {crossOriginKeyword: 'anonymous'},
+					           isBaseLayer: true,
+      
+					          requestEncoding: 'REST',
+					          layer: '0',
+                              matrixSet: 'centrality',
+					          format: 'image /png',
+					          url: 'http://192.168.60.21:8080/webmap/elfec/wmts/webmap.cartography/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.png',
+					          projection: projection,
+				              tileGrid: new ol.tilegrid.WMTS({
+				                origin: ol.extent.getTopLeft(projectionExtent),
+				                resolutions: resolutions,
+				                matrixIds: matrixIds
+				              }),
+				              style: 'default',
+				              wrapX: true
+					        }),
+					        tileOptions: {crossOriginKeyword: 'anonymous'},
+					      });		  
+           
+       
         this.olview = new ol.View({
             center: [0, 0],
             zoom: 2,
@@ -348,7 +406,40 @@ Ext.define('Phx.vista.Consultas', {
         this.map = new ol.Map({
             target: document.getElementById('map-'+this.idContenedor),
             view: this.olview,
-            layers: [this.layer,this.vectorLayer]
+            layers: [this.layer,this.layer2, this.vectorLayer]
+        });
+        
+          
+        
+        this.map.on('click', function(e){
+            me.map.forEachFeatureAtPixel(e.pixel, function(feature, layer) {
+               if(feature.O.car){
+                	if(!me.winInfo){
+                	 	me.panelResumen = new Ext.Panel({  
+			    		    padding: '0 0 0 20',
+			    		    html: '',
+			    		    split: true, 
+			    		    layout:  'fit' });
+			    		    
+			            me.winInfo = new Ext.Window({
+			                layout:'fit',
+			                width:500,
+			                height:300,
+			                closeAction:'hide',
+			                plain: true,
+			                items: me.panelResumen,			
+			                buttons: [{
+			                    text: 'Close',
+			                    handler: function(){
+			                        me.winInfo.hide();
+			                    }
+			                }]
+			            });
+			        }
+			        me.winInfo.show();
+			        me.updateResumen(feature.O.pointData);
+			      }
+            });
         });
         
         
@@ -406,12 +497,29 @@ Ext.define('Phx.vista.Consultas', {
     	var sw = true;
     	var latitud_tmp = 0, 
     	    longitud_tmp = 0;
+    	
+    	me.vectorSource.clear();
+    	var contador = 1, tipoIcono = 'arrow', color = '#FA2006';  
+    	
+    	console.log(contador,color, tipoIcono)  ;
     	if(reg.datos.length > 0){
                 
-                 me.vectorSource.clear();
+                 
 
 		    	reg.datos.forEach(function(element) {
 		    		var data = { latitud : element.latitude, longitud: element.longitude, course: element.course, data:element };
+		    		if(contador == 1){
+		    			 color = '#FA2006';
+		    		}
+		    		else{
+		    			if(contador == reg.datos.length){
+		    			    color = 'rgba(241, 17, 17, 1.0)';
+		    			    tipoIcono = 'car';
+		    		    }
+		    		    else{
+		    		    	color =  'rgb(250, 190, 77)'
+		    		    }
+		    		}
 		    		if(sw){
 			    			me.car.resetPos(data, me.vectorSource);
 			    			sw = false;
@@ -420,14 +528,14 @@ Ext.define('Phx.vista.Consultas', {
 		    		if( latitud_tmp != element.latitude ||
 		    			longitud_tmp != element.longitude){
 			    		
-			    		me.car.addPos(data, me.vectorSource);
+			    		me.car.addPos(data, me.vectorSource,color  ,tipoIcono);
 			    		console.log(element.latitude, element.longitude, element )
 			    		latitud_tmp = element.latitude;
 			    		longitud_tmp = element.longitude;
 			    		
 		    		}				
-		    		
-		    						
+		    		console.log('............',contador,color, tipoIcono, reg.datos.length )  ;
+		    		contador = contador+1;				
 		    	});
 		    	
 		    	
@@ -507,9 +615,11 @@ Ext.define('Phx.vista.Consultas', {
 		}),
 		
 	updateResumen:function(datos){
+		
+		console.log('....',datos)
 		var plantilla = "<div style='overflow-y: initial;'><br><b>PLACA {0}</b><br></b> \
 		       					<b>Posicion:</b> (Lat {1}, Lon  {2}, Alt {14})</br>\
-								<b>Estado:</b> {3}</br>\
+								<b>Hora del Servidor:</b> {3}</br>\
 								<b>Responsable:</b> {4}</br>\
 								<b>Descripcion:</b> {5}</br>\
 								<b>Velocidad:</b> {6}</br>\
@@ -521,15 +631,19 @@ Ext.define('Phx.vista.Consultas', {
 								<b>Rssi:</b> {12}</br>\
 								<b>Direccion:</b> {13}</br></br></div>";
 								
-								
-		var  reg   = Ext.util.JSON.decode(Ext.util.Format.trim(datos.attributes));						
+		var  reg = {};
+		if(datos.attributes){
+			 reg   = Ext.util.JSON.decode(Ext.util.Format.trim(datos.attributes));	
+		}	
+							
+		var hora = new Date(datos.servertime).dateFormat('H:i:s.u  d/m/Y H:i:s.u');					
 		       
 		     
 		this.panelResumen.update( String.format(plantilla,
-			                                           datos.codigo, 
-			                                           datos.longitud,
-			                                           datos.latitud,
-			                                           datos.estado||'desconocido',
+			                                           datos.placa, 
+			                                           datos.longitude,
+			                                           datos.latitude,
+			                                           hora||'desconocido',
 			                                           datos.responsable||'no designado',
 			                                           datos.desc_equipo||'sin descripcion',
 			                                           datos.speed||0,
@@ -540,7 +654,7 @@ Ext.define('Phx.vista.Consultas', {
 			                                           reg.battery||0,
 			                                           reg.rssi||0,
 			                                           datos.address||'',
-			                                           datos.altitud||0
+			                                           datos.altitude||0
 			                                           
 			                                           ));
 			                                           

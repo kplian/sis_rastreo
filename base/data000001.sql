@@ -59,3 +59,23 @@ select pxp.f_insert_tgui ('Distancias', 'Distancias recorridas', 'RAS.12', 'si',
 select pxp.f_insert_tgui ('Grupos', 'Grupos de Vehículos', 'RAS.20', 'si', 8, 'sis_rastreo/vista/grupo/Grupo.php', 2, '', 'Grupo', 'RAS');
 select pxp.f_insert_testructura_gui ('RAS.20', 'RAS');
 /***********************************F-DAT-RCM-RAS-0-23/07/2017****************************************/
+
+/***********************************I-DAT-RCM-RAS-0-30/07/2017****************************************/
+select pxp.f_insert_tgui ('Tipos de Eventos', 'Registro de Tipos de Eventos', 'RAS.21', 'si', 10, 'sis_rastreo/vista/tipo_evento/TipoEvento.php', 2, '', 'TipoEvento', 'RAS');
+select pxp.f_insert_testructura_gui ('RAS.21', 'RAS');
+
+INSERT INTO ras.ttipo_evento ("id_usuario_reg", "id_usuario_mod", "fecha_reg", "fecha_mod", "estado_reg", "id_usuario_ai", "usuario_ai", "id_tipo_evento", "codigo", "nombre")
+VALUES 
+  (1, NULL, E'2017-07-30 11:29:58.150', NULL, E'activo', NULL, E'NULL', 1, E'4001', E'S/D'),
+  (1, NULL, E'2017-07-30 11:30:05.579', NULL, E'activo', NULL, E'NULL', 2, E'4006', E'S/D'),
+  (1, NULL, E'2017-07-30 11:30:21.046', NULL, E'activo', NULL, E'NULL', 3, E'6002', E'Alerta de Velocidad máxima Excedida'),
+  (1, NULL, E'2017-07-30 11:30:33.777', NULL, E'activo', NULL, E'NULL', 4, E'6006', E'Aceleración Brusca'),
+  (1, NULL, E'2017-07-30 11:31:06.978', NULL, E'activo', NULL, E'NULL', 5, E'6007', E'Frenado Brusco'),
+  (1, NULL, E'2017-07-30 11:31:17.617', NULL, E'activo', NULL, E'NULL', 6, E'6009', E'GPS Desconectado'),
+  (1, NULL, E'2017-07-30 11:31:26.322', NULL, E'activo', NULL, E'NULL', 7, E'6010', E'GPS Conectado'),
+  (1, NULL, E'2017-07-30 11:31:42.887', NULL, E'activo', NULL, E'NULL', 8, E'6011', E'Movilidad Encendida'),
+  (1, NULL, E'2017-07-30 11:31:55.887', NULL, E'activo', NULL, E'NULL', 9, E'6012', E'Movilidad Apagada'),
+  (1, NULL, E'2017-07-30 11:32:12.126', NULL, E'activo', NULL, E'NULL', 10, E'6016', E'Tiempo de estacionamiento máximo Excedido'),
+  (1, NULL, E'2017-07-30 11:32:32.798', NULL, E'activo', NULL, E'NULL', 11, E'6017', E'Remolque de movilidad detectado'),
+  (1, NULL, E'2017-07-30 11:32:44.142', NULL, E'activo', NULL, E'NULL', 12, E'6018', E'Remolque de movilidad finalizado');
+/***********************************F-DAT-RCM-RAS-0-30/07/2017****************************************/

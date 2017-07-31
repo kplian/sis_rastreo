@@ -96,7 +96,8 @@ BEGIN
 						event.type,
 						equip.id_grupo,
 						grup.nombre as desc_grupo,
-						grup.color as color_grupo
+						grup.color as color_grupo,
+						equip.nro_celular
 						from ras.vequipo equip
 						left join ras.ttipo_equipo tipeq
 						on tipeq.id_tipo_equipo = equip.id_tipo_equipo

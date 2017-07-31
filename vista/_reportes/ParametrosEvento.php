@@ -29,29 +29,32 @@ Phx.vista.ParametrosEvento = {
             forceSelection: true,
             allowBlank: false,
             disableSearchButton: true,
-            emptyText: 'Seleccione un estado ...',
-            store: new Ext.data.ArrayStore({
-                id: 'id',
-                fields: [
-                    'id',
-                    'nombre'
-                ],
-                data: [
-                    [1, 'Detenido'], 
-                    [2, 'Desconectado'],
-                    [3, 'Desconocido'],
-                    [4, 'En Movimiento'],
-                    [5, 'OnLine'],
-                    [6, 'Alarma']
-                ]
+            emptyText: 'Seleccione uno o varios ...',
+            store: new Ext.data.JsonStore({
+                url: '../../sis_rastreo/control/TipoEvento/listarTipoEvento',
+                id: 'id_tipo_equipo',
+                root: 'datos',
+                sortInfo: {
+                    field: 'codigo',
+                    direction: 'ASC'
+                },
+                totalProperty: 'total',
+                fields: ['id_tipo_evento','codigo','nombre'],
+                // turn on remote sorting
+                remoteSort: true,
+                baseParams: {par_filtro: 'codigo#nombre'}
             }),
-            valueField: 'id',
-            displayField: 'nombre',
-            hiddenName: 'events',
+            tpl: '<tpl for="."><div class="x-combo-list-item" ><div class="awesomecombo-item {checked}">{codigo}-{nombre}</div> </div></tpl>',
+            valueField: 'codigo',
+            displayField: 'codigo',
             enableMultiSelect: true,
             triggerAction: 'all',
-            lazyRender:true,
-            mode: 'local',
+            lazyRender: true,
+            mode: 'remote',
+            pageSize: 20,
+            queryDelay: 200,
+            //anchor: '80%',
+            listWidth: '280',
             resizable: true,
             minChars: 2
         });
