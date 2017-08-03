@@ -30,7 +30,7 @@ BEGIN
 	select
     ev.id
     into v_eventoid
-    from ras.vequipo eq
+    from ras.tequipo eq
     inner join devices dev
     on dev.uniqueid = eq.uniqueid
     inner join events ev
