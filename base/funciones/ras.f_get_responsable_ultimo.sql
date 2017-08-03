@@ -30,7 +30,7 @@ BEGIN
 	select
     res.id_persona
     into v_id_persona
-    from ras.vequipo eq
+    from ras.tequipo eq
     left join ras.tequipo_responsable eres
     on eres.id_equipo = eq.id_equipo
     left join ras.tresponsable res
