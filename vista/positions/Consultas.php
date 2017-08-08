@@ -119,6 +119,8 @@ Ext.define('Phx.vista.carRuta', {
 	enProceso: false,
 	feature:[],
 	constructor: function(config){
+		
+		console.log('configuraciones....', config)
         Ext.apply(this,config);
         this.callParent(arguments);
         var aux = [parseFloat(0),parseFloat(0)];
@@ -208,6 +210,7 @@ Ext.define('Phx.vista.Consultas', {
     extend: 'Ext.util.Observable',
     dispositivos : [],
     constructor: function(config){
+    	console.log('configuraciones....oooo', config)
         Ext.apply(this,config);
         this.callParent(arguments);
         this.panel = Ext.getCmp(this.idContenedor);
@@ -321,79 +324,56 @@ Ext.define('Phx.vista.Consultas', {
     	var me = this;
         this.vectorSource = new ol.source.Vector();
         this.vectorLayer = new ol.layer.Vector({source: this.vectorSource});
-        
-        this.layer = new ol.layer.Tile({
-                    style: 'Aerial',
-                    source: new ol.source.OSM()
-                });
-                
-         /*var osmSource = new ol.source.OSM();   */   
-        /*       
-         this.layer = new ol.layer.WMTS({
-                    style: 'Aerial',
-                    source: new ol.source.OSM({
-					          attributions: [
-					            'All maps © <a href="http://www.openseamap.org/">OpenSeaMap</a>',
-					            ol.source.OSM.ATTRIBUTION
-					          ],
-					          opaque: false,
-					          //url: 'https://tiles.openseamap.org/seamark/{z}/{x}/{y}.png'
-					          url: 'http://192.168.60.20:8080/webmap/elfec/wmts/webmap.cartography/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.png',
-					        })
-                });  */ 
-                
-        //layer = new OpenLayers.Layer.TMS( "OSM", "/tilecache/tilecache.py/", {layername: 'osm', type: 'png'} );
-               // map.addLayer(layer); 
-               
        
-		/*
-		this.layer = new ol.layer.Tile({
-		        source: new ol.source.XYZ({
-		          //url: 'http://192.168.60.20:8080/webmap/elfec/wmts/webmap.cartography/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.png',
-		          url: 'http://192.168.60.20:8080/webmap/elfec/osm/{z}/{x}/{y}.png',
-		          crossOrigin: '',
-		          tilePixelRatio: 2,
-		          maxZoom: 15,
-		          attributions: 'Tiles © USGS, rendered with ' +
-		            '<a href="http://192.168.60.20/">Mapas Elfec</a>'
-		        })
-		      });		    
-					*/	
-		  var projection = ol.proj.get('EPSG:3857');
-	      var projectionExtent = projection.getExtent();
-	      var size = ol.extent.getWidth(projectionExtent) / 256;
-	      var resolutions = new Array(14);
-	      var matrixIds = new Array(14);
-	      for (var z = 0; z < 14; ++z) {
-	        // generate resolutions and matrixIds arrays for this WMTS
-	        resolutions[z] = size / Math.pow(2, z);
-	        matrixIds[z] = z;
-	      }			
+        
+        if(this.servidor){
+        	  var projection = ol.proj.get('EPSG:3857');
+		      var projectionExtent = projection.getExtent();
+		      var size = ol.extent.getWidth(projectionExtent) / 256;
+		      var resolutions = new Array(14);
+		      var matrixIds = new Array(14);
+		      for (var z = 0; z < 14; ++z) {
+		        // generate resolutions and matrixIds arrays for this WMTS
+		        resolutions[z] = size / Math.pow(2, z);
+		        matrixIds[z] = z;
+		      }			
 					
-		this.layer2 = new ol.layer.Tile({
+		     this.layer = new ol.layer.Tile({
 					        source: new ol.source.WMTS({
-					          attributions: '© <a href="http://www.geo.admin.ch/internet/geoportal/en/home.html">Elfec</a>',
-					          crossOrigin: 'anonymous',
-					          serverType: 'geoserver',
-					           tileOptions: {crossOriginKeyword: 'anonymous'},
-					           isBaseLayer: true,
-      
-					          requestEncoding: 'REST',
-					          layer: '0',
-                              matrixSet: 'centrality',
-					          format: 'image /png',
-					          url: 'http://192.168.60.21:8080/webmap/elfec/wmts/webmap.cartography/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.png',
-					          projection: projection,
-				              tileGrid: new ol.tilegrid.WMTS({
-				                origin: ol.extent.getTopLeft(projectionExtent),
-				                resolutions: resolutions,
-				                matrixIds: matrixIds
+						          attributions: '© <a>Elfec</a>',
+						          crossOrigin: 'anonymous',
+						          serverType: 'geoserver',
+						          requestEncoding: 'REST',
+						           
+                                 
+						          layer: '1',
+	                              matrixSet: 'centrality',
+						          format: 'image /png',
+						          url: 'http://'+this.servidor+'{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.png',
+						          projection: projection,
+					              tileGrid: new ol.tilegrid.WMTS({
+					              origin: ol.extent.getTopLeft(projectionExtent),
+					              resolutions: resolutions,
+					              matrixIds: matrixIds
 				              }),
 				              style: 'default',
-				              wrapX: true
+				              wrapX: true,
+				              isBaseLayer: false,
+				              opacity: 0.6,
 					        }),
 					        tileOptions: {crossOriginKeyword: 'anonymous'},
-					      });		  
+					      });	
+        }
+        else{
+	        this.layer = new ol.layer.Tile({
+	                    style: 'Aerial',
+	                    source: new ol.source.OSM()
+	                });	
+        }
+        
+                
+         
+		 
            
        
         this.olview = new ol.View({
@@ -406,7 +386,8 @@ Ext.define('Phx.vista.Consultas', {
         this.map = new ol.Map({
             target: document.getElementById('map-'+this.idContenedor),
             view: this.olview,
-            layers: [this.layer,this.layer2, this.vectorLayer]
+            layers: [this.layer,this.vectorLayer]
+            //layers: [this.layer, this.vectorLayer]
         });
         
           

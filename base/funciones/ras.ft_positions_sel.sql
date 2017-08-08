@@ -116,7 +116,7 @@ BEGIN
 			v_consulta:='select
 						eq.id_equipo, eq.uniqueid,
 						eq.marca, eq.modelo, eq.placa,
-						per.nombre_completo1 as responsable, per.ci, per.celular1, per.correo,
+						--per.nombre_completo1 as responsable,per.ci, per.celular1, per.correo,
 						pos.latitude, pos.longitude, pos.altitude, pos.speed * '||v_factor_vel||',
 						pos.course,
 						pos.address, pos.attributes, pos.accuracy,
@@ -139,8 +139,8 @@ BEGIN
 						on dev.uniqueid = eq.uniqueid
 						inner join positions pos
 						on pos.id = dev.positionid
-						left join segu.vpersona per
-						on per.id_persona = ras.f_get_responsable_ultimo(eq.id_equipo)
+						--left join segu.vpersona per
+						--on per.id_persona = ras.f_get_responsable_ultimo(eq.id_equipo)
 						left join events ev
 						on ev.positionid = pos.id
 						where ';
@@ -174,8 +174,8 @@ BEGIN
 			--Sentencia de la consulta
 			v_consulta:='select
 						eq.id_equipo, eq.uniqueid,
-						eq.marca, eq.modelo, eq.placa,per.nombre_completo1 as responsable, per.ci,
-						per.celular1, per.correo,
+						eq.marca, eq.modelo, eq.placa,
+						--per.nombre_completo1 as responsable, per.ci,per.celular1, per.correo,
 						pos.latitude, pos.longitude, pos.altitude, pos.speed * '||v_factor_vel||',
 						pos.course,
 						pos.address, pos.attributes, pos.accuracy,
@@ -200,8 +200,8 @@ BEGIN
 						on de.uniqueid = eq.uniqueid
 						inner join positions pos
 						on pos.deviceid = de.id
-						left join segu.vpersona per
-						on per.id_persona = ras.f_get_responsable_fecha(eq.id_equipo,pos.servertime::date)
+						--left join segu.vpersona per
+						--on per.id_persona = ras.f_get_responsable_fecha(eq.id_equipo,pos.servertime::date)
 						left join events ev
 						on ev.positionid = pos.id
 						inner join ras.ttipo_equipo teq
@@ -275,10 +275,10 @@ BEGIN
 				marca varchar,
 				modelo varchar,
 				placa varchar,
-				responsable text,
+				/*responsable text,
 				ci varchar,
 				celular1 varchar,
-				correo varchar,
+				correo varchar,*/
 				latitude float8,
 				longitude float8,
 				altitude float8,
@@ -304,10 +304,10 @@ BEGIN
 				marca,
 				modelo,
 				placa,
-				responsable,
+				/*responsable,
 				ci,
 				celular1,
-				correo,
+				correo,*/
 				latitude,
 				longitude,
 				altitude,
@@ -324,8 +324,8 @@ BEGIN
 				servertime)
 						select
 						eq.id_equipo, eq.uniqueid,
-						eq.marca, eq.modelo, eq.placa,per.nombre_completo1 as responsable, per.ci,
-						per.celular1, per.correo,
+						eq.marca, eq.modelo, eq.placa,
+						--per.nombre_completo1 as responsable, per.ci,per.celular1, per.correo,
 						pos.latitude, pos.longitude, pos.altitude, pos.speed * '||v_factor_vel||',
 						pos.course,
 						pos.address, pos.attributes, pos.accuracy,
@@ -348,8 +348,8 @@ BEGIN
 						on de.uniqueid = eq.uniqueid
 						inner join positions pos
 						on pos.deviceid = de.id
-						left join segu.vpersona per
-						on per.id_persona = ras.f_get_responsable_fecha(eq.id_equipo,pos.servertime::date)
+						--left join segu.vpersona per
+						--on per.id_persona = ras.f_get_responsable_fecha(eq.id_equipo,pos.servertime::date)
 						left join events ev
 						on ev.positionid = pos.id
 						where eq.id_equipo in ('||v_parametros.ids||')'||'

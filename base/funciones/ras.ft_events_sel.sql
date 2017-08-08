@@ -111,41 +111,16 @@ BEGIN
 
 		begin
 
+			v_eventos = '';
+
 			--Procesa el parámetro de eventos
-			/*v_eventos = replace(v_parametros.events,'1','''deviceStopped''');
-			v_eventos = replace(v_eventos,'2','''deviceOffline''');
-			v_eventos = replace(v_eventos,'3','''deviceUnknown''');
-			v_eventos = replace(v_eventos,'4','''deviceMoving''');
-			v_eventos = replace(v_eventos,'5','''deviceOnline''');
-			v_eventos = replace(v_eventos,'6','''alarm''');
-
-			--Sentencia de la consulta
-			v_consulta:='select
-                        eq.id_equipo, eq.uniqueid, eq.desc_equipo, eq.placa,eq.tipo_equipo, eq.marca, eq.modelo,
-                        ev.id as eventid, ev.servertime, ev.deviceid, ev.attributes,
-                        case ev.type
-                            when ''deviceStopped'' then ''Detenido''::varchar
-                            when ''deviceOffline'' then ''Desconectado''::varchar
-                            when ''deviceUnknown'' then ''Desconocido''::varchar
-                            when ''deviceMoving'' then ''En Movimiento''::varchar
-                            when ''deviceOnline'' then ''Online''::varchar
-                            when ''alarm'' then ''Alarma''::varchar
-                            else ev.type
-                        end as desc_type,
-                        pos.latitude, pos.longitude, pos.altitude, pos.speed * '||v_factor_vel||',
-                        pos.course,
-						pos.address, pos.attributes as attributes_pos, pos.accuracy
-                        from events ev
-                        inner join devices dev
-                        on dev.id = ev.deviceid
-                        left join ras.vequipo eq
-                        on eq.uniqueid = dev.uniqueid
-                        left join positions pos
-                        on pos.id = ev.positionid
-						where eq.id_equipo in ('||v_parametros.ids||')'||'
-						and to_char(pos.servertime,''dd-mm-yyyy HH24:MI:00'')::timestamp with time zone between '''||v_parametros.fecha_ini||'''::timestamp with time zone and '''||v_parametros.fecha_fin||'''::timestamp with time zone ';*/
-
-			v_eventos = replace(v_parametros.events,'4001','''4001''');
+			v_eventos = replace(v_parametros.events,'deviceStopped','''deviceStopped''');
+			v_eventos = replace(v_eventos,'deviceOffline','''deviceOffline''');
+			v_eventos = replace(v_eventos,'deviceUnknown','''deviceUnknown''');
+			v_eventos = replace(v_eventos,'deviceMoving','''deviceMoving''');
+			v_eventos = replace(v_eventos,'deviceOnline','''deviceOnline''');
+			v_eventos = replace(v_eventos,'alarm','''alarm''');
+			v_eventos = replace(v_eventos,'4001','''4001''');
 			v_eventos = replace(v_eventos,'4006','''4006''');
 			v_eventos = replace(v_eventos,'6002','''6002''');
 			v_eventos = replace(v_eventos,'6006','''6006''');
@@ -158,14 +133,69 @@ BEGIN
 			v_eventos = replace(v_eventos,'6017','''6017''');
 			v_eventos = replace(v_eventos,'6018','''6018''');
 
-			v_consulta = 'select
-						eq.id_equipo, eq.uniqueid, eq.desc_equipo, eq.placa,eq.tipo_equipo, eq.marca, eq.modelo,
+			--Sentencia de la consulta
+			v_consulta:='select
+                        eq.id_equipo, 
+                        eq.uniqueid, 
+                        eq.desc_equipo, 
+                        eq.placa,
+                        eq.tipo_equipo,
+                        eq.marca,
+                        eq.modelo,
+                        ev.id as eventid,
+                        ev.servertime,
+                        ev.deviceid, --10
+                        ev.attributes,
+                        case ev.type
+                            when ''deviceStopped'' then ''Detenido''::varchar
+                            when ''deviceOffline'' then ''Desconectado''::varchar
+                            when ''deviceUnknown'' then ''Desconocido''::varchar
+                            when ''deviceMoving'' then ''En Movimiento''::varchar
+                            when ''deviceOnline'' then ''Online''::varchar
+                            when ''alarm'' then ''Alarma''::varchar
+                            else ev.type
+                        end as desc_type,
+                        pos.latitude,
+                        pos.longitude,
+                        pos.altitude,
+                        pos.speed * '||v_factor_vel||',
+                        pos.course,
+						pos.address,
+						pos.attributes as attributes_pos, 
+						pos.accuracy --20
+                        from events ev
+                        inner join devices dev
+                        on dev.id = ev.deviceid
+                        left join ras.vequipo eq
+                        on eq.uniqueid = dev.uniqueid
+                        left join positions pos
+                        on pos.id = ev.positionid
+						where eq.id_equipo in ('||v_parametros.ids||')'||'
+						and to_char(pos.servertime,''dd-mm-yyyy HH24:MI:00'')::timestamp with time zone between '''||v_parametros.fecha_ini||'''::timestamp with time zone and '''||v_parametros.fecha_fin||'''::timestamp with time zone ';
+			
+
+			v_consulta = v_consulta || ' union
+						select
+						eq.id_equipo,
+						eq.uniqueid,
+						eq.desc_equipo,
+						eq.placa,
+						eq.tipo_equipo,
+						eq.marca,
+						eq.modelo,
 						tev.id_tipo_evento as eventid,
-						pos.servertime, dev.id as deviceid, pos.attributes,
+						pos.servertime,
+						dev.id as deviceid, --10
+						pos.attributes,
 						tev.codigo || '' - '' || tev.nombre desc_type,
-						pos.latitude, pos.longitude, pos.altitude, pos.speed * '||v_factor_vel||',
+						pos.latitude,
+						pos.longitude,
+						pos.altitude,
+						pos.speed * '||v_factor_vel||',
 						pos.course,
-						pos.address, pos.attributes as attributes_pos, pos.accuracy
+						pos.address,
+						pos.attributes as attributes_pos,
+						pos.accuracy --20
 						from positions pos
 						inner join devices dev
 						on dev.id = pos.deviceid
@@ -203,16 +233,28 @@ BEGIN
 		begin
 
 			--Procesa el parámetro de eventos
-			/*v_eventos = replace(v_parametros.events,'1','''deviceStopped''');
-			v_eventos = replace(v_eventos,'2','''deviceOffline''');
-			v_eventos = replace(v_eventos,'3','''deviceUnknown''');
-			v_eventos = replace(v_eventos,'4','''deviceMoving''');
-			v_eventos = replace(v_eventos,'5','''deviceOnline''');
-			v_eventos = replace(v_eventos,'6','''alarm''');
+			v_eventos = replace(v_parametros.events,'deviceStopped','''deviceStopped''');
+			v_eventos = replace(v_eventos,'deviceOffline','''deviceOffline''');
+			v_eventos = replace(v_eventos,'deviceUnknown','''deviceUnknown''');
+			v_eventos = replace(v_eventos,'deviceMoving','''deviceMoving''');
+			v_eventos = replace(v_eventos,'deviceOnline','''deviceOnline''');
+			v_eventos = replace(v_eventos,'alarm','''alarm''');
+            v_eventos = replace(v_eventos,'4001','''4001''');            
+			v_eventos = replace(v_eventos,'4006','''4006''');
+			v_eventos = replace(v_eventos,'6002','''6002''');
+			v_eventos = replace(v_eventos,'6006','''6006''');
+			v_eventos = replace(v_eventos,'6007','''6007''');
+			v_eventos = replace(v_eventos,'6009','''6009''');
+			v_eventos = replace(v_eventos,'6010','''6010''');
+			v_eventos = replace(v_eventos,'6011','''6011''');
+			v_eventos = replace(v_eventos,'6012','''6012''');
+			v_eventos = replace(v_eventos,'6016','''6016''');
+			v_eventos = replace(v_eventos,'6017','''6017''');
+			v_eventos = replace(v_eventos,'6018','''6018''');
 
 			--Sentencia de la consulta
-			v_consulta:='select
-                        count(1) as total
+			v_consulta:='select count(1) as total from (select
+                        1
                         from events ev
                         inner join devices dev
                         on dev.id = ev.deviceid
@@ -227,23 +269,13 @@ BEGIN
             	v_consulta = v_consulta || ' and ev.type in ('||v_eventos||') and ';
             else
             	v_consulta = v_consulta || ' and ';
-            end if;*/
+            end if;
 
-            v_eventos = replace(v_parametros.events,'4001','''4001''');
-			v_eventos = replace(v_eventos,'4006','''4006''');
-			v_eventos = replace(v_eventos,'6002','''6002''');
-			v_eventos = replace(v_eventos,'6006','''6006''');
-			v_eventos = replace(v_eventos,'6007','''6007''');
-			v_eventos = replace(v_eventos,'6009','''6009''');
-			v_eventos = replace(v_eventos,'6010','''6010''');
-			v_eventos = replace(v_eventos,'6011','''6011''');
-			v_eventos = replace(v_eventos,'6012','''6012''');
-			v_eventos = replace(v_eventos,'6016','''6016''');
-			v_eventos = replace(v_eventos,'6017','''6017''');
-			v_eventos = replace(v_eventos,'6018','''6018''');
+            v_consulta:=v_consulta||v_parametros.filtro;
 
-			v_consulta = 'select
-						count(1) as total
+            v_consulta = v_consulta || ' union 
+						select
+						1
 						from positions pos
 						inner join devices dev
 						on dev.id = pos.deviceid
@@ -262,6 +294,8 @@ BEGIN
 
 			--Definicion de la respuesta
 			v_consulta:=v_consulta||v_parametros.filtro;
+
+			v_consulta = v_consulta || ') as tcont';
 
 			--Devuelve la respuesta
 			return v_consulta;

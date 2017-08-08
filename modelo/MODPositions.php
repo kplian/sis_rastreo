@@ -143,10 +143,10 @@ class MODPositions extends MODbase{
 		$this->captura('marca','varchar');
 		$this->captura('modelo','varchar');
 		$this->captura('placa','varchar');
-		$this->captura('responsable','text');
-		$this->captura('ci','varchar');
-		$this->captura('celular1','varchar');
-		$this->captura('correo','varchar');
+		//$this->captura('responsable','text');
+		//$this->captura('ci','varchar');
+		//$this->captura('celular1','varchar');
+		//$this->captura('correo','varchar');
 		$this->captura('latitude','float8');
 		$this->captura('longitude','float8');
 		$this->captura('altitude','float8');
@@ -188,10 +188,10 @@ class MODPositions extends MODbase{
 		$this->captura('marca','varchar');
 		$this->captura('modelo','varchar');
 		$this->captura('placa','varchar');
-		$this->captura('responsable','text');
+		/*$this->captura('responsable','text');
 		$this->captura('ci','varchar');
 		$this->captura('celular1','varchar');
-		$this->captura('correo','varchar');
+		$this->captura('correo','varchar');*/
 		$this->captura('latitude','float8');
 		$this->captura('longitude','float8');
 		$this->captura('altitude','float8');
@@ -212,7 +212,6 @@ class MODPositions extends MODbase{
 		//Ejecuta la instruccion
 		$this->armarConsulta();
 		$this->ejecutarConsulta();
-		
 		//Devuelve la respuesta
 		return $this->respuesta;
 	}
@@ -236,10 +235,10 @@ class MODPositions extends MODbase{
 		$this->captura('marca','varchar');
 		$this->captura('modelo','varchar');
 		$this->captura('placa','varchar');
-		$this->captura('responsable','text');
+		/*$this->captura('responsable','text');
 		$this->captura('ci','varchar');
 		$this->captura('celular1','varchar');
-		$this->captura('correo','varchar');
+		$this->captura('correo','varchar');*/
 		$this->captura('latitude','float8');
 		$this->captura('longitude','float8');
 		$this->captura('altitude','float8');

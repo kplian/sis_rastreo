@@ -62,7 +62,7 @@ class MODEquipo extends MODbase{
 		$this->captura('address','varchar');
 		$this->captura('desc_type','varchar');
 		$this->captura('desc_equipo','text');
-		$this->captura('responsable','text');
+		//$this->captura('responsable','text');
 		$this->captura('type','varchar');
 		$this->captura('id_grupo','integer');
 		$this->captura('desc_grupo','varchar');
