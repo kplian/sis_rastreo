@@ -70,10 +70,9 @@ BEGIN
 						equip.id_usuario_mod,
 						usu1.cuenta as usr_reg,
 						usu2.cuenta as usr_mod,
-						tipeq.nombre as desc_tipo_equipo,
-						model.id_marca,
-						model.nombre as desc_modelo,
-						marca.nombre as desc_marca,
+						equip.tipo_equipo as desc_tipo_equipo,
+						equip.modelo as desc_modelo,
+						equip.marca as desc_marca,
 						equip.uniqueid,
 						de.id as deviceid,
 						ras.f_get_time(pos.servertime::timestamp,CURRENT_TIMESTAMP::timestamp) as ultimo_envio,
@@ -99,12 +98,6 @@ BEGIN
 						equip.color_grupo,
 						equip.nro_celular
 						from ras.vequipo equip
-						left join ras.ttipo_equipo tipeq
-						on tipeq.id_tipo_equipo = equip.id_tipo_equipo
-						left join ras.tmodelo model
-						on model.id_modelo = equip.id_modelo
-						left join ras.tmarca marca
-						on marca.id_marca = model.id_marca
 						inner join segu.tusuario usu1 on usu1.id_usuario = equip.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = equip.id_usuario_mod
 						left join devices de
@@ -139,12 +132,6 @@ BEGIN
 			--Sentencia de la consulta de conteo de registros
 			v_consulta:='select count(id_equipo)
 					    from ras.vequipo equip
-					    left join ras.ttipo_equipo tipeq
-						on tipeq.id_tipo_equipo = equip.id_tipo_equipo
-						left join ras.tmodelo model
-						on model.id_modelo = equip.id_modelo
-						left join ras.tmarca mar
-						on mar.id_marca = model.id_marca
 						inner join segu.tusuario usu1 on usu1.id_usuario = equip.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = equip.id_usuario_mod
 						left join devices de

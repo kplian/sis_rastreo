@@ -49,7 +49,6 @@ class MODEquipo extends MODbase{
 		$this->captura('usr_reg','varchar');
 		$this->captura('usr_mod','varchar');
 		$this->captura('desc_tipo_equipo','varchar');
-		$this->captura('id_marca','integer');
 		$this->captura('desc_modelo','varchar');
 		$this->captura('desc_marca','varchar');
 		$this->captura('uniqueid','varchar');
