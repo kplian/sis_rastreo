@@ -53,7 +53,7 @@ class MODEquipo extends MODbase{
 		$this->captura('desc_marca','varchar');
 		$this->captura('uniqueid','varchar');
 		$this->captura('deviceid','integer');
-		$this->captura('ultimo_envio','varchar');
+		$this->captura('ultimo_envio','interval');
 		$this->captura('latitude','float8');
 		$this->captura('longitude','float8');
 		$this->captura('speed','float8');
