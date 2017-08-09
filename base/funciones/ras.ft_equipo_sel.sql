@@ -170,6 +170,54 @@ BEGIN
 			return v_consulta;
 
 		end;
+
+	/*********************************    
+ 	#TRANSACCION:  'RAS_EQURAP_SEL'
+ 	#DESCRIPCION:	Consulta de datos
+ 	#AUTOR:		admin	
+ 	#FECHA:		15-06-2017 17:50:17
+	***********************************/
+
+	elsif(p_transaccion='RAS_EQURAP_SEL')then
+     				
+    	begin
+    		--Sentencia de la consulta
+			v_consulta:='select
+						id_equipo, placa,nro_movil,marca,modelo,tipo_equipo
+						from ras.vequipo equip
+				        where ';
+			
+			--Definicion de la respuesta
+			v_consulta:=v_consulta||v_parametros.filtro;
+			v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
+
+			--Devuelve la respuesta
+			return v_consulta;
+						
+		end;
+
+	/*********************************    
+ 	#TRANSACCION:  'RAS_EQURAP_CONT'
+ 	#DESCRIPCION:	Conteo de registros
+ 	#AUTOR:		admin	
+ 	#FECHA:		15-06-2017 17:50:17
+	***********************************/
+
+	elsif(p_transaccion='RAS_EQURAP_CONT')then
+
+		begin
+			--Sentencia de la consulta de conteo de registros
+			v_consulta:='select count(1) as total
+					    from ras.vequipo equip
+				        where  ';
+			
+			--Definicion de la respuesta		    
+			v_consulta:=v_consulta||v_parametros.filtro;
+
+			--Devuelve la respuesta
+			return v_consulta;
+
+		end;
 					
 	else
 					     

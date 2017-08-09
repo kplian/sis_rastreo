@@ -43,6 +43,21 @@ class ACTEquipo extends ACTbase{
 		$this->res=$this->objFunc->eliminarEquipo($this->objParam);
 		$this->res->imprimirRespuesta($this->res->generarJson());
 	}
+
+	function listarEquipoRapido(){
+		$this->objParam->defecto('ordenacion','id_equipo');
+		$this->objParam->defecto('dir_ordenacion','asc');
+
+		if($this->objParam->getParametro('tipoReporte')=='excel_grid' || $this->objParam->getParametro('tipoReporte')=='pdf_grid'){
+			$this->objReporte = new Reporte($this->objParam,$this);
+			$this->res = $this->objReporte->generarReporteListado('MODEquipo','listarEquipoRapido');
+		} else{
+			$this->objFunc=$this->create('MODEquipo');
+			
+			$this->res=$this->objFunc->listarEquipoRapido($this->objParam);
+		}
+		$this->res->imprimirRespuesta($this->res->generarJson());
+	}
 			
 }
 

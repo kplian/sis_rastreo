@@ -55,7 +55,7 @@ Ext.define('Phx.vista.Parametros', {
             disableSearchButton: true,
             emptyText: 'Seleccione un vehículo ...',
             store: new Ext.data.JsonStore({
-                url: '../../sis_rastreo/control/Equipo/listarEquipo',
+                url: '../../sis_rastreo/control/Equipo/listarEquipoRapido',
                 id: 'id_equipo',
                 root: 'datos',
                 sortInfo: {
@@ -63,14 +63,12 @@ Ext.define('Phx.vista.Parametros', {
                     direction: 'ASC'
                 },
                 totalProperty: 'total',
-                fields: ['id_equipo','id_tipo_equipo','id_modelo', 'id_localizacion', 'nro_motor', 'placa', 'estado', 
-                'nro_movil','fecha_alta','cabina','propiedad', 'nro_chasis', 'cilindrada', 'color', 'pta', 'traccion', 'gestion',
-                'desc_tipo_equipo','id_marca','desc_modelo','desc_marca','uniqueid','deviceid'],
+                fields: ['id_equipo','placa','nro_movil','marca','modelo','tipo_equipo'],
                 // turn on remote sorting
                 remoteSort: true,
-                baseParams: {par_filtro: 'placa#nro_movil#desc_tipo_equipo'}
+                baseParams: {par_filtro: 'placa#nro_movil#tipo_equipo'}
             }),
-            tpl: '<tpl for="."><div class="x-combo-list-item" ><div class="awesomecombo-item {checked}">{placa}-{desc_tipo_equipo}</div> </div></tpl>',
+            tpl: '<tpl for="."><div class="x-combo-list-item" ><div class="awesomecombo-item {checked}">{placa}-{tipo_equipo}</div> </div></tpl>',
             valueField: 'id_equipo',
             displayField: 'placa',
             hiddenName: 'ids',
