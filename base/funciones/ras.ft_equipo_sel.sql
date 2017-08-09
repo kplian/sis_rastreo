@@ -106,7 +106,16 @@ BEGIN
 						left join positions pos
 						on pos.id = de.positionid
 						left join events event
-						on event.id = ras.f_get_evento_ultimo(equip.id_equipo)
+						on event.id  in (select
+									    ev.id
+									    from ras.tequipo eq
+									    inner join devices dev
+									    on dev.uniqueid = eq.uniqueid
+									    inner join events ev
+									    on ev.deviceid = dev.id
+									    where eq.id_equipo = equip.id_equipo
+									    order by ev.servertime desc
+									    limit 1) --= ras.f_get_evento_ultimo(equip.id_equipo)
 						--left join segu.vpersona per
 						--on per.id_persona = ras.f_get_responsable_ultimo(equip.id_equipo)
 				        where  ';
@@ -140,7 +149,16 @@ BEGIN
 						left join positions pos
 						on pos.id = de.positionid
 						left join events event
-						on event.positionid = ras.f_get_evento_ultimo(equip.id_equipo)
+						on event.positionid  in (select
+										    ev.id
+										    from ras.tequipo eq
+										    inner join devices dev
+										    on dev.uniqueid = eq.uniqueid
+										    inner join events ev
+										    on ev.deviceid = dev.id
+										    where eq.id_equipo = equip.id_equipo
+										    order by ev.servertime desc
+										    limit 1) --= ras.f_get_evento_ultimo(equip.id_equipo)
 						--left join segu.vpersona per
 						--on per.id_persona = ras.f_get_responsable_ultimo(equip.id_equipo)
 				        where  ';
