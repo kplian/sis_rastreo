@@ -379,7 +379,7 @@ Ext.define('Phx.vista.Monitoreo', {
 			allowBlank : false,
 			disableSearchButton : false,
 			emptyText : 'seleccione un dispositivo ...',
-			store : new Ext.data.JsonStore({
+			/*store : new Ext.data.JsonStore({
 				url : '../../sis_rastreo/control/Equipo/listarEquipo',
 				id : 'id_equipo',
 				root : 'datos',
@@ -395,7 +395,22 @@ Ext.define('Phx.vista.Monitoreo', {
 				remoteSort : true,
 				baseParams : {par_filtro : 'placa#nro_movil#desc_tipo_equipo'}
 			}),
-			tpl: '<tpl for="."><div class="x-combo-list-item" ><div class="awesomecombo-item {checked}">{placa}-{desc_tipo_equipo}</div> </div></tpl>',
+			tpl: '<tpl for="."><div class="x-combo-list-item" ><div class="awesomecombo-item {checked}">{placa}-{desc_tipo_equipo}</div> </div></tpl>',*/
+            store : new Ext.data.JsonStore({
+                url : '../../sis_rastreo/control/Equipo/listarEquipoRapido',
+                id : 'id_equipo',
+                root : 'datos',
+                sortInfo : {
+                    field : 'placa',
+                    direction : 'ASC'
+                },
+                totalProperty : 'total',
+                fields: ['id_equipo','placa','nro_movil','marca','modelo','tipo_equipo'],
+                // turn on remote sorting
+                remoteSort : true,
+                baseParams : {par_filtro : 'placa#nro_movil#tipo_equipo'}
+            }),
+            tpl: '<tpl for="."><div class="x-combo-list-item" ><div class="awesomecombo-item {checked}">{placa}-{tipo_equipo}</div> </div></tpl>',
 			valueField : 'id_equipo',
 			displayField : 'placa',
 			hiddenName : 'id_equipo',
