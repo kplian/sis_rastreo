@@ -80,13 +80,13 @@ BEGIN
 						equip.uniqueid,
 						de.id as deviceid,
 						--ras.f_get_time(pos.servertime::timestamp,CURRENT_TIMESTAMP::timestamp) as ultimo_envio,
-						age(CURRENT_TIMESTAMP::timestamp,pos.servertime::timestamp),
+						age(CURRENT_TIMESTAMP::timestamp,pos.servertime::timestamp) as ultimo_envio,
 						pos.latitude,
 						pos.longitude,
-						pos.speed * '||v_factor_vel||',
+						pos.speed * '||v_factor_vel||' as speed,
 						pos.attributes,
 						pos.address,
-						case event.type
+						/*case event.type
 							when ''deviceStopped'' then ''Detenido''::varchar
 							when ''deviceOffline'' then ''Desconectado''::varchar
 							when ''deviceUnknown'' then ''Desconocido''::varchar
@@ -94,10 +94,10 @@ BEGIN
 							when ''deviceOnline'' then ''Online''::varchar
 							when ''alarm'' then ''Alarma''::varchar
 							else event.type
-						end as desc_type,
+						end as desc_type,*/
 						equip.desc_equipo,
 						--per.nombre_completo1 as responsable,
-						event.type,
+						--event.type,
 						equip.id_grupo,
 						equip.desc_grupo,
 						equip.color_grupo,
@@ -109,13 +109,13 @@ BEGIN
 						on de.uniqueid = equip.uniqueid
 						left join positions pos
 						on pos.id = de.positionid
-						left join events event
+						/*left join events event
 						on event.id  in (select
 									    ev.id
 									    from events ev
 									    where ev.deviceid = de.id
 									    order by ev.servertime desc
-									    limit 1) --= ras.f_get_evento_ultimo(equip.id_equipo)
+									    limit 1) --= ras.f_get_evento_ultimo(equip.id_equipo)*/
 						--left join segu.vpersona per
 						--on per.id_persona = ras.f_get_responsable_ultimo(equip.id_equipo)
 				        where  ';
@@ -148,13 +148,13 @@ BEGIN
 						on de.uniqueid = equip.uniqueid
 						left join positions pos
 						on pos.id = de.positionid
-						left join events event
+						/*left join events event
 						on event.positionid  in (select
 									    ev.id
 									    from events ev
 									    where ev.deviceid = de.id
 									    order by ev.servertime desc
-									    limit 1) --= ras.f_get_evento_ultimo(equip.id_equipo)
+									    limit 1) --= ras.f_get_evento_ultimo(equip.id_equipo)*/
 						--left join segu.vpersona per
 						--on per.id_persona = ras.f_get_responsable_ultimo(equip.id_equipo)
 				        where  ';

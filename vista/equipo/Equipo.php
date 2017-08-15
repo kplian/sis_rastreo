@@ -152,13 +152,27 @@ Phx.vista.Equipo=Ext.extend(Phx.gridInterfaz,{
 								    <th>\
 								    	<div class="x-combo-list-item" style="font-size: x-small">\
 											<p><b>Fecha Ult. Sinc.: </b> '+record.data['ultimo_envio']+'</p>\
+										</div>\
+								    </th>\
+								  </tr>\
+								</table>\
+							</tpl>';
+					/*return	'<tpl for=".">\
+								<table>\
+								  <tr>\
+								    <th style="vertical-align:middle;">\
+										<img src=\'../../../lib/imagenes/'+icon+'\' width=32 height=32>\
+								    </th>\
+								    <th>\
+								    	<div class="x-combo-list-item" style="font-size: x-small">\
+											<p><b>Fecha Ult. Sinc.: </b> '+record.data['ultimo_envio']+'</p>\
 											<p><b>Conductor: </b>'+record.data['responsable']+'</p>\
 											<p><b>Evento: </b>'+record.data['desc_type']+'</p>\
 										</div>\
 								    </th>\
 								  </tr>\
 								</table>\
-							</tpl>';
+							</tpl>';*/
 				}
 			},
 				type:'TextField',
