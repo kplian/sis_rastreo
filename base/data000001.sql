@@ -79,3 +79,9 @@ VALUES
   (1, NULL, E'2017-07-30 11:32:32.798', NULL, E'activo', NULL, E'NULL', 11, E'6017', E'Remolque de movilidad detectado'),
   (1, NULL, E'2017-07-30 11:32:44.142', NULL, E'activo', NULL, E'NULL', 12, E'6018', E'Remolque de movilidad finalizado');
 /***********************************F-DAT-RCM-RAS-0-30/07/2017****************************************/
+
+/***********************************I-DAT-RCM-JRR-0-15/08/2017****************************************/
+select pxp.f_insert_tgui ('Monitoreo Grupo', 'Monitoreo en tiempo real', 'RAS.12', 'si', 3, 'sis_rastreo/vista/positions/MonitoreoGrupo.php', 3, '', 'MonitoreoGrupo', 'RAS');
+select pxp.f_insert_testructura_gui ('RAS.12', 'RAS.7');
+
+/***********************************F-DAT-RCM-JRR-0-15/08/2017****************************************/
