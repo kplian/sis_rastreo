@@ -537,7 +537,7 @@ Ext.define('Phx.vista.MonitoreoGrupo', {
                 remoteSort : true,
                 baseParams : {par_filtro : 'placa#nro_movil#tipo_equipo'}
             }),
-            tpl: '<tpl for="."><div class="x-combo-list-item" ><div class="awesomecombo-item {checked}">{placa}-{tipo_equipo}</div> </div></tpl>',
+            tpl: '<tpl for="."><div class="x-combo-list-item" ><div class="awesomecombo-item {checked}">{placa}-{tipo_equipo} ({nro_movil})</div> </div></tpl>',
 			valueField : 'id_equipo',
 			displayField : 'placa',
 			hiddenName : 'id_equipo',

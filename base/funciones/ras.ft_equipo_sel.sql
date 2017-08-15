@@ -101,7 +101,8 @@ BEGIN
 						equip.id_grupo,
 						equip.desc_grupo,
 						equip.color_grupo,
-						equip.nro_celular
+						equip.nro_celular,
+						equip.id_marca
 						from ras.vequipo equip
 						inner join segu.tusuario usu1 on usu1.id_usuario = equip.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = equip.id_usuario_mod

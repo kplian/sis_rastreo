@@ -67,6 +67,7 @@ class MODEquipo extends MODbase{
 		$this->captura('desc_grupo','varchar');
 		$this->captura('color_grupo','varchar');
 		$this->captura('nro_celular','varchar');
+		$this->captura('id_marca','int4');
 
 
 		
