@@ -107,6 +107,7 @@ class MODEquipo extends MODbase{
 		$this->setParametro('monto','monto','numeric');
 		$this->setParametro('uniqueid','uniqueid','varchar');
 		$this->setParametro('id_grupo','id_grupo','int4');
+		$this->setParametro('nro_celular','nro_celular','varchar');
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -145,6 +146,7 @@ class MODEquipo extends MODbase{
 		$this->setParametro('monto','monto','numeric');
 		$this->setParametro('uniqueid','uniqueid','varchar');
 		$this->setParametro('id_grupo','id_grupo','int4');
+		$this->setParametro('nro_celular','nro_celular','varchar');
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();

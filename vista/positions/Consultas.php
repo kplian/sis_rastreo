@@ -21,7 +21,7 @@ Ext.define('Phx.vista.DeviceImages', {
         
         for (i = 0; i < window.Images.length; i++) {
             key = window.Images[i];
-            console.log('xxxxx', 'category' + key.charAt(0).toUpperCase() + key.slice(1))
+            //console.log('xxxxx', 'category' + key.charAt(0).toUpperCase() + key.slice(1))
             data.push({
                 key: key,
                 //name: Strings['category' + key.charAt(0).toUpperCase() + key.slice(1)],
@@ -120,7 +120,6 @@ Ext.define('Phx.vista.carRuta', {
 	feature:[],
 	constructor: function(config){
 		
-		console.log('configuraciones....', config)
         Ext.apply(this,config);
         this.callParent(arguments);
         var aux = [parseFloat(0),parseFloat(0)];
@@ -160,7 +159,11 @@ Ext.define('Phx.vista.carRuta', {
     	 
     	//var image = Phx.vista.DeviceImages.getImageIcon(color, zoom, angle, category);arrow
     	var image = Phx.vista.DeviceImages.getImageIcon(color, false, config.course, tipoIcono);
-    	
+        var lbl=config.codigo;
+
+        if(tipoIcono=='car'){
+            lbl=config.data.nro_movil;
+        }
     	var iconStyle = new ol.style.Style({
                 image: image,
                 text: new ol.style.Text({
@@ -169,7 +172,7 @@ Ext.define('Phx.vista.carRuta', {
                     stroke: new ol.style.Stroke({
                         color: '#fff', width: 2
                     }),
-                    text: config.codigo
+                    text: lbl
                 })
             });
             
@@ -210,7 +213,6 @@ Ext.define('Phx.vista.Consultas', {
     extend: 'Ext.util.Observable',
     dispositivos : [],
     constructor: function(config){
-    	console.log('configuraciones....oooo', config)
         Ext.apply(this,config);
         this.callParent(arguments);
         this.panel = Ext.getCmp(this.idContenedor);
@@ -474,7 +476,6 @@ Ext.define('Phx.vista.Consultas', {
     	if(me.vectorSource.getFeatureById(me.car.featureLine.getId())){
     	     me.vectorSource.removeFeature(me.car.featureLine);
     	}
-    	console.log(reg.datos);
     	var sw = true;
     	var latitud_tmp = 0, 
     	    longitud_tmp = 0;
@@ -482,7 +483,7 @@ Ext.define('Phx.vista.Consultas', {
     	me.vectorSource.clear();
     	var contador = 1, tipoIcono = 'arrow', color = '#FA2006';  
     	
-    	console.log(contador,color, tipoIcono)  ;
+    	//console.log(contador,color, tipoIcono)  ;
     	if(reg.datos.length > 0){
                 
                  
@@ -510,12 +511,12 @@ Ext.define('Phx.vista.Consultas', {
 		    			longitud_tmp != element.longitude){
 			    		
 			    		me.car.addPos(data, me.vectorSource,color  ,tipoIcono);
-			    		console.log(element.latitude, element.longitude, element )
+			    		//console.log(element.latitude, element.longitude, element )
 			    		latitud_tmp = element.latitude;
 			    		longitud_tmp = element.longitude;
 			    		
 		    		}				
-		    		console.log('............',contador,color, tipoIcono, reg.datos.length )  ;
+		    		//console.log('............',contador,color, tipoIcono, reg.datos.length )  ;
 		    		contador = contador+1;				
 		    	});
 		    	
@@ -611,21 +612,22 @@ Ext.define('Phx.vista.Consultas', {
 		}),
 		
 	updateResumen:function(datos){
-		
-		console.log('....',datos)
+
 		var plantilla = "<div style='overflow-y: initial;'><br><b>PLACA {0}</b><br></b> \
-		       					<b>Posicion:</b> (Lat {1}, Lon  {2}, Alt {14})</br>\
+		       					<b>Posición:</b> (Lat {1}, Lon  {2}, Alt {14})</br>\
 								<b>Hora del Servidor:</b> {3}</br>\
-								<b>Responsable:</b> {4}</br>\
-								<b>Descripcion:</b> {5}</br>\
-								<b>Velocidad:</b> {6}</br>\
-								<b>Distancia:</b> {7}</br>\
-								<b>Total Distancia:</b> {8}</br>\
-								<b>Odometro:</b> {9}</br>\
-								<b>Consumo de combustible:</b> {10}</br>\
-								<b>Battery:</b> {11}</br>\
-								<b>Rssi:</b> {12}</br>\
-								<b>Direccion:</b> {13}</br></br></div>";
+                                <b>Nro.Móvil:</b> {15}</br>\
+                                <b>Responsable:</b> {4}</br>\
+                                <b>Descripción:</b> {5}</br>\
+                                <b>Velocidad:</b> {6}</br>\
+                                <b>Distancia:</b> {7}</br>\
+                                <b>Total Distancia:</b> {8}</br>\
+                                <b>Odómetro:</b> {9}</br>\
+                                <b>Consumo de combustible:</b> {10}</br>\
+                                <b>Battery:</b> {11}</br>\
+                                <b>Rssi:</b> {12}</br>\
+                                <b>Dirección:</b> {13}</br></br>\
+                                </div>";
 								
 		var  reg = {};
 		if(datos.attributes){
@@ -650,7 +652,8 @@ Ext.define('Phx.vista.Consultas', {
 			                                           reg.battery||0,
 			                                           reg.rssi||0,
 			                                           datos.address||'',
-			                                           datos.altitude||0
+			                                           datos.altitude||0,
+                                                       datos.nro_movil
 			                                           
 			                                           ));
 			                                           

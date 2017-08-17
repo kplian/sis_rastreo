@@ -133,7 +133,8 @@ BEGIN
 							when ''alarm'' then ''Alarma''::varchar
 							else ev.type
 						end as desc_type,
-						pos.servertime
+						pos.servertime,
+						eq.nro_movil
 						from ras.vequipo eq
 						inner join devices dev
 						on dev.uniqueid = eq.uniqueid
@@ -194,7 +195,8 @@ BEGIN
 						end as desc_type,
 						cast(pos.attributes as json)->>''distance'',
 						pos.servertime,
-						teq.nombre as desc_tipo_equipo
+						teq.nombre as desc_tipo_equipo,
+						eq.nro_movil
 						from ras.vequipo eq
 						inner join devices de
 						on de.uniqueid = eq.uniqueid
@@ -294,7 +296,8 @@ BEGIN
 				desc_type varchar,
 				send boolean default true,
 				distance numeric,
-				servertime timestamp
+				servertime timestamp,
+				nro_movil varchar
 			) on commit drop;
 
 			--Sentencia de la consulta
@@ -321,7 +324,8 @@ BEGIN
 				type,
 				attributes_event,
 				desc_type,
-				servertime)
+				servertime,
+				nro_movil)
 						select
 						eq.id_equipo, eq.uniqueid,
 						eq.marca, eq.modelo, eq.placa,
@@ -342,7 +346,8 @@ BEGIN
 							when ''alarm'' then ''Alarma''::varchar
 							else ev.type
 						end as desc_type,
-						pos.servertime
+						pos.servertime,
+						eq.nro_movil
 						from ras.vequipo eq
 						inner join devices de
 						on de.uniqueid = eq.uniqueid
@@ -422,7 +427,8 @@ BEGIN
 							else ev.type
 						end as desc_type,
 						pos.servertime,
-						eq.tipo_equipo
+						eq.tipo_equipo,
+						eq.nro_movil
 						from ras.vequipo eq
 						inner join devices de
 						on de.uniqueid = eq.uniqueid
