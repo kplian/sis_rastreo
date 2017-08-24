@@ -555,10 +555,10 @@ Ext.define('Phx.vista.MonitoreoGrupo', {
 					direction : 'ASC'
 				},
 				totalProperty : 'total',
-				fields : ['id_grupo','nombre'],
+				fields : ['id_grupo','nombre','codigo'],
 				// turn on remote sorting
 				remoteSort : true,
-				baseParams : {par_filtro : 'nombre'}
+				baseParams : {par_filtro : 'nombre#codigo'}
 			}),
 			tpl: '<tpl for="."><div class="x-combo-list-item" ><div class="awesomecombo-item {checked}">{codigo}-{nombre}</div> </div></tpl>',
 			valueField : 'id_grupo',
