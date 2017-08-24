@@ -331,8 +331,6 @@ Ext.define('Phx.vista.Monitoreo', {
     },
     
     successCarga: function(resp, a, b, c, d) {
-
-        console.log('carga',resp)
     	
     	resp.responseText = resp.responseText.replace('<pre>','').replace('</pre>','')
     	var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
@@ -342,7 +340,7 @@ Ext.define('Phx.vista.Monitoreo', {
             //var el = moment(element.servertime).utc().format('DD/MM/YYYY HH:mm:00');
     		me.dibujarPunto({   latitud : element.latitude  ,
 	    			            longitud: element.longitude,
-	    			            codigo: element.placa ,
+	    			            codigo: element.nro_movil ,
 	    			            nombre: element.placa,
 	    			            attributes: element.attributes,
 	    			            speed: element.speed,
@@ -352,7 +350,9 @@ Ext.define('Phx.vista.Monitoreo', {
 	    			            marca: element.marca,
 	    			            estado: element.estado,
 	    			            address: element.address,
-	    			            altitud: element.altitude });
+	    			            altitud: element.altitude,
+                                nro_movil: element.nro_movil,
+                                placa: element.placa });
     	});
     	
     	//elimar los los marcadores que no fueron considerados
@@ -466,7 +466,7 @@ Ext.define('Phx.vista.Monitoreo', {
 			allowBlank : false,
 			disableSearchButton : false,
 			emptyText : 'seleccione un dispositivo ...',
-			store : new Ext.data.JsonStore({
+			/*store : new Ext.data.JsonStore({
 				url : '../../sis_rastreo/control/Equipo/listarEquipo',
 				id : 'id_equipo',
 				root : 'datos',
@@ -482,7 +482,22 @@ Ext.define('Phx.vista.Monitoreo', {
 				remoteSort : true,
 				baseParams : {par_filtro : 'placa#nro_movil#desc_tipo_equipo'}
 			}),
-			tpl: '<tpl for="."><div class="x-combo-list-item" ><div class="awesomecombo-item {checked}">{placa}-{desc_tipo_equipo}</div> </div></tpl>',
+			tpl: '<tpl for="."><div class="x-combo-list-item" ><div class="awesomecombo-item {checked}">{placa}-{desc_tipo_equipo}</div> </div></tpl>',*/
+            store : new Ext.data.JsonStore({
+                url : '../../sis_rastreo/control/Equipo/listarEquipoRapido',
+                id : 'id_equipo',
+                root : 'datos',
+                sortInfo : {
+                    field : 'placa',
+                    direction : 'ASC'
+                },
+                totalProperty : 'total',
+                fields: ['id_equipo','placa','nro_movil','marca','modelo','tipo_equipo'],
+                // turn on remote sorting
+                remoteSort : true,
+                baseParams : {par_filtro : 'placa#nro_movil#tipo_equipo'}
+            }),
+            tpl: '<tpl for="."><div class="x-combo-list-item" ><div class="awesomecombo-item {checked}">{placa}-{tipo_equipo} ({nro_movil})</div> </div></tpl>',
 			valueField : 'id_equipo',
 			displayField : 'placa',
 			hiddenName : 'id_equipo',
@@ -499,8 +514,9 @@ Ext.define('Phx.vista.Monitoreo', {
 		}),
 		
 	updateResumen:function(datos){
-		var plantilla = "<div style='overflow-y: initial;'><br><b>PLACA {0}</b><br></b> \
+		var plantilla = "<div style='overflow-y: initial;'><br><b>PLACA {16}</b><br></b> \
 		       					<b>Posicion:</b> (Lat {1}, Lon  {2}, Alt {14})</br>\
+                                <b>Nro.Móvil:</b> {15}</br>\
 								<b>Estado:</b> {3}</br>\
 								<b>Responsable:</b> {4}</br>\
 								<b>Descripcion:</b> {5}</br>\
@@ -515,8 +531,7 @@ Ext.define('Phx.vista.Monitoreo', {
 								
 								
 		var  reg   = Ext.util.JSON.decode(Ext.util.Format.trim(datos.attributes));						
-		       
-		     
+
 		this.panelResumen.update( String.format(plantilla,
 			                                           datos.codigo, 
 			                                           datos.longitud,
@@ -532,8 +547,9 @@ Ext.define('Phx.vista.Monitoreo', {
 			                                           reg.battery||0,
 			                                           reg.rssi||0,
 			                                           datos.address||'',
-			                                           datos.altitud||0
-			                                           
+			                                           datos.altitud||0,
+			                                           datos.nro_movil,
+                                                       datos.placa
 			                                           ));
 			                                           
 			                                           

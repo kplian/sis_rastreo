@@ -103,9 +103,10 @@ Phx.vista.Equipo=Ext.extend(Phx.gridInterfaz,{
 			},
 			type: 'ComboBox',
 			id_grupo: 0,
-			filters: {pfiltro: 'tipeq.nombre',type: 'string'},
+			filters: {pfiltro: 'equip.tipo_equipo',type: 'string'},
 			grid: true,
-			form: true
+			form: true,
+			bottom_filter:true
 		},
 		{
 			config:{
@@ -128,7 +129,8 @@ Phx.vista.Equipo=Ext.extend(Phx.gridInterfaz,{
 				filters:{pfiltro:'equip.placa',type:'string'},
 				id_grupo:1,
 				grid:true,
-				form:false
+				form:false,
+				bottom_filter:true
 		},
 		{
 			config:{
@@ -152,13 +154,27 @@ Phx.vista.Equipo=Ext.extend(Phx.gridInterfaz,{
 								    <th>\
 								    	<div class="x-combo-list-item" style="font-size: x-small">\
 											<p><b>Fecha Ult. Sinc.: </b> '+record.data['ultimo_envio']+'</p>\
+										</div>\
+								    </th>\
+								  </tr>\
+								</table>\
+							</tpl>';
+					/*return	'<tpl for=".">\
+								<table>\
+								  <tr>\
+								    <th style="vertical-align:middle;">\
+										<img src=\'../../../lib/imagenes/'+icon+'\' width=32 height=32>\
+								    </th>\
+								    <th>\
+								    	<div class="x-combo-list-item" style="font-size: x-small">\
+											<p><b>Fecha Ult. Sinc.: </b> '+record.data['ultimo_envio']+'</p>\
 											<p><b>Conductor: </b>'+record.data['responsable']+'</p>\
 											<p><b>Evento: </b>'+record.data['desc_type']+'</p>\
 										</div>\
 								    </th>\
 								  </tr>\
 								</table>\
-							</tpl>';
+							</tpl>';*/
 				}
 			},
 				type:'TextField',
@@ -205,9 +221,10 @@ Phx.vista.Equipo=Ext.extend(Phx.gridInterfaz,{
 			},
 			type: 'ComboBox',
 			id_grupo: 0,
-			filters: {pfiltro: 'marca.nombre',type: 'string'},
+			filters: {pfiltro: 'equip.marca',type: 'string'},
 			grid: false,
-			form: true
+			form: true,
+			bottom_filter:true
 		},
 		{
 			config: {
@@ -248,9 +265,10 @@ Phx.vista.Equipo=Ext.extend(Phx.gridInterfaz,{
 			},
 			type: 'ComboBox',
 			id_grupo: 0,
-			filters: {pfiltro: 'model.nombre',type: 'string'},
+			filters: {pfiltro: 'equip.modelo',type: 'string'},
 			grid: false,
-			form: true
+			form: true,
+			bottom_filter:true
 		},
 		{
 			config:{
@@ -297,7 +315,8 @@ Phx.vista.Equipo=Ext.extend(Phx.gridInterfaz,{
 				filters:{pfiltro:'equip.uniqueid',type:'string'},
 				id_grupo:1,
 				grid:false,
-				form:true
+				form:true,
+				bottom_filter:true
 		},
 		{
 			config:{
@@ -312,7 +331,8 @@ Phx.vista.Equipo=Ext.extend(Phx.gridInterfaz,{
 				filters:{pfiltro:'equip.nro_movil',type:'string'},
 				id_grupo:1,
 				grid:true,
-				form:true
+				form:true,
+				bottom_filter:true
 		},
 		{
 			config:{
@@ -366,9 +386,10 @@ Phx.vista.Equipo=Ext.extend(Phx.gridInterfaz,{
 			},
 			type: 'ComboBox',
 			id_grupo: 0,
-			filters: {pfiltro: 'tipeq.nombre',type: 'string'},
-			grid: false,
-			form: true
+			filters: {pfiltro: 'equip.desc_grupo',type: 'string'},
+			grid: true,
+			form: true,
+			bottom_filter: true
 		},
 		{
 			config:{

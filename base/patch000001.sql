@@ -222,3 +222,11 @@ with oids;
 alter table ras.tequipo
 add column nro_celular VARCHAR(30);
 /***********************************F-SCP-RCM-RAS-1-30/07/2017****************************************/
+
+
+/***********************************I-SCP-RCM-RAS-1-12/08/2017****************************************/
+CREATE INDEX idx_devices__id ON public.devices
+  USING btree (id);
+CREATE INDEX idx_events__deviceid_servertime ON public.events
+  USING btree (deviceid, servertime);
+/***********************************F-SCP-RCM-RAS-1-12/08/2017****************************************/

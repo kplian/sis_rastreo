@@ -161,7 +161,7 @@ class MODPositions extends MODbase{
 		$this->captura('attributes_event','varchar');
 		$this->captura('desc_type','varchar');
 		$this->captura('servertime','timestamp');
-
+		$this->captura('nro_movil','varchar');
 		
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -208,6 +208,7 @@ class MODPositions extends MODbase{
 		$this->captura('distance','text');
 		$this->captura('servertime','timestamp');
 		$this->captura('desc_tipo_equipo','varchar');
+		$this->captura('nro_movil','varchar');
 		
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -255,6 +256,7 @@ class MODPositions extends MODbase{
 		$this->captura('send','boolean');
 		$this->captura('distance','numeric');
 		$this->captura('servertime','timestamp');
+		$this->captura('nro_movil','varchar');
 		
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -298,6 +300,7 @@ class MODPositions extends MODbase{
 		$this->captura('desc_type','varchar');
 		$this->captura('servertime','timestamp');
 		$this->captura('tipo_equipo','varchar');
+		$this->captura('nro_movil','varchar');
 		
 		//Ejecuta la instruccion
 		$this->armarConsulta();

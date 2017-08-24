@@ -59,14 +59,17 @@ class MODEquipo extends MODbase{
 		$this->captura('speed','float8');
 		$this->captura('attributes','varchar');
 		$this->captura('address','varchar');
-		$this->captura('desc_type','varchar');
+		//$this->captura('desc_type','varchar');
 		$this->captura('desc_equipo','text');
 		//$this->captura('responsable','text');
-		$this->captura('type','varchar');
+		//$this->captura('type','varchar');
 		$this->captura('id_grupo','integer');
 		$this->captura('desc_grupo','varchar');
 		$this->captura('color_grupo','varchar');
 		$this->captura('nro_celular','varchar');
+		$this->captura('id_marca','int4');
+
+
 		
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -104,6 +107,7 @@ class MODEquipo extends MODbase{
 		$this->setParametro('monto','monto','numeric');
 		$this->setParametro('uniqueid','uniqueid','varchar');
 		$this->setParametro('id_grupo','id_grupo','int4');
+		$this->setParametro('nro_celular','nro_celular','varchar');
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -142,6 +146,7 @@ class MODEquipo extends MODbase{
 		$this->setParametro('monto','monto','numeric');
 		$this->setParametro('uniqueid','uniqueid','varchar');
 		$this->setParametro('id_grupo','id_grupo','int4');
+		$this->setParametro('nro_celular','nro_celular','varchar');
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();
