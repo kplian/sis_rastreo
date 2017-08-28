@@ -539,7 +539,7 @@ Ext.define('Phx.vista.MonitoreoGrupo', {
             }),
             tpl: '<tpl for="."><div class="x-combo-list-item" ><div class="awesomecombo-item {checked}">{placa}-{tipo_equipo} ({nro_movil})</div> </div></tpl>',
 			valueField : 'id_equipo',
-			displayField : 'placa',
+			displayField : 'nro_movil',
 			hiddenName : 'id_equipo',
 			enableMultiSelect : true,
 			triggerAction : 'all',
@@ -592,7 +592,7 @@ Ext.define('Phx.vista.MonitoreoGrupo', {
 		}),
 		
 	updateResumen:function(datos){
-		var plantilla = "<div style='overflow-y: initial;'><br><b>PLACA {0}</b><br></b> \
+		var plantilla = "<div style='overflow-y: initial;'><br><b>MOVIL {0}</b><br></b> \
 		       					<b>Posicion:</b> (Lat {1}, Lon  {2}, Alt {14})</br>\
 								<b>Estado:</b> {3}</br>\
 								<b>Responsable:</b> {4}</br>\
