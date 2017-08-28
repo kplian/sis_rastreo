@@ -369,60 +369,60 @@ Ext.define('Phx.vista.MonitoreoGrupo', {
     	
     	
     },
-    
+
     successCarga: function(resp, a, b, c, d) {
 
-        console.log('carga',resp)
-    	
-    	resp.responseText = resp.responseText.replace('<pre>','').replace('</pre>','')
-    	var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
-    	var me = this;
-    	me.enProceso = false;
-    	reg.datos.forEach(function(element) {
+        resp.responseText = resp.responseText.replace('<pre>','').replace('</pre>','')
+        var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
+        var me = this;
+        me.enProceso = false;
+        reg.datos.forEach(function(element) {
             //var el = moment(element.servertime).utc().format('DD/MM/YYYY HH:mm:00');
-    		me.dibujarPunto({   latitud : element.latitude  ,
-	    			            longitud: element.longitude,
-	    			            codigo: element.placa ,
-	    			            nombre: element.placa,
-	    			            attributes: element.attributes,
-	    			            speed: element.speed,
-	    			            desc_equipo: element.desc_equipo,
-	    			            id_equipo: element.id_equipo,
-	    			            modelo: element.modelo,
-	    			            marca: element.marca,
-	    			            estado: element.estado,
-	    			            address: element.address,
-	    			            altitud: element.altitude });
-    	});
-    	
-    	//elimar los los marcadores que no fueron considerados
-    	this.dispositivos.forEach(function(e){
-    	  	   if(!e.confirmado){
-	    	  	   	console.log('eliminar....', e,  e.feature.getId())
-	    	  	   	var index = me.dispositivos.indexOf(e);
-	    	  	   	if(me.vectorSource.getFeatureById(e.feature.getId())){
-	    	  	   		me.vectorSource.removeFeature(e.feature);
-	    	  	   	}
-	    	  	   	
-	    	  	   	if(me.vectorSource.getFeatureById(e.featureLine.getId())){
-	    	  	   		me.vectorSource.removeFeature(e.featureLine);
-	    	  	   	}
-    	  	   } 
-    	  });
-    	
-    	
-    	//resetea los confirmados
-    	this.dispositivos.forEach(function(e){
-    	  	   e.confirmado = false;
-    	  	   
-    	  });
-    	
-    	
-        
+            me.dibujarPunto({   latitud : element.latitude  ,
+                longitud: element.longitude,
+                codigo: element.nro_movil ,
+                nombre: element.placa,
+                attributes: element.attributes,
+                speed: element.speed,
+                desc_equipo: element.desc_equipo,
+                id_equipo: element.id_equipo,
+                modelo: element.modelo,
+                marca: element.marca,
+                estado: element.estado,
+                address: element.address,
+                altitud: element.altitude,
+                nro_movil: element.nro_movil,
+                placa: element.placa });
+        });
+
+        //elimar los los marcadores que no fueron considerados
+        this.dispositivos.forEach(function(e){
+            if(!e.confirmado){
+                console.log('eliminar....', e,  e.feature.getId())
+                var index = me.dispositivos.indexOf(e);
+                if(me.vectorSource.getFeatureById(e.feature.getId())){
+                    me.vectorSource.removeFeature(e.feature);
+                }
+
+                if(me.vectorSource.getFeatureById(e.featureLine.getId())){
+                    me.vectorSource.removeFeature(e.featureLine);
+                }
+            }
+        });
+
+
+        //resetea los confirmados
+        this.dispositivos.forEach(function(e){
+            e.confirmado = false;
+
+        });
+
+
+
     },
-    
+
     conexionFailure: function(resp){
-    	Phx.CP.conexionFailure(resp)
+        Phx.CP.conexionFailure(resp)
     },
     
    dibujarPunto:function(data){    	
@@ -625,8 +625,9 @@ Ext.define('Phx.vista.MonitoreoGrupo', {
 			                                           reg.battery||0,
 			                                           reg.rssi||0,
 			                                           datos.address||'',
-			                                           datos.altitud||0
-			                                           
+			                                           datos.altitud||0,
+                                                        datos.nro_movil,
+                                                        datos.placa
 			                                           ));
 			                                           
 			                                           
