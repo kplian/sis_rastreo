@@ -33,6 +33,7 @@ DECLARE
 	v_total_distancia	numeric;
 	v_distance 			text;
 	v_factor_vel		numeric = 1.852;
+	v_utc				varchar = '4 hour';
 			    
 BEGIN
 
@@ -60,7 +61,7 @@ BEGIN
 						posic.protocol,
 						posic.speed * '||v_factor_vel||',
 						posic.network,
-						posic.servertime,
+						posic.servertime + interval '''||v_utc||''',
 						posic.longitude,
 						posic.valid,
 						posic.deviceid,
@@ -133,7 +134,7 @@ BEGIN
 							when ''alarm'' then ''Alarma''::varchar
 							else ev.type
 						end as desc_type,
-						pos.servertime,
+						pos.servertime + interval '''||v_utc||''',
 						eq.nro_movil
 						from ras.vequipo eq
 						inner join devices dev
@@ -194,7 +195,7 @@ BEGIN
 							else ev.type
 						end as desc_type,
 						cast(pos.attributes as json)->>''distance'',
-						pos.servertime,
+						pos.servertime + interval '''||v_utc||''',
 						teq.nombre as desc_tipo_equipo,
 						eq.nro_movil
 						from ras.vequipo eq
@@ -241,8 +242,8 @@ BEGIN
 						on de.uniqueid = eq.uniqueid
 						inner join positions pos
 						on pos.deviceid = de.id
-						left join segu.vpersona per
-						on per.id_persona = ras.f_get_responsable_fecha(eq.id_equipo,pos.servertime::date)
+						--left join segu.vpersona per
+						--on per.id_persona = ras.f_get_responsable_fecha(eq.id_equipo,pos.servertime::date)
 						left join events ev
 						on ev.positionid = pos.id
 						inner join ras.ttipo_equipo teq
@@ -346,7 +347,7 @@ BEGIN
 							when ''alarm'' then ''Alarma''::varchar
 							else ev.type
 						end as desc_type,
-						pos.servertime,
+						pos.servertime + interval '''||v_utc||''',
 						eq.nro_movil
 						from ras.vequipo eq
 						inner join devices de
@@ -426,7 +427,7 @@ BEGIN
 							when ''alarm'' then ''Alarma''::varchar
 							else ev.type
 						end as desc_type,
-						pos.servertime,
+						pos.servertime + interval '''||v_utc||''',
 						eq.tipo_equipo,
 						eq.nro_movil
 						from ras.vequipo eq

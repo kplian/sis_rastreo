@@ -138,7 +138,7 @@ Phx.vista.Equipo=Ext.extend(Phx.gridInterfaz,{
 				fieldLabel: 'Última Sincronización',
 				allowBlank: false,
 				anchor: '100%',
-				gwidth: 200,
+				gwidth: 150,
 				maxLength:128,
 				renderer: function(value,p,record){
 					var icon='wifi1.png';
@@ -153,7 +153,7 @@ Phx.vista.Equipo=Ext.extend(Phx.gridInterfaz,{
 								    </th>\
 								    <th>\
 								    	<div class="x-combo-list-item" style="font-size: x-small">\
-											<p><b>Fecha Ult. Sinc.: </b> '+record.data['ultimo_envio']+'</p>\
+											<p><b>Hace: </b> '+record.data['ultimo_envio']+'</p>\
 										</div>\
 								    </th>\
 								  </tr>\

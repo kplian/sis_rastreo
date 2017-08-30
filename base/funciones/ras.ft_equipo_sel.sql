@@ -28,6 +28,7 @@ DECLARE
 	v_nombre_funcion   	text;
 	v_resp				varchar;
 	v_factor_vel		numeric = 1.852;
+	v_utc				varchar = '4 hour';
 			    
 BEGIN
 
@@ -80,7 +81,7 @@ BEGIN
 						equip.uniqueid,
 						de.id as deviceid,
 						--ras.f_get_time(pos.servertime::timestamp,CURRENT_TIMESTAMP::timestamp) as ultimo_envio,
-						age(CURRENT_TIMESTAMP::timestamp,pos.servertime::timestamp) as ultimo_envio,
+						replace(replace(replace(replace(replace(replace(age(CURRENT_TIMESTAMP::timestamp,pos.servertime + interval '''||v_utc||''')::text,''years'',''años''),''year'',''año''),''mons'',''meses''),''mon'',''mes''),''days'',''días''),''day'',''día'')::text as ultimo_envio,
 						pos.latitude,
 						pos.longitude,
 						pos.speed * '||v_factor_vel||' as speed,
