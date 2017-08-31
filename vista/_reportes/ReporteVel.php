@@ -55,7 +55,7 @@ Phx.vista.ReporteVel=Ext.extend(Phx.gridInterfaz,{
             config:{
                 name: 'uniqueid',
                 fieldLabel: 'IMEI',
-                gwidth: 100
+                gwidth: 110
             },
             type:'Field',
             filters:{pfiltro:'disp.uniqueid',type:'string'},
@@ -69,7 +69,7 @@ Phx.vista.ReporteVel=Ext.extend(Phx.gridInterfaz,{
                 renderer:function (value,p,record){return value?value.dateFormat('d/m/Y H:i:s'):''}
             },
             type:'Field',
-            filters:{pfiltro:'disp.servertime',type:'string'},
+            filters:{pfiltro:'disp.servertime',type:'date'},
             grid:true
         }, {
             config:{
@@ -222,7 +222,7 @@ Phx.vista.ReporteVel=Ext.extend(Phx.gridInterfaz,{
         {name:'altitude', type: 'numeric'},
         {name:'speed', type: 'numeric'},
         {name:'course', type: 'numeric'},
-        {name:'address', type: 'numeric'},
+        {name:'address', type: 'string'},
         {name:'attributes', type: 'string'},
         {name:'accuracy', type: 'numeric'},
         {name:'desc_equipo', type: 'string'},
@@ -231,7 +231,7 @@ Phx.vista.ReporteVel=Ext.extend(Phx.gridInterfaz,{
         {name:'attributes_event', type: 'string'},
         {name:'desc_type', type: 'string'},
         {name:'tipo_equipo', type: 'string'},
-        {name:'servertime', type: 'date',dateFormat:'Y-m-d H:i:s.u'}
+        {name:'servertime', type: 'date',dateFormat:'Y-m-d H:i:s'}
     ],
     sortInfo:{
         field: 'pos.servertime',

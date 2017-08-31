@@ -729,9 +729,28 @@ Phx.vista.Equipo=Ext.extend(Phx.gridInterfaz,{
 		{name:'fecha_mod', type: 'date',dateFormat:'Y-m-d H:i:s.u'},
 		{name:'id_usuario_mod', type: 'numeric'},
 		{name:'usr_reg', type: 'string'},
-		{name:'usr_mod', type: 'string'},'desc_tipo_equipo','id_marca','desc_modelo','desc_marca','uniqueid','deviceid','ultimo_envio',
-		'latitude','longitude','speed','attributes','address','desc_type','desc_equipo','responsable','type','id_grupo','desc_grupo','color_grupo','nro_celular'
-		
+		{name:'usr_mod', type: 'string'},
+
+		{name:'desc_tipo_equipo', type: 'string'},
+		{name:'id_marca', type: 'numeric'},
+		{name:'desc_modelo', type: 'string'},
+		{name:'desc_marca', type: 'string'},
+		{name:'uniqueid', type: 'string'},
+		{name:'deviceid', type: 'numeric'},
+		{name:'ultimo_envio', type: 'string'},
+		{name:'latitude', type: 'numeric'},
+		{name:'longitude', type: 'numeric'},
+		{name:'speed', type: 'numeric'},
+		{name:'attributes', type: 'string'},
+		{name:'address', type: 'string'},
+		{name:'desc_type', type: 'string'},
+		{name:'desc_equipo', type: 'string'},
+		{name:'responsable', type: 'string'},
+		{name:'type', type: 'string'},
+		{name:'id_grupo', type: 'numeric'},
+		{name:'desc_grupo', type: 'string'},
+		{name:'color_grupo', type: 'string'},
+		{name:'nro_celular' type: 'string'}
 	],
 	sortInfo:{
 		field: 'id_equipo',

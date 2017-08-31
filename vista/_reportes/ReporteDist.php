@@ -224,7 +224,9 @@ Phx.vista.ReporteDist=Ext.extend(Phx.gridInterfaz,{
         {name:'attributes_event', type: 'string'},
         {name:'desc_type', type: 'string'},
         {name:'tipo_equipo', type: 'string'},
-        {name:'servertime', type: 'date',dateFormat:'Y-m-d H:i:s.u'},'distance','desc_tipo_equipo'
+        {name:'servertime', type: 'date',dateFormat:'Y-m-d H:i:s'},
+        {name:'distance', type: 'numeric'},
+        {name:'desc_tipo_equipo', type: 'string'}
     ],
     sortInfo:{
         field: 'pos.servertime',
