@@ -60,7 +60,7 @@ Phx.vista.ReporteDist=Ext.extend(Phx.gridInterfaz,{
                 fieldLabel: 'Fecha/Hora',
                 gwidth: 120,
                 format: 'd/m/Y', 
-                renderer:function (value,p,record){return value?value.dateFormat('d/m/Y H:i:s'):''}
+                renderer:function (value,p,record){return value?value.dateFormat('d/m/Y H:i:s.u'):''}
             },
             type:'Field',
             filters:{pfiltro:'disp.servertime',type:'string'},
@@ -224,7 +224,7 @@ Phx.vista.ReporteDist=Ext.extend(Phx.gridInterfaz,{
         {name:'attributes_event', type: 'string'},
         {name:'desc_type', type: 'string'},
         {name:'tipo_equipo', type: 'string'},
-        {name:'servertime', type: 'date',dateFormat:'Y-m-d H:i:s'},
+        {name:'servertime', type: 'date',dateFormat:'Y-m-d H:i:s.u'},
         {name:'distance', type: 'numeric'},
         {name:'desc_tipo_equipo', type: 'string'}
     ],
