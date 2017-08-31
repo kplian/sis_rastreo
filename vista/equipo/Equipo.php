@@ -750,7 +750,7 @@ Phx.vista.Equipo=Ext.extend(Phx.gridInterfaz,{
 		{name:'id_grupo', type: 'numeric'},
 		{name:'desc_grupo', type: 'string'},
 		{name:'color_grupo', type: 'string'},
-		{name:'nro_celular' type: 'string'}
+		{name:'nro_celular', type: 'string'}
 	],
 	sortInfo:{
 		field: 'id_equipo',
