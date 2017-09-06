@@ -25,7 +25,7 @@ DECLARE
 	v_resp				varchar;
 	v_eventos			varchar;
 	v_factor_vel		numeric = 1.852;
-	v_utc				varchar = '4 hour';
+	v_utc				varchar = '- interval ''4 hour''';
 			    
 BEGIN
 
@@ -47,7 +47,7 @@ BEGIN
 						event.id,
 						event.geofenceid,
 						event.deviceid,
-						event.servertime + interval '''||v_utc||''' as servertime,
+						event.servertime '||v_utc||' as servertime,
 						event.attributes,
 						event.type,
 						event.positionid,
@@ -144,7 +144,7 @@ BEGIN
                         eq.marca,
                         eq.modelo,
                         ev.id as eventid,
-                        ev.servertime + interval '''||v_utc||''' as servertime,
+                        ev.servertime '||v_utc||' as servertime,
                         ev.deviceid, --10
                         ev.attributes,
                         case ev.type
@@ -185,7 +185,7 @@ BEGIN
 						eq.marca,
 						eq.modelo,
 						tev.id_tipo_evento as eventid,
-						pos.servertime + interval '''||v_utc||''' as servertime,
+						pos.servertime '||v_utc||' as servertime,
 						dev.id as deviceid, --10
 						pos.attributes,
 						tev.codigo || '' - '' || tev.nombre desc_type,

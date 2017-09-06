@@ -368,3 +368,10 @@ AS
        JOIN ras.ttipo_equipo teq ON teq.id_tipo_equipo = eq.id_tipo_equipo
        LEFT JOIN ras.tgrupo grup ON grup.id_grupo = eq.id_grupo;
 /***********************************F-DEP-RCM-RAS-0-15/08/2017*****************************************/
+
+/***********************************I-DEP-RCM-RAS-0-06/09/2017*****************************************/
+alter table ras.tgrupo_notificacion
+add constraint fk_tgrupo_notificacion__id_grupo foreign key (id_grupo) references ras.tgrupo(id_grupo);
+alter table ras.tgrupo_notificacion
+add constraint fk_tgrupo_notificacion__id_usuario foreign key (id_usuario) references segu.tusuario(id_usuario);
+/***********************************F-DEP-RCM-RAS-0-06/09/2017*****************************************/

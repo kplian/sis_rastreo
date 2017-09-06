@@ -230,3 +230,13 @@ CREATE INDEX idx_devices__id ON public.devices
 CREATE INDEX idx_events__deviceid_servertime ON public.events
   USING btree (deviceid, servertime);
 /***********************************F-SCP-RCM-RAS-1-12/08/2017****************************************/
+
+/***********************************I-SCP-RCM-RAS-1-06/09/2017****************************************/
+create table ras.tgrupo_notificacion (
+  id_grupo_notificacion serial,
+  id_grupo integer,
+  id_usuario varchar(20),
+  constraint pk_tgrupo_notificacion__id_grupo_notificacion PRIMARY KEY (id_grupo_notificacion)
+) inherits (pxp.tbase)
+with oids;
+/***********************************F-SCP-RCM-RAS-1-06/09/2017****************************************/
