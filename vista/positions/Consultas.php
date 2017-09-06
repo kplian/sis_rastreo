@@ -293,7 +293,7 @@ Ext.define('Phx.vista.Consultas', {
             split: true, 
             layout:  'fit' })
 
-        //Creación del panel de parámetros
+        //CreaciÃ³n del panel de parÃ¡metros
         this.viewPort = new Ext.Container({
             layout: 'border',
             items: [this.panelMapa]
@@ -329,20 +329,29 @@ Ext.define('Phx.vista.Consultas', {
        
         
         if(this.servidor){
-        	  var projection = ol.proj.get('EPSG:3857');
+        	  var projection = ol.proj.get('EPSG:900913');
 		      var projectionExtent = projection.getExtent();
 		      var size = ol.extent.getWidth(projectionExtent) / 256;
-		      var resolutions = new Array(14);
-		      var matrixIds = new Array(14);
-		      for (var z = 0; z < 14; ++z) {
+		      var resolutions = new Array(22);
+		      var matrixIds = new Array(22);
+		      for (var z = 0; z < 22; ++z) {
 		        // generate resolutions and matrixIds arrays for this WMTS
 		        resolutions[z] = size / Math.pow(2, z);
 		        matrixIds[z] = z;
-		      }			
-					
+		      };	
+		      
+		      var tileGrid = new ol.tilegrid.WMTS({
+		        origin: ol.extent.getTopLeft(projection.getExtent()),
+		        resolutions: resolutions,
+		        matrixIds: matrixIds
+		    });
+		      
+		      
+		      		
+				/*	
 		     this.layer = new ol.layer.Tile({
 					        source: new ol.source.WMTS({
-						          attributions: '© <a>Elfec</a>',
+						          attributions: 'Â© <a>Elfec</a>',
 						          crossOrigin: 'anonymous',
 						          serverType: 'geoserver',
 						          requestEncoding: 'REST',
@@ -360,11 +369,30 @@ Ext.define('Phx.vista.Consultas', {
 				              }),
 				              style: 'default',
 				              wrapX: true,
+            					requestEncoding: 'REST',
 				              isBaseLayer: false,
 				              opacity: 0.6,
-					        }),
-					        tileOptions: {crossOriginKeyword: 'anonymous'},
-					      });	
+					        })
+					      });	*/
+					     
+					     
+					     
+							this.layer = new ol.layer.Tile({
+						        source: new ol.source.WMTS({
+						            attributions: 'Tiles Â© <a href="https://services.arcgisonline.com/arcgis/rest/' +
+						            'services/Demographics/USA_Population_Density/MapServer/">ArcGIS</a>',
+						            //url: 'http://192.168.60.20:8080/webmap/elfec/wmts/webmap.subtransmission/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.png',
+						             url: 'http://'+this.servidor+'{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.png',
+						            layer: 'webmap.subtransmission',
+						            matrixSet: 'centrality',
+						            format: 'image/png',
+						            tileGrid: tileGrid,
+						            style: 'default',
+						            wrapX: true,
+						            requestEncoding: 'REST'
+						        }),
+						        opacity: 1
+						    });
         }
         else{
 	        this.layer = new ol.layer.Tile({
@@ -379,10 +407,10 @@ Ext.define('Phx.vista.Consultas', {
            
        
         this.olview = new ol.View({
-            center: [0, 0],
+            center: [-7304699.1313268, -1939396.311513],
             zoom: 2,
             minZoom: 2,
-            maxZoom: 20
+            maxZoom: 24
         }),
         
         this.map = new ol.Map({
@@ -614,19 +642,19 @@ Ext.define('Phx.vista.Consultas', {
 	updateResumen:function(datos){
 
 		var plantilla = "<div style='overflow-y: initial;'><br><b>PLACA {0}</b><br></b> \
-		       					<b>Posición:</b> (Lat {1}, Lon  {2}, Alt {14})</br>\
+		       					<b>PosiciÃ³n:</b> (Lat {1}, Lon  {2}, Alt {14})</br>\
 								<b>Hora del Servidor:</b> {3}</br>\
-                                <b>Nro.Móvil:</b> {15}</br>\
+                                <b>Nro.MÃ³vil:</b> {15}</br>\
                                 <b>Responsable:</b> {4}</br>\
-                                <b>Descripción:</b> {5}</br>\
+                                <b>DescripciÃ³n:</b> {5}</br>\
                                 <b>Velocidad:</b> {6}</br>\
                                 <b>Distancia:</b> {7}</br>\
                                 <b>Total Distancia:</b> {8}</br>\
-                                <b>Odómetro:</b> {9}</br>\
+                                <b>OdÃ³metro:</b> {9}</br>\
                                 <b>Consumo de combustible:</b> {10}</br>\
                                 <b>Battery:</b> {11}</br>\
                                 <b>Rssi:</b> {12}</br>\
-                                <b>Dirección:</b> {13}</br></br>\
+                                <b>DirecciÃ³n:</b> {13}</br></br>\
                                 </div>";
 								
 		var  reg = {};
