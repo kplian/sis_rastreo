@@ -43,8 +43,7 @@ header("content-type: text/javascript; charset=UTF-8");
             }
             return c
         },
-        getImageSvg: function(g, m, d, a, data) {
-            console.log("getImageSvg g:"+g+" m:"+m+" d:"+d+" a:"+a);
+        getImageSvg: function(g, m, d, a) {
             var h, c, j, b, k, f, e, l;
             c = this.deviceStore.getAt(this.deviceStore.find("key", a || "default", 0, false, false, true));
             j = Ext.ux.clone(c.get("svg"));
@@ -68,11 +67,6 @@ header("content-type: text/javascript; charset=UTF-8");
             } else {
                 j.getElementById(c.get("scaleId")).setAttribute("transform", e + " " + f)
             }
-            if(data.speed == 0){
-                j.getElementById(c.get("fillId")).setAttribute("style", "fill:#FF0000;stroke:#000000;stroke-width:1px;")
-            }else{
-                j.getElementById(c.get("fillId")).setAttribute("style", "fill:#FFFF00;stroke:#000000;stroke-width:1px;")
-            }
             j.documentElement.setAttribute("width", b);
             j.documentElement.setAttribute("height", k);
             j.documentElement.setAttribute("viewBox", "0 0 " + b + " " + k);
@@ -88,10 +82,9 @@ header("content-type: text/javascript; charset=UTF-8");
             c.appendChild(b);
             return c
         },
-        getImageIcon: function(c, f, h, e, data) {
-            console.log("getImageIcon c:"+c+" f:"+f+" h:"+h+" e:"+e);
+        getImageIcon: function(c, f, h, e) {
             var g, b, d, a;
-            b = this.getImageSvg(c, f, h, e, data);
+            b = this.getImageSvg(c, f, h, e);
             d = parseFloat(b.documentElement.getAttribute("width"));
             a = parseFloat(b.documentElement.getAttribute("height"));
             g = new ol.style.Icon({
@@ -128,8 +121,6 @@ header("content-type: text/javascript; charset=UTF-8");
             this.featureLine.setStyle([a])
         },
         addPos: function(d, b, f, a) {
-            console.log("addPos d:"+d+" b:"+b+" f:"+f+" a:"+a);
-            console.log(d);
             var c = [parseFloat(d.longitud), parseFloat(d.latitud)];
             var i = ol.proj.fromLonLat(c);
             this.featureLine.getGeometry().appendCoordinate(i);
@@ -140,7 +131,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 pointData: d.data
             });
             this.feature.push(j);
-            var e = Phx.vista.DeviceImages.getImageIcon(f, false, d.course, a, d.data);
+            var e = Phx.vista.DeviceImages.getImageIcon(f, false, d.course, a);
             var h = d.codigo;
             if (a == "car") {
                 h = d.data.nro_movil

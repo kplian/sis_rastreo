@@ -12,8 +12,7 @@ Ext.define('Phx.vista.car', {
 	constructor: function(config){
         Ext.apply(this,config);
         this.callParent(arguments);
-        console.log("vista.car config");
-        console.log(config);
+        
         var aux = [parseFloat(config.longitud),parseFloat(config.latitud)];
         var point = ol.proj.fromLonLat(aux);
     	this.feature = new ol.Feature({geometry: new ol.geom.Point(point), car: this});    	
@@ -22,7 +21,7 @@ Ext.define('Phx.vista.car', {
     	this.featureLine.setId(config.codigo+'-line');
     	
         var iconStyle = new ol.style.Style({
-                image: this.getImageIcon(config),
+                image: this.getImageIcon(),
                 text: new ol.style.Text({
                     font: '12px Calibri,sans-serif',
                     fill: new ol.style.Fill({ color: '#000' }),
@@ -79,9 +78,7 @@ Ext.define('Phx.vista.car', {
                     anchorXUnits: 'fraction',
                     anchorYUnits: 'pixels',
                     opacity: 0.75,
-                    src: m.speed == 0 ?
-                        '../../../sis_rastreo/vista/positions/car_red.svg' :
-                        '../../../sis_rastreo/vista/positions/car_yellow.svg'
+                    src: '../../../sis_rastreo/vista/positions/car.svg'
                 })
 	
 	        return image;
@@ -361,7 +358,7 @@ Ext.define('Phx.vista.Monitoreo', {
     	//elimar los los marcadores que no fueron considerados
     	this.dispositivos.forEach(function(e){
     	  	   if(!e.confirmado){
-	    	  	   	//console.log('eliminar....', e,  e.feature.getId())
+	    	  	   	console.log('eliminar....', e,  e.feature.getId())
 	    	  	   	var index = me.dispositivos.indexOf(e);
 	    	  	   	if(me.vectorSource.getFeatureById(e.feature.getId())){
 	    	  	   		me.vectorSource.removeFeature(e.feature);

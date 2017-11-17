@@ -261,7 +261,7 @@ Phx.vista.Positions=Ext.extend(Phx.gridInterfaz,{
 	fields: [
 		{name:'id', type: 'numeric'},
 		{name:'address', type: 'string'},
-		{name:'devicetime', type: 'date',dateFormat:'Y-m-d H:i:s'},
+		{name:'devicetime', type: 'date',dateFormat:'Y-m-d H:i:s.u'},
 		{name:'accuracy', type: 'string'},
 		{name:'course', type: 'string'},
 		{name:'altitude', type: 'string'},
@@ -281,7 +281,7 @@ Phx.vista.Positions=Ext.extend(Phx.gridInterfaz,{
 	],
 	sortInfo:{
 		field: 'id',
-		direction: 'DESC'
+		direction: 'ASC'
 	},
 	bdel:true,
 	bsave:true,
