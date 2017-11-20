@@ -29,7 +29,7 @@ class MODPositions extends MODbase{
 		$this->captura('protocol','varchar');
 		$this->captura('speed','float8');
 		$this->captura('network','varchar');
-		$this->captura('devicetime','timestamp');
+		$this->captura('servertime','timestamp');
 		$this->captura('longitude','float8');
 		$this->captura('valid','bool');
 		$this->captura('deviceid','int4');
