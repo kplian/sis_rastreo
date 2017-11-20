@@ -36,7 +36,7 @@ BEGIN
     inner join events ev
     on ev.deviceid = dev.id
     where eq.id_equipo = p_id_equipo
-    order by ev.servertime desc
+    order by ev.devicetime desc
     limit 1;
     
     return v_eventoid;

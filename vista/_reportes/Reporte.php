@@ -64,14 +64,14 @@ Phx.vista.Reporte=Ext.extend(Phx.gridInterfaz,{
             form:true 
         }, {
             config:{
-                name: 'servertime',
+                name: 'devicetime',
                 fieldLabel: 'Fecha/Hora',
                 gwidth: 120,
                 format: 'd/m/Y', 
                 renderer: function (value,p,record){return value?value.dateFormat('d/m/Y H:i:s.u'):''}
             },
             type:'Field',
-            filters:{pfiltro:'disp.servertime',type:'date'},
+            filters:{pfiltro:'disp.devicetime',type:'date'},
             grid:true
         }, {
             config:{
@@ -231,7 +231,7 @@ Phx.vista.Reporte=Ext.extend(Phx.gridInterfaz,{
         {name:'marca', type: 'string'},
         {name:'modelo', type: 'string'},
         {name:'eventid', type: 'numeric'},
-        {name:'servertime', type: 'date',dateFormat:'Y-m-d H:i:s.u'}, 
+        {name:'devicetime', type: 'date',dateFormat:'Y-m-d H:i:s.u'}, 
         {name:'deviceid', type: 'numeric'},
         {name:'attributes', type: 'string'},
         {name:'desc_type', type: 'string'},
@@ -245,7 +245,7 @@ Phx.vista.Reporte=Ext.extend(Phx.gridInterfaz,{
         {name:'accuracy', type: 'numeric'}
     ],
     sortInfo:{
-        field: 'servertime',
+        field: 'devicetime',
         direction: 'ASC'
     },
     bdel: false,

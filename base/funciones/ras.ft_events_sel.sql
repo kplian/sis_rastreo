@@ -144,7 +144,7 @@ BEGIN
                         eq.marca,
                         eq.modelo,
                         ev.id as eventid,
-                        ev.servertime '||v_utc||' as servertime,
+                        ev.servertime '||v_utc||' as devicetime,
                         ev.deviceid, --10
                         ev.attributes,
                         case ev.type
@@ -172,7 +172,7 @@ BEGIN
                         left join positions pos
                         on pos.id = ev.positionid
 						where eq.id_equipo in ('||v_parametros.ids||')'||'
-						and to_char(pos.servertime,''dd-mm-yyyy HH24:MI:00'')::timestamp with time zone between '''||v_parametros.fecha_ini||'''::timestamp with time zone and '''||v_parametros.fecha_fin||'''::timestamp with time zone ';
+						and to_char(pos.devicetime,''dd-mm-yyyy HH24:MI:00'')::timestamp with time zone between '''||v_parametros.fecha_ini||'''::timestamp with time zone and '''||v_parametros.fecha_fin||'''::timestamp with time zone ';
 			
 
 			v_consulta = v_consulta || ' union
@@ -185,7 +185,7 @@ BEGIN
 						eq.marca,
 						eq.modelo,
 						tev.id_tipo_evento as eventid,
-						pos.servertime '||v_utc||' as servertime,
+						pos.devicetime '||v_utc||' as devicetime,
 						dev.id as deviceid, --10
 						pos.attributes,
 						tev.codigo || '' - '' || tev.nombre desc_type,
@@ -205,7 +205,7 @@ BEGIN
 						inner join ras.ttipo_evento tev
 						on tev.codigo = cast(pos.attributes as json)->>''event''
 						where eq.id_equipo in ('||v_parametros.ids||')'||'
-						and to_char(pos.servertime,''dd-mm-yyyy HH24:MI:00'')::timestamp with time zone between '''||v_parametros.fecha_ini||'''::timestamp with time zone and '''||v_parametros.fecha_fin||'''::timestamp with time zone ';
+						and to_char(pos.devicetime,''dd-mm-yyyy HH24:MI:00'')::timestamp with time zone between '''||v_parametros.fecha_ini||'''::timestamp with time zone and '''||v_parametros.fecha_fin||'''::timestamp with time zone ';
                         
 			if v_parametros.events <> '' then
             	v_consulta = v_consulta || ' and cast(pos.attributes as json)->>''event'' in ('||v_eventos||') and ';
@@ -264,7 +264,7 @@ BEGIN
                         left join positions pos
                         on pos.id = ev.positionid
 						where eq.id_equipo in ('||v_parametros.ids||')'||'
-						and to_char(pos.servertime,''dd-mm-yyyy HH24:MI:00'')::timestamp with time zone between '''||v_parametros.fecha_ini||'''::timestamp with time zone and '''||v_parametros.fecha_fin||'''::timestamp with time zone ';
+						and to_char(pos.devicetime,''dd-mm-yyyy HH24:MI:00'')::timestamp with time zone between '''||v_parametros.fecha_ini||'''::timestamp with time zone and '''||v_parametros.fecha_fin||'''::timestamp with time zone ';
                         
 			if v_parametros.events <> '' then
             	v_consulta = v_consulta || ' and ev.type in ('||v_eventos||') and ';
@@ -285,7 +285,7 @@ BEGIN
 						inner join ras.ttipo_evento tev
 						on tev.codigo = cast(pos.attributes as json)->>''event''
 						where eq.id_equipo in ('||v_parametros.ids||')'||'
-						and to_char(pos.servertime,''dd-mm-yyyy HH24:MI:00'')::timestamp with time zone between '''||v_parametros.fecha_ini||'''::timestamp with time zone and '''||v_parametros.fecha_fin||'''::timestamp with time zone ';
+						and to_char(pos.device,''dd-mm-yyyy HH24:MI:00'')::timestamp with time zone between '''||v_parametros.fecha_ini||'''::timestamp with time zone and '''||v_parametros.fecha_fin||'''::timestamp with time zone ';
                         
 			if v_parametros.events <> '' then
             	v_consulta = v_consulta || ' and cast(pos.attributes as json)->>''event'' in ('||v_eventos||') and ';

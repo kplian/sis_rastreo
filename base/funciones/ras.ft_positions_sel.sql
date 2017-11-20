@@ -134,7 +134,7 @@ BEGIN
 							when ''alarm'' then ''Alarma''::varchar
 							else ev.type
 						end as desc_type,
-						pos.servertime '||v_utc||' as servertime,
+						pos.devicetime '||v_utc||' as devicetime,
 						eq.nro_movil
 						from ras.vequipo eq
 						inner join devices dev
@@ -195,7 +195,7 @@ BEGIN
 							else ev.type
 						end as desc_type,
 						cast(pos.attributes as json)->>''distance'',
-						pos.servertime '||v_utc||' as servertime,
+						pos.devicetime '||v_utc||' as devicetime,
 						teq.nombre as desc_tipo_equipo,
 						eq.nro_movil
 						from ras.vequipo eq
@@ -204,13 +204,13 @@ BEGIN
 						inner join positions pos
 						on pos.deviceid = de.id
 						--left join segu.vpersona per
-						--on per.id_persona = ras.f_get_responsable_fecha(eq.id_equipo,pos.servertime::date)
+						--on per.id_persona = ras.f_get_responsable_fecha(eq.id_equipo,pos.devicetime::date)
 						left join events ev
 						on ev.positionid = pos.id
 						inner join ras.ttipo_equipo teq
 						on teq.id_tipo_equipo = eq.id_tipo_equipo
 						where eq.id_equipo in ('||v_parametros.ids||')'||'
-						and to_char(pos.servertime,''dd-mm-yyyy HH24:MI:00'')::timestamp with time zone between '''||v_parametros.fecha_ini||'''::timestamp with time zone and '''||v_parametros.fecha_fin||'''::timestamp with time zone and ';
+						and to_char(pos.devicetime,''dd-mm-yyyy HH24:MI:00'')::timestamp with time zone between '''||v_parametros.fecha_ini||'''::timestamp with time zone and '''||v_parametros.fecha_fin||'''::timestamp with time zone and ';
 
 
 			--Definicion de la respuesta
@@ -243,13 +243,13 @@ BEGIN
 						inner join positions pos
 						on pos.deviceid = de.id
 						--left join segu.vpersona per
-						--on per.id_persona = ras.f_get_responsable_fecha(eq.id_equipo,pos.servertime::date)
+						--on per.id_persona = ras.f_get_responsable_fecha(eq.id_equipo,pos.devicetime::date)
 						left join events ev
 						on ev.positionid = pos.id
 						inner join ras.ttipo_equipo teq
 						on teq.id_tipo_equipo = eq.id_tipo_equipo
 						where eq.id_equipo in ('||v_parametros.ids||')'||'
-						and to_char(pos.servertime,''dd-mm-yyyy HH24:MI:00'')::timestamp with time zone between '''||v_parametros.fecha_ini||'''::timestamp with time zone and '''||v_parametros.fecha_fin||'''::timestamp with time zone and ';
+						and to_char(pos.devicetime,''dd-mm-yyyy HH24:MI:00'')::timestamp with time zone between '''||v_parametros.fecha_ini||'''::timestamp with time zone and '''||v_parametros.fecha_fin||'''::timestamp with time zone and ';
 
 			--Definicion de la respuesta
 			v_consulta:=v_consulta||v_parametros.filtro;
@@ -297,7 +297,7 @@ BEGIN
 				desc_type varchar,
 				send boolean default true,
 				distance numeric,
-				servertime timestamp,
+				devicetime timestamp,
 				nro_movil varchar
 			) on commit drop;
 
@@ -325,7 +325,7 @@ BEGIN
 				type,
 				attributes_event,
 				desc_type,
-				servertime,
+				devicetime,
 				nro_movil)
 						select
 						eq.id_equipo, eq.uniqueid,
@@ -347,7 +347,7 @@ BEGIN
 							when ''alarm'' then ''Alarma''::varchar
 							else ev.type
 						end as desc_type,
-						pos.servertime '||v_utc||' as servertime,
+						pos.devicetime '||v_utc||' as devicetime,
 						eq.nro_movil
 						from ras.vequipo eq
 						inner join devices de
@@ -355,12 +355,12 @@ BEGIN
 						inner join positions pos
 						on pos.deviceid = de.id
 						--left join segu.vpersona per
-						--on per.id_persona = ras.f_get_responsable_fecha(eq.id_equipo,pos.servertime::date)
+						--on per.id_persona = ras.f_get_responsable_fecha(eq.id_equipo,pos.devicetime::date)
 						left join events ev
 						on ev.positionid = pos.id
 						where eq.id_equipo in ('||v_parametros.ids||')'||'
-						and to_char(pos.servertime,''dd-mm-yyyy HH24:MI:00'')::timestamp with time zone between '''||v_parametros.fecha_ini||'''::timestamp with time zone and '''||v_parametros.fecha_fin||'''::timestamp with time zone
-						order by pos.servertime';
+						and to_char(pos.devicetime,''dd-mm-yyyy HH24:MI:00'')::timestamp with time zone between '''||v_parametros.fecha_ini||'''::timestamp with time zone and '''||v_parametros.fecha_fin||'''::timestamp with time zone
+						order by pos.devicetime';
 
 			execute(v_consulta);
 --raise notice 'CONS: %',v_consulta;
@@ -385,11 +385,11 @@ BEGIN
 
 			end loop;
 
-			for v_rec in select * from ras_posiciones order by servertime desc limit 1 loop
+			for v_rec in select * from ras_posiciones order by devicetime desc limit 1 loop
 				update ras_posiciones set distance = v_total_distancia where id = v_rec.id;
 			end loop;
 
-			v_consulta = 'select * from ras_posiciones where send = true order by servertime';
+			v_consulta = 'select * from ras_posiciones where send = true order by devicetime';
 
 			--Devuelve la respuesta
 			return v_consulta;
@@ -427,7 +427,7 @@ BEGIN
 							when ''alarm'' then ''Alarma''::varchar
 							else ev.type
 						end as desc_type,
-						pos.servertime '||v_utc||' as servertime,
+						pos.devicetime '||v_utc||' as devicetime,
 						eq.tipo_equipo,
 						eq.nro_movil
 						from ras.vequipo eq
@@ -438,7 +438,7 @@ BEGIN
 						left join events ev
 						on ev.positionid = pos.id
 						where eq.id_equipo in ('||v_parametros.ids||')'||'
-						and to_char(pos.servertime,''dd-mm-yyyy HH24:MI:00'')::timestamp with time zone between '''||v_parametros.fecha_ini||'''::timestamp with time zone and '''||v_parametros.fecha_fin||'''::timestamp with time zone
+						and to_char(pos.devicetime,''dd-mm-yyyy HH24:MI:00'')::timestamp with time zone between '''||v_parametros.fecha_ini||'''::timestamp with time zone and '''||v_parametros.fecha_fin||'''::timestamp with time zone
 						and (pos.speed  * '||v_factor_vel||') between ' || v_parametros.velocidad_ini || ' and '||v_parametros.velocidad_fin||' and ';
 
 			v_consulta:=v_consulta||v_parametros.filtro;
@@ -471,7 +471,7 @@ BEGIN
 						left join events ev
 						on ev.positionid = pos.id
 						where eq.id_equipo in ('||v_parametros.ids||')'||'
-						and to_char(pos.servertime,''dd-mm-yyyy HH24:MI:00'')::timestamp with time zone between '''||v_parametros.fecha_ini||'''::timestamp with time zone and '''||v_parametros.fecha_fin||'''::timestamp with time zone
+						and to_char(pos.devicetime,''dd-mm-yyyy HH24:MI:00'')::timestamp with time zone between '''||v_parametros.fecha_ini||'''::timestamp with time zone and '''||v_parametros.fecha_fin||'''::timestamp with time zone
 						and (pos.speed  * '||v_factor_vel||') between ' || v_parametros.velocidad_ini || ' and '||v_parametros.velocidad_fin || ' and ';
 
 

@@ -29,7 +29,7 @@ class MODPositions extends MODbase{
 		$this->captura('protocol','varchar');
 		$this->captura('speed','float8');
 		$this->captura('network','varchar');
-		$this->captura('servertime','timestamp');
+		$this->captura('devicetime','timestamp');
 		$this->captura('longitude','float8');
 		$this->captura('valid','bool');
 		$this->captura('deviceid','int4');
@@ -160,7 +160,7 @@ class MODPositions extends MODbase{
 		$this->captura('type','varchar');
 		$this->captura('attributes_event','varchar');
 		$this->captura('desc_type','varchar');
-		$this->captura('servertime','timestamp');
+		$this->captura('devicetime','timestamp');
 		$this->captura('nro_movil','varchar');
 		
 		//Ejecuta la instruccion
@@ -206,7 +206,7 @@ class MODPositions extends MODbase{
 		$this->captura('attributes_event','varchar');
 		$this->captura('desc_type','varchar');
 		$this->captura('distance','text');
-		$this->captura('servertime','timestamp');
+		$this->captura('device','timestamp');
 		$this->captura('desc_tipo_equipo','varchar');
 		$this->captura('nro_movil','varchar');
 		
@@ -255,7 +255,7 @@ class MODPositions extends MODbase{
 		$this->captura('desc_type','varchar');
 		$this->captura('send','boolean');
 		$this->captura('distance','numeric');
-		$this->captura('servertime','timestamp');
+		$this->captura('devicetime','timestamp');
 		$this->captura('nro_movil','varchar');
 		
 		//Ejecuta la instruccion
@@ -298,7 +298,7 @@ class MODPositions extends MODbase{
 		$this->captura('type','varchar');
 		$this->captura('attributes_event','varchar');
 		$this->captura('desc_type','varchar');
-		$this->captura('servertime','timestamp');
+		$this->captura('devicetime','timestamp');
 		$this->captura('tipo_equipo','varchar');
 		$this->captura('nro_movil','varchar');
 		
