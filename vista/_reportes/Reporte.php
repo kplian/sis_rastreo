@@ -19,7 +19,7 @@ Phx.vista.Reporte=Ext.extend(Phx.gridInterfaz,{
         this.init();
 
         this.store.setBaseParam('start', 0);
-        this.store.setBaseParam('limit', this.tam_pag);
+        this.store.setBaseParam('limit', 50);
         this.store.setBaseParam('fecha_ini', this.maestro.fecha_ini);
         this.store.setBaseParam('fecha_fin',this.maestro.fecha_fin);
         this.store.setBaseParam('ids',this.maestro.ids);
@@ -28,7 +28,7 @@ Phx.vista.Reporte=Ext.extend(Phx.gridInterfaz,{
         this.load({
             params:{
                 start:0,
-                limit:this.tam_pag,
+                limit:50,
                 fecha_ini: this.maestro.fecha_ini,
                 fecha_fin: this.maestro.fecha_fin,
                 ids: this.maestro.ids,
@@ -231,7 +231,7 @@ Phx.vista.Reporte=Ext.extend(Phx.gridInterfaz,{
         {name:'marca', type: 'string'},
         {name:'modelo', type: 'string'},
         {name:'eventid', type: 'numeric'},
-        {name:'devicetime', type: 'date',dateFormat:'Y-m-d H:i:s.u'}, 
+        {name:'devicetime', type: 'date',dateFormat:'Y-m-d H:i:s'}, 
         {name:'deviceid', type: 'numeric'},
         {name:'attributes', type: 'string'},
         {name:'desc_type', type: 'string'},

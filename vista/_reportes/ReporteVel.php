@@ -231,7 +231,7 @@ Phx.vista.ReporteVel=Ext.extend(Phx.gridInterfaz,{
         {name:'attributes_event', type: 'string'},
         {name:'desc_type', type: 'string'},
         {name:'tipo_equipo', type: 'string'},
-        {name:'devicetime', type: 'date',dateFormat:'Y-m-d H:i:s.u'}
+        {name:'devicetime', type: 'date',dateFormat:'Y-m-d H:i:s'}
     ],
     sortInfo:{
         field: 'pos.devicetime',

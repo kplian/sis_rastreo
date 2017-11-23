@@ -122,7 +122,7 @@ class MODEvents extends MODbase{
 		$this->captura('marca','varchar');
 		$this->captura('modelo','varchar');
         $this->captura('eventid','integer');
-        $this->captura('servertime','timestamp');
+        $this->captura('devicetime','timestamp');
         $this->captura('deviceid','integer');
         $this->captura('attributes','varchar');
         $this->captura('desc_type','varchar');

@@ -255,7 +255,34 @@ BEGIN
 
 			--Sentencia de la consulta
 			v_consulta:='select count(1) as total from (select
-                        1
+                        eq.id_equipo, 
+                        eq.uniqueid, 
+                        eq.desc_equipo, 
+                        eq.placa,
+                        eq.tipo_equipo,
+                        eq.marca,
+                        eq.modelo,
+                        ev.id as eventid,
+                        ev.servertime '||v_utc||' as devicetime,
+                        ev.deviceid, --10
+                        ev.attributes,
+                        case ev.type
+                            when ''deviceStopped'' then ''Detenido''::varchar
+                            when ''deviceOffline'' then ''Desconectado''::varchar
+                            when ''deviceUnknown'' then ''Desconocido''::varchar
+                            when ''deviceMoving'' then ''En Movimiento''::varchar
+                            when ''deviceOnline'' then ''Online''::varchar
+                            when ''alarm'' then ''Alarma''::varchar
+                            else ev.type
+                        end as desc_type,
+                        pos.latitude,
+                        pos.longitude,
+                        pos.altitude,
+                        pos.speed * '||v_factor_vel||',
+                        pos.course,
+						pos.address,
+						pos.attributes as attributes_pos, 
+						pos.accuracy --20
                         from events ev
                         inner join devices dev
                         on dev.id = ev.deviceid
@@ -276,7 +303,26 @@ BEGIN
 
             v_consulta = v_consulta || ' union 
 						select
-						1
+						eq.id_equipo,
+						eq.uniqueid,
+						eq.desc_equipo,
+						eq.placa,
+						eq.tipo_equipo,
+						eq.marca,
+						eq.modelo,
+						tev.id_tipo_evento as eventid,
+						pos.devicetime '||v_utc||' as devicetime,
+						dev.id as deviceid, --10
+						pos.attributes,
+						tev.codigo || '' - '' || tev.nombre desc_type,
+						pos.latitude,
+						pos.longitude,
+						pos.altitude,
+						pos.speed * '||v_factor_vel||',
+						pos.course,
+						pos.address,
+						pos.attributes as attributes_pos,
+						pos.accuracy --20
 						from positions pos
 						inner join devices dev
 						on dev.id = pos.deviceid
@@ -285,7 +331,7 @@ BEGIN
 						inner join ras.ttipo_evento tev
 						on tev.codigo = cast(pos.attributes as json)->>''event''
 						where eq.id_equipo in ('||v_parametros.ids||')'||'
-						and to_char(pos.device,''dd-mm-yyyy HH24:MI:00'')::timestamp with time zone between '''||v_parametros.fecha_ini||'''::timestamp with time zone and '''||v_parametros.fecha_fin||'''::timestamp with time zone ';
+						and to_char(pos.devicetime,''dd-mm-yyyy HH24:MI:00'')::timestamp with time zone between '''||v_parametros.fecha_ini||'''::timestamp with time zone and '''||v_parametros.fecha_fin||'''::timestamp with time zone ';
                         
 			if v_parametros.events <> '' then
             	v_consulta = v_consulta || ' and cast(pos.attributes as json)->>''event'' in ('||v_eventos||') and ';
