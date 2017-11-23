@@ -615,7 +615,7 @@ header("content-type: text/javascript; charset=UTF-8");
             if (d.attributes) {
                 b = Ext.util.JSON.decode(Ext.util.Format.trim(d.attributes))
             }
-            var a = new Date(d.servertime).dateFormat("H:i:s.u  d/m/Y H:i:s.u");
+            var a = new Date(d.devicetime).dateFormat("H:i:s.u  d/m/Y H:i:s.u");
             this.panelResumen.update(String.format(c, d.placa, d.longitude, d.latitude, a || "desconocido", d.responsable || "no designado", d.desc_equipo || "sin descripcion", d.speed || 0, b.distance || 0, b.totalDistance || 0, b.odometer || 0, b.fuelConsumption || 0, b.battery || 0, b.rssi || 0, d.address || "", d.altitude || 0, d.nro_movil))
         },
         onDblclick: function(l, j, f, k) {
