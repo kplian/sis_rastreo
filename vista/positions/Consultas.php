@@ -490,7 +490,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     Ext.Ajax.request({
                         url: "../../sis_rastreo/control/Positions/listarPosicionesRangoProcesado",
                         params: {
-                            ids: d.cmbDispositivo.getValue(),
+                            id_s: d.cmbDispositivo.getValue(),
                             fecha_ini: c,
                             fecha_fin: a
                         },
