@@ -225,7 +225,7 @@ class MODPositions extends MODbase{
 		$this->tipo_procedimiento='SEL';//tipo de transaccion
 
 		//Define los parametros para la funcion
-		$this->setParametro('ids','ids','varchar');
+		$this->setParametro('id_s','ids','varchar');
 		$this->setParametro('fecha_ini','fecha_ini','varchar');
 		$this->setParametro('fecha_fin','fecha_fin','varchar');
 				
