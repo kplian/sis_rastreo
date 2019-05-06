@@ -107,7 +107,7 @@ BEGIN
 						from ras.vequipo equip
 						inner join segu.tusuario usu1 on usu1.id_usuario = equip.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = equip.id_usuario_mod
-						left join devices de
+						left join public.devices de
 						on de.uniqueid = equip.uniqueid
 						left join positions pos
 						on pos.id = de.positionid
@@ -146,7 +146,7 @@ BEGIN
 					    from ras.vequipo equip
 						inner join segu.tusuario usu1 on usu1.id_usuario = equip.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = equip.id_usuario_mod
-						left join devices de
+						left join public.devices de
 						on de.uniqueid = equip.uniqueid
 						left join positions pos
 						on pos.id = de.positionid
