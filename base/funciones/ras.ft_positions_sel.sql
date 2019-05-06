@@ -358,7 +358,7 @@ BEGIN
 						--on per.id_persona = ras.f_get_responsable_fecha(eq.id_equipo,pos.devicetime::date)
 						left join events ev
 						on ev.positionid = pos.id
-						where eq.id_equipo in ('||v_parametros.ids||')'||'
+						where eq.id_equipo in ('||v_parametros.id_s||')'||'
 						and to_char(pos.devicetime,''dd-mm-yyyy HH24:MI:00'')::timestamp with time zone between '''||v_parametros.fecha_ini||'''::timestamp with time zone and '''||v_parametros.fecha_fin||'''::timestamp with time zone
 						order by pos.devicetime';
 
