@@ -9,15 +9,15 @@ DECLARE
 BEGIN
 
 	IF (TG_OP = 'DELETE') THEN
-        delete from devices where uniqueid = OLD.uniqueid;
+        delete from public.devices where uniqueid = OLD.uniqueid;
         RETURN NULL;
     ELSIF (TG_OP = 'UPDATE') THEN
-        update devices set
+        update public.devices set
         name = NEW.placa
         where uniqueid = OLD.uniqueid;
         RETURN NULL;
     ELSIF (TG_OP = 'INSERT') THEN
-        insert into devices(
+        insert into public.devices(
 		uniqueid,
 		phone,
 		groupid,
@@ -52,8 +52,8 @@ CALLED ON NULL INPUT
 SECURITY INVOKER
 COST 100;
 
-/*
+DROP TRIGGER IF EXISTS tg_equipo ON ras.tequipo;
 CREATE TRIGGER tg_equipo
   AFTER INSERT OR UPDATE OR DELETE 
   ON ras.tequipo FOR EACH ROW 
-  EXECUTE PROCEDURE ras.ftrig_equipo();*/
+  EXECUTE PROCEDURE ras.ftrig_equipo();

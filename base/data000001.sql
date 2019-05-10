@@ -85,3 +85,6 @@ select pxp.f_insert_tgui ('Monitoreo Grupo', 'Monitoreo en tiempo real', 'RAS.12
 select pxp.f_insert_testructura_gui ('RAS.12', 'RAS.7');
 
 /***********************************F-DAT-RCM-JRR-0-15/08/2017****************************************/
+/***********************************I-DAT-JJA-JRR-0-08/05/2019****************************************/
+select pxp.f_insert_tgui ('Monitoreo', 'Monitoreo', 'MONREO', 'si', 3, 'sis_rastreo/vista/positions/Monitoreo.php', 3, '', 'Monitoreo', 'RAS');
+/***********************************F-DAT-JJA-JRR-0-08/05/2019****************************************/
