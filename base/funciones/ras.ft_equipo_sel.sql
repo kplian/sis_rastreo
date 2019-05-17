@@ -1,3 +1,5 @@
+--------------- SQL ---------------
+   
 CREATE OR REPLACE FUNCTION ras.ft_equipo_sel (
   p_administrador integer,
   p_id_usuario integer,
@@ -81,7 +83,7 @@ BEGIN
 						equip.uniqueid,
 						de.id as deviceid,
 						--ras.f_get_time(pos.servertime::timestamp,CURRENT_TIMESTAMP::timestamp) as ultimo_envio,
-						replace(replace(replace(replace(replace(replace(age(CURRENT_TIMESTAMP::timestamp,pos.servertime '||v_utc||')::text,''years'',''años''),''year'',''año''),''mons'',''meses''),''mon'',''mes''),''days'',''días''),''day'',''día'')::text as ultimo_envio,
+						replace(replace(replace(replace(replace(replace(age(CURRENT_TIMESTAMP::timestamp,pos.servertime '||v_utc||')::text,''years'',''a os''),''year'',''a o''),''mons'',''meses''),''mon'',''mes''),''days'',''d as''),''day'',''d a'')::text as ultimo_envio,
 						pos.latitude,
 						pos.longitude,
 						pos.speed * '||v_factor_vel||' as speed,
@@ -107,7 +109,7 @@ BEGIN
 						from ras.vequipo equip
 						inner join segu.tusuario usu1 on usu1.id_usuario = equip.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = equip.id_usuario_mod
-						left join devices de
+						left join public.devices de
 						on de.uniqueid = equip.uniqueid
 						left join positions pos
 						on pos.id = de.positionid
@@ -146,7 +148,7 @@ BEGIN
 					    from ras.vequipo equip
 						inner join segu.tusuario usu1 on usu1.id_usuario = equip.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = equip.id_usuario_mod
-						left join devices de
+						left join public.devices de
 						on de.uniqueid = equip.uniqueid
 						left join positions pos
 						on pos.id = de.positionid

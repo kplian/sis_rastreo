@@ -183,7 +183,7 @@ Ext.define('Phx.vista.MonitoreoGrupo', {
             split: true, 
             layout:  'fit' })
 
-        //Creaci√≥n del panel de par√°metros
+        //CreaciÛn del panel de par·metros
         this.viewPort = new Ext.Container({
             layout: 'border',
             items: [this.panelMapa]
@@ -335,7 +335,7 @@ Ext.define('Phx.vista.MonitoreoGrupo', {
     			me.enProceso = true;
 	    		Ext.Ajax.request({
 	                    url: '../../sis_rastreo/control/Positions/listarUltimaPosicion',
-	                    params: {id_s: me.cmbDispositivo.getValue(), contador: this.contador },
+	                    params: {ids: me.cmbDispositivo.getValue(), contador: this.contador},
 	                    headers: {'Accept': 'application/json'},
 					    failure: me.conexionFailure,
 	                    success: me.successCarga,
@@ -350,7 +350,7 @@ Ext.define('Phx.vista.MonitoreoGrupo', {
     			me.enProceso = true;
 	    		Ext.Ajax.request({
 	                    url: '../../sis_rastreo/control/Positions/listarUltimaPosicion',
-	                    params: {id_s_grupo: me.cmbGrupo.getValue()},
+	                    params: {ids_grupo: me.cmbGrupo.getValue(), contador: this.contador},
 	                    headers: {'Accept': 'application/json'},
 					    failure: me.conexionFailure,
 	                    success: me.successCarga,

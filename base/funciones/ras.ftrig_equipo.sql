@@ -9,15 +9,15 @@ DECLARE
 BEGIN
 
 	IF (TG_OP = 'DELETE') THEN
-        delete from public.devices where uniqueid = OLD.uniqueid;
+        delete from devices where uniqueid = OLD.uniqueid;
         RETURN NULL;
     ELSIF (TG_OP = 'UPDATE') THEN
-        update public.devices set
+        update devices set
         name = NEW.placa
         where uniqueid = OLD.uniqueid;
         RETURN NULL;
     ELSIF (TG_OP = 'INSERT') THEN
-        insert into public.devices(
+        insert into devices(
 		uniqueid,
 		phone,
 		groupid,

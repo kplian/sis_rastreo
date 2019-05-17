@@ -85,6 +85,15 @@ select pxp.f_insert_tgui ('Monitoreo Grupo', 'Monitoreo en tiempo real', 'RAS.12
 select pxp.f_insert_testructura_gui ('RAS.12', 'RAS.7');
 
 /***********************************F-DAT-RCM-JRR-0-15/08/2017****************************************/
+
 /***********************************I-DAT-JJA-JRR-0-08/05/2019****************************************/
 select pxp.f_insert_tgui ('Monitoreo', 'Monitoreo', 'MONREO', 'si', 3, 'sis_rastreo/vista/positions/Monitoreo.php', 3, '', 'Monitoreo', 'RAS');
 /***********************************F-DAT-JJA-JRR-0-08/05/2019****************************************/
+
+/***********************************I-DAT-JJA-JRR-0-09/05/2019****************************************/
+select pxp.f_insert_tgui ('Areas', 'Areas', 'RAS.9', 'no', 4, 'sis_rastreo/vista/localizacion/Localizacion.php', 3, '', 'Localizacion', 'RAS');
+/***********************************F-DAT-JJA-JRR-0-09/05/2019****************************************/
+
+/***********************************I-DAT-JJA-JRR-0-14/05/2019****************************************/
+select pxp.f_insert_tgui ('RASTREO SATELITAL', '', 'RAS', 'si', 1, '', 1, '../../../lib/imagenes/gema32x32.png', '', 'RAS');
+/***********************************F-DAT-JJA-JRR-0-14/05/2019****************************************/

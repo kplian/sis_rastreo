@@ -478,7 +478,7 @@ Ext.define('Phx.vista.Consultas', {
 		    		Ext.Ajax.request({
 		                    url: '../../sis_rastreo/control/Positions/listarPosicionesRangoProcesado',
 		                    params: { 
-		                    	       id_s: me.cmbDispositivo.getValue(),
+		                    	       ids: me.cmbDispositivo.getValue(),
 		                    	       fecha_ini: fecha_ini,
 		                    	       fecha_fin: fecha_fin
 		                    	     },
@@ -1172,7 +1172,7 @@ Ext.define('Phx.vista.Consultas', {
 		    		Ext.Ajax.request({
 		                    url: '../../sis_rastreo/control/Positions/listarPosicionesRangoProcesado',
 		                    params: { 
-		                    	       id_s: me.cmbDispositivo.getValue(),
+		                    	       ids: me.cmbDispositivo.getValue(),
 		                    	       fecha_ini: fecha_ini,
 		                    	       fecha_fin: fecha_fin
 		                    	     },
@@ -1867,7 +1867,7 @@ Ext.define('Phx.vista.Consultas', {
 		    		Ext.Ajax.request({
 		                    url: '../../sis_rastreo/control/Positions/listarPosicionesRangoProcesado',
 		                    params: { 
-		                    	       id_s: me.cmbDispositivo.getValue(),
+		                    	       ids: me.cmbDispositivo.getValue(),
 		                    	       fecha_ini: fecha_ini,
 		                    	       fecha_fin: fecha_fin
 		                    	     },
@@ -2561,7 +2561,7 @@ Ext.define('Phx.vista.Consultas', {
 		    		Ext.Ajax.request({
 		                    url: '../../sis_rastreo/control/Positions/listarPosicionesRangoProcesado',
 		                    params: { 
-		                    	       id_s: me.cmbDispositivo.getValue(),
+		                    	       ids: me.cmbDispositivo.getValue(),
 		                    	       fecha_ini: fecha_ini,
 		                    	       fecha_fin: fecha_fin
 		                    	     },
