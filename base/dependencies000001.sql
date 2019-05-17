@@ -375,3 +375,7 @@ add constraint fk_tgrupo_notificacion__id_grupo foreign key (id_grupo) reference
 alter table ras.tgrupo_notificacion
 add constraint fk_tgrupo_notificacion__id_usuario foreign key (id_usuario) references segu.tusuario(id_usuario);
 /***********************************F-DEP-RCM-RAS-0-06/09/2017*****************************************/
+
+/***********************************I-DEP-JJA-RAS-0-08/05/2019*****************************************/
+select pxp.f_insert_testructura_gui ('MONREO', 'RAS.4');
+/***********************************F-DEP-JJA-RAS-0-08/05/2019*****************************************/

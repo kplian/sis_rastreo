@@ -1,4 +1,5 @@
-
+--------------- SQL ---------------
+ 
 CREATE OR REPLACE FUNCTION ras.ft_positions_sel (
   p_administrador integer,
   p_id_usuario integer,
@@ -105,7 +106,7 @@ BEGIN
 
 	/*********************************    
  	#TRANSACCION:  'PB_POSIC_ULT'
- 	#DESCRIPCION:	Devuelve la posición actual de los ids de equipos enviados
+ 	#DESCRIPCION:	Devuelve la posici n actual de los ids de equipos enviados
  	#AUTOR:			RCM
  	#FECHA:			06/07/2017
 	***********************************/
@@ -137,7 +138,7 @@ BEGIN
 						pos.devicetime '||v_utc||' as devicetime,
 						eq.nro_movil
 						from ras.vequipo eq
-						inner join devices dev
+						inner join public.devices dev
 						on dev.uniqueid = eq.uniqueid
 						inner join positions pos
 						on pos.id = dev.positionid
@@ -199,7 +200,7 @@ BEGIN
 						teq.nombre as desc_tipo_equipo,
 						eq.nro_movil
 						from ras.vequipo eq
-						inner join devices de
+						inner join public.devices de
 						on de.uniqueid = eq.uniqueid
 						inner join positions pos
 						on pos.deviceid = de.id
@@ -238,7 +239,7 @@ BEGIN
 			v_consulta:='select
 						count(1) as total
 						from ras.vequipo eq
-						inner join devices de
+						inner join public.devices de
 						on de.uniqueid = eq.uniqueid
 						inner join positions pos
 						on pos.deviceid = de.id
@@ -350,7 +351,7 @@ BEGIN
 						pos.devicetime '||v_utc||' as devicetime,
 						eq.nro_movil
 						from ras.vequipo eq
-						inner join devices de
+						inner join public.devices de
 						on de.uniqueid = eq.uniqueid
 						inner join positions pos
 						on pos.deviceid = de.id
@@ -431,7 +432,7 @@ BEGIN
 						eq.tipo_equipo,
 						eq.nro_movil
 						from ras.vequipo eq
-						inner join devices de
+						inner join public.devices de
 						on de.uniqueid = eq.uniqueid
 						inner join positions pos
 						on pos.deviceid = de.id
@@ -464,7 +465,7 @@ BEGIN
 			v_consulta:='select
 						count(1) as total
 						from ras.vequipo eq
-						inner join devices de
+						inner join public.devices de
 						on de.uniqueid = eq.uniqueid
 						inner join positions pos
 						on pos.deviceid = de.id
