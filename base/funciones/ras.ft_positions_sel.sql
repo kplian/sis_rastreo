@@ -1,5 +1,5 @@
 --------------- SQL ---------------
- 
+
 CREATE OR REPLACE FUNCTION ras.ft_positions_sel (
   p_administrador integer,
   p_id_usuario integer,
@@ -16,11 +16,10 @@ $body$
  FECHA:	        15-06-2017 20:34:23
  COMENTARIOS:	
 ***************************************************************************
- HISTORIAL DE MODIFICACIONES:
-
- DESCRIPCION:	
- AUTOR:			
- FECHA:		
+ HISTORIAL DE MODIFICACIONES:	
+ 
+ ISSUES      FORK     AUTOR    FECHA     DESCRIPCION 
+ #2          ENDETR   JUAN 03/06/2019    Mostrar la ultima posición satelital
 ***************************************************************************/
 
 DECLARE
@@ -114,7 +113,20 @@ BEGIN
 	elsif(p_transaccion='PB_POSIC_ULT')then
 
 		begin
-			--Sentencia de la consulta
+
+            --inicio issue #2 
+            for v_rec in (select p.deviceid,max(p.id) as ultimaPosicionId
+                          from public.positions p
+                          join public.devices d on d.id=p.deviceid
+                          group by p.deviceid) loop 
+                          
+                update public.devices
+                       set positionid=v_rec.ultimaPosicionId
+                where id=v_rec.deviceid;
+                       
+            end loop;
+            ---fin issue #2
+
 			v_consulta:='select
 						eq.id_equipo, eq.uniqueid,
 						eq.marca, eq.modelo, eq.placa,
