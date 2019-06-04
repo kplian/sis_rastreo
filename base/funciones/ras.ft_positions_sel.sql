@@ -20,6 +20,7 @@ $body$
  
  ISSUES      FORK     AUTOR    FECHA     DESCRIPCION 
  #2          ENDETR   JUAN 03/06/2019    Mostrar la ultima posición satelital
+ #3          ENDETR   JUAN 04/06/2019    Corregir hora del servidor al momento de registrar coordenadas
 ***************************************************************************/
 
 DECLARE
@@ -33,7 +34,8 @@ DECLARE
 	v_total_distancia	numeric;
 	v_distance 			text;
 	v_factor_vel		numeric = 1.852;
-	v_utc				varchar = '- interval ''4 hour''';
+	--v_utc				varchar = '- interval ''4 hour'''; --#3
+    v_utc				varchar = '- interval ''0 hour'''; --#3
 
 BEGIN
 
