@@ -34,7 +34,7 @@ DECLARE
 	v_total_distancia	numeric;
 	v_distance 			text;
 	v_factor_vel		numeric = 1.852;
-	--v_utc				varchar = '- interval ''4 hour'''; --#3
+	--v_utc				varchar = '- interval ''4 hour'''; --#3  se comento por que suma 4 horas al momento de mostrar en la vista del navegador
     v_utc				varchar = '- interval ''0 hour'''; --#3
 
 BEGIN
