@@ -2,7 +2,7 @@
 header("content-type: text/javascript; charset=UTF-8");
 ?>
 <script>
-
+var address=null;
 Ext.define('Phx.vista.car', {
 	extend: 'Ext.util.Observable',
 	ultimasPosiciones: [],
@@ -45,11 +45,9 @@ Ext.define('Phx.vista.car', {
     	this.feature.setStyle([iconStyle]);
     	this.featureLine.setStyle([lineStyle]);
     	this.ultimasPosiciones.push(point);        
-       
-        
+
         
     },
-    
     setPos: function(config){
     	Ext.apply(this,config);
     	var aux = [parseFloat(config.longitud),parseFloat(config.latitud)];
@@ -355,7 +353,8 @@ Ext.define('Phx.vista.Monitoreo', {
 	    			            address: element.address,
 	    			            altitud: element.altitude,
                                 nro_movil: element.nro_movil,
-                                placa: element.placa });
+                                placa: element.placa,
+                                devicetime: element.devicetime });
     	});
     	
     	//elimar los los marcadores que no fueron considerados
@@ -517,6 +516,7 @@ Ext.define('Phx.vista.Monitoreo', {
 		}),
 		
 	updateResumen:function(datos){
+        address='';
 		var plantilla = "<div style='overflow-y: initial;'><br><b>PLACA {16}</b><br></b> \
 		       					<b>Posicion:</b> (Lat {1}, Lon  {2}, Alt {14})</br>\
                                 <b>Nro.Móvil:</b> {15}</br>\
@@ -530,10 +530,22 @@ Ext.define('Phx.vista.Monitoreo', {
 								<b>Consumo de combustible:</b> {10}</br>\
 								<b>Battery:</b> {11}</br>\
 								<b>Rssi:</b> {12}</br>\
-								<b>Direccion:</b> {13}</br></br></div>";
+                                <b>Dirección:</b><div id='direccion'> {13} </div></br>\
+                                <b>Hora del Dispositivo:</b> {17}</br></br></div>";
+
 								
 								
 		var  reg   = Ext.util.JSON.decode(Ext.util.Format.trim(datos.attributes));						
+        var hora = new Date(datos.devicetime).dateFormat('H:i:s.u  d/m/Y'); 
+
+        fetch('http://nominatim.openstreetmap.org/reverse?format=json&lon=' + parseFloat(datos.longitud) + '&lat=' + parseFloat(datos.latitud)).then(function(response) {
+          return response.json();
+        }).then(function(json) {
+          address=json.display_name;
+          if(address!=''){
+            document.getElementById("direccion").innerHTML = address;
+          }
+        })
 
 		this.panelResumen.update( String.format(plantilla,
 			                                           datos.codigo, 
@@ -549,16 +561,26 @@ Ext.define('Phx.vista.Monitoreo', {
 			                                           reg.fuelConsumption||0,			                                           
 			                                           reg.battery||0,
 			                                           reg.rssi||0,
-			                                           datos.address||'',
+			                                           //datos.address||'',
+                                                       address||'',
 			                                           datos.altitud||0,
 			                                           datos.nro_movil,
-                                                       datos.placa
+                                                       datos.placa,
+                                                       hora||'desconocido'
 			                                           ));
 			                                           
 			                                           
 			                                         
 		
-	}
+	},
+    simpleReverseGeocoding: function(lon, lat) {
+        fetch('http://nominatim.openstreetmap.org/reverse?format=json&lon=' + lon + '&lat=' + lat).then(function(response) {
+          return response.json();
+        }).then(function(json) {
+          //document.getElementById('address').innerHTML = json.display_name;
+          console.log("nombre de direccion ",json.display_name);
+        })
+    }
        
 		
     
