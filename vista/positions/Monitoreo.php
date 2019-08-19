@@ -517,8 +517,9 @@ Ext.define('Phx.vista.Monitoreo', {
 		
 	updateResumen:function(datos){
         address='';
+        // #5 endetr JUAN 19/08/2019  se agrego la opcion Ver en google maps
 		var plantilla = "<div style='overflow-y: initial;'><br><b>PLACA {16}</b><br></b> \
-		       					<b>Posicion:</b> (Lat {1}, Lon  {2}, Alt {14})</br>\
+		       					<b>Posicion:</b> (Lat {2}, Lon {1} , Alt {14})</br>\
                                 <b>Nro.Móvil:</b> {15}</br>\
 								<b>Estado:</b> {3}</br>\
 								<b>Responsable:</b> {4}</br>\
@@ -531,12 +532,13 @@ Ext.define('Phx.vista.Monitoreo', {
 								<b>Battery:</b> {11}</br>\
 								<b>Rssi:</b> {12}</br>\
                                 <b>Dirección:</b><div id='direccion'> {13} </div></br>\
+                                <b>Ver en google maps:</b> <a href=\"http://maps.google.com/maps?z=12&t=m&q=loc:{2}+{1}\">Click a qui</a>  </br></br></div>\
                                 <b>Hora del Dispositivo:</b> {17}</br></br></div>";
 
-								
-								
-		var  reg   = Ext.util.JSON.decode(Ext.util.Format.trim(datos.attributes));						
-        var hora = new Date(datos.devicetime).dateFormat('H:i:s.u  d/m/Y'); 
+
+
+		var  reg   = Ext.util.JSON.decode(Ext.util.Format.trim(datos.attributes));
+        var hora = new Date(datos.devicetime).dateFormat('H:i:s.u  d/m/Y');
 
         fetch('http://nominatim.openstreetmap.org/reverse?format=json&lon=' + parseFloat(datos.longitud) + '&lat=' + parseFloat(datos.latitud)).then(function(response) {
           return response.json();
