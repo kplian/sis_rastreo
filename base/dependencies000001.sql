@@ -382,9 +382,7 @@ select pxp.f_insert_testructura_gui ('MONREO', 'RAS.4');
 
 /***********************************I-DEP-JJA-RAS-0-16/09/2019*****************************************/
 
-DROP VIEW ras.vequipo;
-
-CREATE VIEW ras.vequipo(
+CREATE OR REPLACE VIEW ras.vequipo(
     id_usuario_reg,
     id_usuario_mod,
     fecha_reg,
@@ -470,12 +468,4 @@ AS
        JOIN ras.tmarca mar ON mar.id_marca = mod.id_marca
        JOIN ras.ttipo_equipo teq ON teq.id_tipo_equipo = eq.id_tipo_equipo
        LEFT JOIN ras.tgrupo grup ON grup.id_grupo = eq.id_grupo;
-
-ALTER TABLE ras.vequipo
-  OWNER TO postgres;
-
-GRANT SELECT, INSERT, UPDATE, DELETE, REFERENCES, TRIGGER, TRUNCATE
-  ON ras.vequipo TO postgres;
-GRANT SELECT
-  ON ras.vequipo TO test_only_read;
 /***********************************F-DEP-JJA-RAS-0-16/09/2019*****************************************/
