@@ -183,7 +183,7 @@ Ext.define('Phx.vista.MonitoreoGrupo', {
             split: true, 
             layout:  'fit' })
 
-        //Creación del panel de parámetros
+        //Creaciï¿½n del panel de parï¿½metros
         this.viewPort = new Ext.Container({
             layout: 'border',
             items: [this.panelMapa]
@@ -559,7 +559,7 @@ Ext.define('Phx.vista.MonitoreoGrupo', {
 			disableSearchButton : false,
 			emptyText : 'seleccione un grupo ...',
 			store : new Ext.data.JsonStore({
-				url : '../../sis_rastreo/control/Grupo/listarGrupo',
+				url : '../../sis_rastreo/control/Grupo/listarMonitoreoGrupo', //#6
 				id : 'id_grupo',
 				root : 'datos',
 				sortInfo : {

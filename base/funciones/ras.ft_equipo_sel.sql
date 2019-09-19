@@ -1,5 +1,5 @@
 --------------- SQL ---------------
-   
+
 CREATE OR REPLACE FUNCTION ras.ft_equipo_sel (
   p_administrador integer,
   p_id_usuario integer,
@@ -14,13 +14,13 @@ $body$
  DESCRIPCION:   Funcion que devuelve conjuntos de registros de las consultas relacionadas con la tabla 'ras.tequipo'
  AUTOR: 		 (admin)
  FECHA:	        15-06-2017 17:50:17
- COMENTARIOS:	
+ COMENTARIOS:
 ***************************************************************************
- HISTORIAL DE MODIFICACIONES:
 
- DESCRIPCION:	
- AUTOR:			
- FECHA:		
+ HISTORIAL DE MODIFICACIONES:
+ ISUUE			FECHA			 AUTHOR 		 DESCRIPCION
+ * #6			19/09/2019		  JUAN		     Agregado de funcinalidad para el registro de vehiculos asociados a una regionales y grupos
+
 ***************************************************************************/
 
 DECLARE
@@ -31,23 +31,41 @@ DECLARE
 	v_resp				varchar;
 	v_factor_vel		numeric = 1.852;
 	v_utc				varchar = '- interval ''4 hour''';
-			    
+
+    v_filtro            varchar;
+    va_id_depto			integer[];
+
 BEGIN
 
 	v_nombre_funcion = 'ras.ft_equipo_sel';
     v_parametros = pxp.f_get_record(p_tabla);
 
-	/*********************************    
+	/*********************************
  	#TRANSACCION:  'RAS_EQUIP_SEL'
  	#DESCRIPCION:	Consulta de datos
- 	#AUTOR:		admin	
+ 	#AUTOR:		admin
  	#FECHA:		15-06-2017 17:50:17
 	***********************************/
 
 	if(p_transaccion='RAS_EQUIP_SEL')then
-     				
+
     	begin
-    		--Sentencia de la consulta
+            -- inicio #6
+            v_filtro = '';
+            IF p_administrador !=1 THEN
+
+                select
+                   pxp.aggarray(depu.id_depto)
+                into
+                   va_id_depto
+                from param.tdepto_usuario depu
+                where depu.id_usuario =  p_id_usuario and depu.cargo in ('responsable','administrador');
+
+	            v_filtro = ' ( equip.id_usuario_reg = '||p_id_usuario::varchar ||' or   (equip.id_depto  in ('|| COALESCE(array_to_string(va_id_depto,','),'0')||'))) and ';
+
+            END IF;
+            -- fin #6
+
 			v_consulta:='select
 						equip.id_equipo,
 						equip.id_tipo_equipo,
@@ -105,7 +123,8 @@ BEGIN
 						equip.desc_grupo,
 						equip.color_grupo,
 						equip.nro_celular,
-						equip.id_marca
+						equip.id_marca,
+                        equip.id_depto
 						from ras.vequipo equip
 						inner join segu.tusuario usu1 on usu1.id_usuario = equip.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = equip.id_usuario_mod
@@ -122,21 +141,21 @@ BEGIN
 									    limit 1) --= ras.f_get_evento_ultimo(equip.id_equipo)*/
 						--left join segu.vpersona per
 						--on per.id_persona = ras.f_get_responsable_ultimo(equip.id_equipo)
-				        where  ';
-			
+				        where  '||v_filtro||'  '; -- fin #6
+
 			--Definicion de la respuesta
 			v_consulta:=v_consulta||v_parametros.filtro;
 			v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
 
 			--Devuelve la respuesta
 			return v_consulta;
-						
+
 		end;
 
-	/*********************************    
+	/*********************************
  	#TRANSACCION:  'RAS_EQUIP_CONT'
  	#DESCRIPCION:	Conteo de registros
- 	#AUTOR:		admin	
+ 	#AUTOR:		admin
  	#FECHA:		15-06-2017 17:50:17
 	***********************************/
 
@@ -162,8 +181,8 @@ BEGIN
 						--left join segu.vpersona per
 						--on per.id_persona = ras.f_get_responsable_ultimo(equip.id_equipo)
 				        where  ';
-			
-			--Definicion de la respuesta		    
+
+			--Definicion de la respuesta
 			v_consulta:=v_consulta||v_parametros.filtro;
 
 			--Devuelve la respuesta
@@ -171,35 +190,49 @@ BEGIN
 
 		end;
 
-	/*********************************    
+	/*********************************
  	#TRANSACCION:  'RAS_EQURAP_SEL'
  	#DESCRIPCION:	Consulta de datos
- 	#AUTOR:		admin	
+ 	#AUTOR:		admin
  	#FECHA:		15-06-2017 17:50:17
 	***********************************/
 
 	elsif(p_transaccion='RAS_EQURAP_SEL')then
-     				
+
     	begin
     		--Sentencia de la consulta
+            v_filtro = '';
+            IF p_administrador !=1 THEN
+
+                select
+                   pxp.aggarray(depu.id_depto)
+                into
+                   va_id_depto
+                from param.tdepto_usuario depu
+                where depu.id_usuario =  p_id_usuario and depu.cargo in ('responsable','administrador');
+
+	            v_filtro = ' ( equip.id_usuario_reg = '||p_id_usuario::varchar ||' or   (equip.id_depto  in ('|| COALESCE(array_to_string(va_id_depto,','),'0')||'))) and ';
+
+            END IF;
+
 			v_consulta:='select
 						id_equipo, placa,nro_movil,marca,modelo,tipo_equipo
 						from ras.vequipo equip
-				        where ';
-			
+				        where '||v_filtro||' ';
+
 			--Definicion de la respuesta
 			v_consulta:=v_consulta||v_parametros.filtro;
 			v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
-
+--raise notice 'noticeee %',v_consulta; raise exception 'error %',v_consulta;
 			--Devuelve la respuesta
 			return v_consulta;
-						
+
 		end;
 
-	/*********************************    
+	/*********************************
  	#TRANSACCION:  'RAS_EQURAP_CONT'
  	#DESCRIPCION:	Conteo de registros
- 	#AUTOR:		admin	
+ 	#AUTOR:		admin
  	#FECHA:		15-06-2017 17:50:17
 	***********************************/
 
@@ -210,23 +243,23 @@ BEGIN
 			v_consulta:='select count(1) as total
 					    from ras.vequipo equip
 				        where  ';
-			
-			--Definicion de la respuesta		    
+
+			--Definicion de la respuesta
 			v_consulta:=v_consulta||v_parametros.filtro;
 
 			--Devuelve la respuesta
 			return v_consulta;
 
 		end;
-					
+
 	else
-					     
+
 		raise exception 'Transaccion inexistente';
-					         
+
 	end if;
-					
+
 EXCEPTION
-					
+
 	WHEN OTHERS THEN
 			v_resp='';
 			v_resp = pxp.f_agrega_clave(v_resp,'mensaje',SQLERRM);

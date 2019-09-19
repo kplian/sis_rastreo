@@ -16,6 +16,13 @@ class ACTEquipo extends ACTbase{
 		if($this->objParam->getParametro('id_localizacion')!=''){
 			$this->objParam->addFiltro("equip.id_localizacion = ".$this->objParam->getParametro('id_localizacion'));
 		}
+        // inicio #6
+        if ($this->objParam->getParametro('id_depto') != '') {
+            $this->objParam->addFiltro("equip.id_depto = ".$this->objParam->getParametro('id_depto'));
+        } else {
+            $this->objParam->addFiltro("equip.id_depto = 0");
+        }
+        //fin #6
 
 		if($this->objParam->getParametro('tipoReporte')=='excel_grid' || $this->objParam->getParametro('tipoReporte')=='pdf_grid'){
 			$this->objReporte = new Reporte($this->objParam,$this);

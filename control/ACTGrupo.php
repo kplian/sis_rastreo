@@ -13,6 +13,14 @@ class ACTGrupo extends ACTbase{
 		$this->objParam->defecto('ordenacion','id_grupo');
 		$this->objParam->defecto('ordenacion','id_grupo');
 
+        //#6
+        if ($this->objParam->getParametro('id_depto') != '') {
+            $this->objParam->addFiltro("grupo.id_depto = ".$this->objParam->getParametro('id_depto'));
+        } else {
+            $this->objParam->addFiltro("grupo.id_depto = 0");
+        }
+        //#6
+
 		$this->objParam->defecto('dir_ordenacion','asc');
 		if($this->objParam->getParametro('tipoReporte')=='excel_grid' || $this->objParam->getParametro('tipoReporte')=='pdf_grid'){
 			$this->objReporte = new Reporte($this->objParam,$this);
@@ -24,6 +32,25 @@ class ACTGrupo extends ACTbase{
 		}
 		$this->res->imprimirRespuesta($this->res->generarJson());
 	}
+    function listarMonitoreoGrupo(){
+        $this->objParam->defecto('ordenacion','id_grupo');
+        $this->objParam->defecto('ordenacion','id_grupo');
+         // inicio #6
+        if ($this->objParam->getParametro('id_depto') != '') {
+            $this->objParam->addFiltro("grupo.id_depto = ".$this->objParam->getParametro('id_depto'));
+        }
+        //fin #6
+        $this->objParam->defecto('dir_ordenacion','asc');
+        if($this->objParam->getParametro('tipoReporte')=='excel_grid' || $this->objParam->getParametro('tipoReporte')=='pdf_grid'){
+            $this->objReporte = new Reporte($this->objParam,$this);
+            $this->res = $this->objReporte->generarReporteListado('MODGrupo','listarGrupo');
+        } else{
+            $this->objFunc=$this->create('MODGrupo');
+
+            $this->res=$this->objFunc->listarGrupo($this->objParam);
+        }
+        $this->res->imprimirRespuesta($this->res->generarJson());
+    }
 				
 	function insertarGrupo(){
 		$this->objFunc=$this->create('MODGrupo');	

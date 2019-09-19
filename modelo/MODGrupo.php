@@ -33,6 +33,9 @@ class MODGrupo extends MODbase{
 		$this->captura('usr_reg','varchar');
 		$this->captura('usr_mod','varchar');
 		$this->captura('usuario_ai','varchar');
+        $this->captura('id_depto','int4'); //#6
+
+
 		
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -52,6 +55,7 @@ class MODGrupo extends MODbase{
 		$this->setParametro('codigo','codigo','varchar');
 		$this->setParametro('nombre','nombre','varchar');
 		$this->setParametro('color','color','varchar');
+        $this->setParametro('id_depto','id_depto','int4'); //#6
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -72,6 +76,7 @@ class MODGrupo extends MODbase{
 		$this->setParametro('codigo','codigo','varchar');
 		$this->setParametro('nombre','nombre','varchar');
 		$this->setParametro('color','color','varchar');
+        $this->setParametro('id_depto','id_depto','int4'); //#6
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();
