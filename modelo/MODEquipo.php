@@ -68,7 +68,7 @@ class MODEquipo extends MODbase{
 		$this->captura('color_grupo','varchar');
 		$this->captura('nro_celular','varchar');
 		$this->captura('id_marca','int4');
-
+        $this->captura('id_depto','int4'); //#6
 
 		
 		//Ejecuta la instruccion
@@ -109,6 +109,8 @@ class MODEquipo extends MODbase{
 		$this->setParametro('id_grupo','id_grupo','int4');
 		$this->setParametro('nro_celular','nro_celular','varchar');
 
+        $this->setParametro('id_depto','id_depto','int4'); //#6
+
 		//Ejecuta la instruccion
 		$this->armarConsulta();
 		$this->ejecutarConsulta();
@@ -147,6 +149,8 @@ class MODEquipo extends MODbase{
 		$this->setParametro('uniqueid','uniqueid','varchar');
 		$this->setParametro('id_grupo','id_grupo','int4');
 		$this->setParametro('nro_celular','nro_celular','varchar');
+
+        $this->setParametro('id_depto','id_depto','int4'); //#6
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();

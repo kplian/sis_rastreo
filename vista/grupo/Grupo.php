@@ -13,10 +13,12 @@ Phx.vista.Grupo=Ext.extend(Phx.gridInterfaz,{
 	auxColor:'',
 	constructor:function(config){
 		this.maestro=config.maestro;
+        this.initButtons = [this.cmbDepto];
     	//llama al constructor de la clase padre
 		Phx.vista.Grupo.superclass.constructor.call(this,config);
 		this.init();
 		this.load({params:{start:0, limit:this.tam_pag}});
+        this.cmbDepto.on('select', this.capturaFiltros, this);
 		//Agrega paleta de colores
 		this.color = new Ext.ColorPalette({
 			fieldLabel: 'Color'
@@ -26,7 +28,10 @@ Phx.vista.Grupo=Ext.extend(Phx.gridInterfaz,{
 			this.auxColor = val;
 		},this);
 	},
-			
+    capturaFiltros: function (combo, record, index) {
+        this.store.baseParams = {id_depto: this.cmbDepto.getValue()};
+        this.store.reload();
+    },
 	Atributos:[
 		{
 			config:{
@@ -221,7 +226,16 @@ Phx.vista.Grupo=Ext.extend(Phx.gridInterfaz,{
 			id_grupo:1,
 			grid:true,
 			form:false
-		}
+		},
+        {
+            config:{
+                labelSeparator:'',
+                inputType:'hidden',
+                name: 'id_depto'
+            },
+            type:'Field',
+            form:true
+        }
 	],
 	tam_pag:50,	
 	title:'Grupo',
@@ -242,7 +256,9 @@ Phx.vista.Grupo=Ext.extend(Phx.gridInterfaz,{
 		{name:'id_usuario_ai', type: 'numeric'},
 		{name:'usr_reg', type: 'string'},
 		{name:'usr_mod', type: 'string'},
-		{name:'usuario_ai', type: 'string'}
+		{name:'usuario_ai', type: 'string'},
+        {name:'id_depto', type: 'numeric'}
+
 	],
 	sortInfo:{
 		field: 'id_grupo',
@@ -250,18 +266,81 @@ Phx.vista.Grupo=Ext.extend(Phx.gridInterfaz,{
 	},
 	bdel:true,
 	bsave:true,
+    cmbDepto : new Ext.form.ComboBox({
+        name : 'id_depto',
+        fieldLabel : 'Depto',
+        typeAhead : false,
+        forceSelection : true,
+        allowBlank : false,
+        disableSearchButton : true,
+        emptyText : 'Depto Rastreo',
+        store : new Ext.data.JsonStore({
+            url : '../../sis_parametros/control/Depto/listarDeptoFiltradoDeptoUsuario',
+            id : 'id_depto',
+            root : 'datos',
+            sortInfo : {
+                field : 'deppto.nombre',
+                direction : 'ASC'
+            },
+            totalProperty : 'total',
+            fields : ['id_depto', 'nombre', 'codigo'],
+            // turn on remote sorting
+            remoteSort : true,
+            baseParams : {
+                par_filtro : 'deppto.nombre#deppto.codigo',
+                estado : 'activo',
+                codigo_subsistema : 'RAS'
+            }
+        }),
+        valueField : 'id_depto',
+        displayField : 'nombre',
+        hiddenName : 'id_depto',
+        //enableMultiSelect : true,
+        triggerAction : 'all',
+        lazyRender : true,
+        mode : 'remote',
+        pageSize : 20,
+        queryDelay : 200,
+        anchor : '80%',
+        listWidth : '200',
+        resizable : true,
+        minChars : 2
+    }),
 	agregarArgsExtraSubmit: function(){
 		this.argumentExtraSubmit={};
 		this.argumentExtraSubmit.color=this.auxColor;
 	},
-	onButtonEdit: function(){
-		var sel = this.sm.getSelected();
-		Phx.vista.Grupo.superclass.onButtonEdit.call(this);
-		this.color.select(sel.data.color);
-	}
-	/*onButtonAct: function(){
-		Phx.vista.Grupo.superclass.onButtonAct.call(this);
-	}*/
+    onButtonNew: function() {
+
+        if(!this.cmbDepto.getValue()){
+            alert("Seleccione un Depto");
+        }
+        else{
+            this.window.buttons[0].show();
+            this.form.getForm().reset();
+            this.loadValoresIniciales();
+            this.window.show();
+            if(this.getValidComponente(0)){
+                this.getValidComponente(0).focus(false,100);
+            }
+        }
+    },
+    onButtonEdit: function() {
+        if(!this.cmbDepto.getValue()){
+            alert("Seleccione un Depto");
+        }
+        else{
+            var sel = this.sm.getSelected();
+            Phx.vista.Grupo.superclass.onButtonEdit.call(this);
+            this.color.select(sel.data.color);
+        }
+    },
+    loadValoresIniciales: function () {
+        Phx.vista.Grupo.superclass.loadValoresIniciales.call(this);
+        this.getComponente('id_depto').setValue(this.cmbDepto.getValue());
+    }
+
+
 });
 </script>
 		
