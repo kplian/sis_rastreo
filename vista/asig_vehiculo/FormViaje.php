@@ -219,7 +219,7 @@ header("content-type: text/javascript; charset=UTF-8");
             } else{
                 Phx.CP.loadingHide();
                 //Ext.Msg.alert('Información',this.mensajeExito);
-                if(this.maestro.incidencia == 'si'){
+                if(this.maestro.incidencia == 'si' || this.Cmp.incidencia.getValue()=='si'){
                     this.openIncidencia();
                 }
                 Phx.CP.getPagina(this.idContenedorPadre).reload();
