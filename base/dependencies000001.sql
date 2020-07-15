@@ -469,3 +469,146 @@ AS
        JOIN ras.ttipo_equipo teq ON teq.id_tipo_equipo = eq.id_tipo_equipo
        LEFT JOIN ras.tgrupo grup ON grup.id_grupo = eq.id_grupo;
 /***********************************F-DEP-JJA-RAS-0-16/09/2019*****************************************/
+/***********************************I-DEP-EGS-RAS-0-15/07/2020*****************************************/
+CREATE OR REPLACE VIEW ras.vsol_vehiculo(
+    id_usuario_reg,
+    id_usuario_mod,
+    fecha_reg,
+    fecha_mod,
+    estado_reg,
+    id_usuario_ai,
+    usuario_ai,
+    obs_dba,
+    estado,
+    id_estado_wf,
+    id_proceso_wf,
+    nro_tramite,
+    id_funcionario_jefe_depto,
+    observacion,
+    hora_retorno,
+    fecha_retorno,
+    hora_salida,
+    fecha_salida,
+    fecha_sol,
+    motivo,
+    destino,
+    id_funcionario,
+    id_sol_vehiculo,
+    id_tipo_equipo,
+    ceco_clco,
+    alquiler,
+    alquiler_numero)
+AS
+  SELECT tsol_vehiculo.id_usuario_reg,
+         tsol_vehiculo.id_usuario_mod,
+         tsol_vehiculo.fecha_reg,
+         tsol_vehiculo.fecha_mod,
+         tsol_vehiculo.estado_reg,
+         tsol_vehiculo.id_usuario_ai,
+         tsol_vehiculo.usuario_ai,
+         tsol_vehiculo.obs_dba,
+         tsol_vehiculo.estado,
+         tsol_vehiculo.id_estado_wf,
+         tsol_vehiculo.id_proceso_wf,
+         tsol_vehiculo.nro_tramite,
+         tsol_vehiculo.id_funcionario_jefe_depto,
+         tsol_vehiculo.observacion,
+         tsol_vehiculo.hora_retorno,
+         tsol_vehiculo.fecha_retorno,
+         tsol_vehiculo.hora_salida,
+         tsol_vehiculo.fecha_salida,
+         tsol_vehiculo.fecha_sol,
+         tsol_vehiculo.motivo,
+         tsol_vehiculo.destino,
+         tsol_vehiculo.id_funcionario,
+         tsol_vehiculo.id_sol_vehiculo,
+         tsol_vehiculo.id_tipo_equipo,
+         tsol_vehiculo.ceco_clco,
+         tsol_vehiculo.alquiler,
+         CASE
+           WHEN tsol_vehiculo.alquiler::text = 'no'::text THEN 0
+           ELSE 1
+         END AS alquiler_numero
+  FROM ras.tsol_vehiculo;
+select pxp.f_insert_testructura_gui ('RAS', 'SISTEMA');
+select pxp.f_insert_testructura_gui ('RAS.4', 'RAS');
+select pxp.f_insert_testructura_gui ('RAS.5', 'RAS.4');
+select pxp.f_insert_testructura_gui ('RAS.6', 'RAS.4');
+select pxp.f_insert_testructura_gui ('RAS.7', 'RAS');
+select pxp.f_insert_testructura_gui ('RAS.10', 'RAS.7');
+select pxp.f_insert_testructura_gui ('RAS.11', 'RAS.7');
+select pxp.f_insert_testructura_gui ('RAS.12', 'RAS.7');
+select pxp.f_insert_testructura_gui ('MONREO', 'RAS.4');
+select pxp.f_insert_testructura_gui ('CONVEH', 'RAS');
+select pxp.f_insert_testructura_gui ('RAS.3', 'CONVEH');
+select pxp.f_insert_testructura_gui ('RAS.1', 'CONVEH');
+select pxp.f_insert_testructura_gui ('RAS.8', 'CONVEH');
+select pxp.f_insert_testructura_gui ('RAS.2', 'CONVEH');
+select pxp.f_insert_testructura_gui ('RAS.21', 'CONVEH');
+select pxp.f_insert_testructura_gui ('RAS.20', 'CONVEH');
+select pxp.f_insert_testructura_gui ('SOLVEHI', 'RAS');
+select pxp.f_insert_testructura_gui ('REGSOL', 'SOLVEHI');
+select pxp.f_insert_testructura_gui ('vobosolv', 'SOLVEHI');
+select pxp.f_insert_testructura_gui ('ASIGVEHI', 'SOLVEHI');
+select pxp.f_insert_testructura_gui ('ELEMSEG', 'CONVEH');
+select pxp.f_insert_testructura_gui ('INCID', 'CONVEH');
+select pxp.f_insert_testructura_gui ('VEHEST', 'CONVEH');
+
+ALTER TABLE ras.tasig_vehiculo
+  ADD CONSTRAINT tasig_vehiculo_fk_id_sol_vehiculo FOREIGN KEY (id_sol_vehiculo)
+    REFERENCES ras.tsol_vehiculo(id_sol_vehiculo)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+    NOT DEFERRABLE;
+
+ALTER TABLE ras.tnomina_persona
+  ADD CONSTRAINT tnomina_persona_fk_id_sol_vehiculo FOREIGN KEY (id_sol_vehiculo)
+    REFERENCES ras.tsol_vehiculo(id_sol_vehiculo)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+    NOT DEFERRABLE;
+ALTER TABLE ras.tequipo_alquilado
+  ADD CONSTRAINT tequipo_alquilado_fk_id_asig_vehiculo FOREIGN KEY (id_asig_vehiculo)
+    REFERENCES ras.tasig_vehiculo(id_asig_vehiculo)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+    NOT DEFERRABLE;
+
+ALTER TABLE ras.telemento_seg_equipo
+  ADD CONSTRAINT telemento_seg_equipo_fk_id_elemento_seg FOREIGN KEY (id_elemento_seg)
+    REFERENCES ras.telemento_seg(id_elemento_seg)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+    NOT DEFERRABLE;
+ALTER TABLE ras.telemento_seg_equipo
+  ADD CONSTRAINT telemento_seg_equipo_fk_id_equipo FOREIGN KEY (id_equipo)
+    REFERENCES ras.tequipo(id_equipo)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+    NOT DEFERRABLE;
+ALTER TABLE ras.tequipo_estado
+  ADD CONSTRAINT tequipo_estado_fk_id_equipo FOREIGN KEY (id_equipo)
+    REFERENCES ras.tequipo(id_equipo)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+    NOT DEFERRABLE;
+ALTER TABLE ras.tasig_vehiculo_incidencia
+  ADD CONSTRAINT tasig_vehiculo_incidencia_fk_id_asig_vehiculo FOREIGN KEY (id_asig_vehiculo)
+    REFERENCES ras.tasig_vehiculo(id_asig_vehiculo)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+    NOT DEFERRABLE;
+ALTER TABLE ras.tasig_vehiculo_incidencia
+  ADD CONSTRAINT tasig_vehiculo_incidencia_fk_incidencia FOREIGN KEY (id_incidencia)
+    REFERENCES ras.tincidencia(id_incidencia)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+    NOT DEFERRABLE;
+ALTER TABLE ras.tasig_vehiculo
+  ADD CONSTRAINT tasig_vehiculo_fk_is_equipo_estado FOREIGN KEY (id_equipo_estado)
+    REFERENCES ras.tequipo_estado(id_equipo_estado)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+    NOT DEFERRABLE;
+/***********************************F-DEP-EGS-RAS-0-15/07/2020*****************************************/
+

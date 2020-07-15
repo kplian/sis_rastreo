@@ -182,7 +182,7 @@ class MODEquipo extends MODbase{
 		$this->procedimiento='ras.ft_equipo_sel';
 		$this->transaccion='RAS_EQURAP_SEL';
 		$this->tipo_procedimiento='SEL';//tipo de transaccion
-				
+
 		//Definicion de la lista del resultado del query
 		$this->captura('id_equipo','int4');
 		$this->captura('placa','varchar');
@@ -198,6 +198,28 @@ class MODEquipo extends MODbase{
 		//Devuelve la respuesta
 		return $this->respuesta;
 	}
+    function listarEquipoEstado(){
+        //Definicion de variables para ejecucion del procedimientp
+        $this->procedimiento='ras.ft_equipo_sel';
+        $this->transaccion='RAS_EQUEST_SEL';
+        $this->tipo_procedimiento='SEL';//tipo de transaccion
+        $this->setParametro('id_sol_vehiculo','id_sol_vehiculo','int4');
+
+        //Definicion de la lista del resultado del query
+        $this->captura('id_equipo','int4');
+        $this->captura('placa','varchar');
+        $this->captura('nro_movil','varchar');
+        $this->captura('marca','varchar');
+        $this->captura('modelo','varchar');
+        $this->captura('tipo_equipo','varchar');
+
+        //Ejecuta la instruccion
+        $this->armarConsulta();
+        $this->ejecutarConsulta();
+
+        //Devuelve la respuesta
+        return $this->respuesta;
+    }
 			
 }
 ?>

@@ -34,6 +34,7 @@ DECLARE
 
     v_filtro            varchar;
     va_id_depto			integer[];
+    v_registro          record;
 
 BEGIN
 
@@ -146,8 +147,8 @@ BEGIN
 			--Definicion de la respuesta
 			v_consulta:=v_consulta||v_parametros.filtro;
 			v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
-
 			--Devuelve la respuesta
+            raise notice 'v_consulta %',v_consulta;
 			return v_consulta;
 
 		end;
@@ -243,6 +244,136 @@ BEGIN
 			v_consulta:='select count(1) as total
 					    from ras.vequipo equip
 				        where  ';
+
+			--Definicion de la respuesta
+			v_consulta:=v_consulta||v_parametros.filtro;
+
+			--Devuelve la respuesta
+			return v_consulta;
+
+		end;
+
+    	/*********************************
+ 	#TRANSACCION:  'RAS_EQUEST_SEL'
+ 	#DESCRIPCION:	Consulta de datos
+ 	#AUTOR:		admin
+ 	#FECHA:		15-06-2017 17:50:17
+	***********************************/
+
+	elsif(p_transaccion='RAS_EQUEST_SEL')then
+
+    	begin
+    		--Sentencia de la consulta
+            SELECT
+            solv.fecha_salida
+            INTO
+            v_registro
+            FROM ras.tsol_vehiculo solv
+            WHERE solv.id_sol_vehiculo = v_parametros.id_sol_vehiculo;
+            v_filtro = '';
+            IF p_administrador !=1 THEN
+
+                select
+                   pxp.aggarray(depu.id_depto)
+                into
+                   va_id_depto
+                from param.tdepto_usuario depu
+                where depu.id_usuario =  p_id_usuario and depu.cargo in ('responsable','administrador');
+
+	            v_filtro = ' ( equip.id_usuario_reg = '||p_id_usuario::varchar ||' or   (equip.id_depto  in ('|| COALESCE(array_to_string(va_id_depto,','),'0')||'))) and ';
+
+            END IF;
+
+                v_filtro = v_filtro ||'( es.fecha_final < '''|| v_registro.fecha_salida||'''::date or es.fecha_final is null ) and' ;
+
+			v_consulta:='
+            with estado (id_equipo,fecha_final,estado)as
+            (   SELECT
+                  equipes.id_equipo,
+                  equipes.fecha_final,
+                  equipes.estado
+                FROM ras.tequipo_estado equipes
+                WHERE equipes.fecha_final = ( SELECT
+                                                max(e.fecha_final)
+                                              FROM ras.tequipo_estado e
+                                              WHERE e.id_equipo = equipes.id_equipo
+                                              )
+
+            )
+            select
+						equip.id_equipo,
+                        equip.placa,
+                        equip.nro_movil,
+                        equip.marca,
+                        equip.modelo,
+                        equip.tipo_equipo
+						from ras.vequipo equip
+                        left join estado es on es.id_equipo = equip.id_equipo
+    		where '||v_filtro||' ';
+
+			--Definicion de la respuesta
+			v_consulta:=v_consulta||v_parametros.filtro;
+            raise notice 'no %',v_consulta;
+			v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
+raise notice 'noticeee %',v_consulta;
+--raise exception 'error %',v_consulta;
+			--Devuelve la respuesta
+			return v_consulta;
+
+		end;
+
+	/*********************************
+ 	#TRANSACCION:  'RAS_EQUEST_CONT'
+ 	#DESCRIPCION:	Conteo de registros
+ 	#AUTOR:		admin
+ 	#FECHA:		15-06-2017 17:50:17
+	***********************************/
+
+	elsif(p_transaccion='RAS_EQUEST_CONT')then
+
+		begin
+        --Sentencia de la consulta
+            SELECT
+            solv.fecha_salida
+            INTO
+            v_registro
+            FROM ras.tsol_vehiculo solv
+            WHERE solv.id_sol_vehiculo = v_parametros.id_sol_vehiculo;
+            v_filtro = '';
+            IF p_administrador !=1 THEN
+
+                select
+                   pxp.aggarray(depu.id_depto)
+                into
+                   va_id_depto
+                from param.tdepto_usuario depu
+                where depu.id_usuario =  p_id_usuario and depu.cargo in ('responsable','administrador');
+
+	            v_filtro = ' ( equip.id_usuario_reg = '||p_id_usuario::varchar ||' or   (equip.id_depto  in ('|| COALESCE(array_to_string(va_id_depto,','),'0')||'))) and ';
+
+            END IF;
+
+                v_filtro = v_filtro ||'( es.fecha_final < '''|| v_registro.fecha_salida||'''::date or es.fecha_final is null ) and' ;
+			--Sentencia de la consulta de conteo de registros
+			v_consulta:='
+             with estado (id_equipo,fecha_final,estado)as
+            (   SELECT
+                  equipes.id_equipo,
+                  equipes.fecha_final,
+                  equipes.estado
+                FROM ras.tequipo_estado equipes
+                WHERE equipes.fecha_final = ( SELECT
+                                                max(e.fecha_final)
+                                              FROM ras.tequipo_estado e
+                                              WHERE e.id_equipo = equipes.id_equipo
+                                              )
+
+            )
+            select count(equip.id_equipo) as total
+					    from ras.vequipo equip
+                        left join estado es on es.id_equipo = equip.id_equipo
+
+				        where  '||v_filtro||' ';
 
 			--Definicion de la respuesta
 			v_consulta:=v_consulta||v_parametros.filtro;
