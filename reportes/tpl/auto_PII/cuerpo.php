@@ -2,7 +2,7 @@
 $i = 1;
 foreach ($this->datos_asig_vehiculo as $datos) {?><font size="10"><table  width="100%" cellpadding="5px"  border="1" >
         <tr >
-            <td width="25%"  >Vehiculo Asignado:
+            <td width="25%"  >Vehículo Asignado:
             </td>
             <td width="75%" >
                 <table>
@@ -24,7 +24,7 @@ foreach ($this->datos_asig_vehiculo as $datos) {?><font size="10"><table  width=
 
         </tr>
         <tr >
-            <td width="25%"  >observaciones:
+            <td width="25%"  >Observaciones:
             </td>
             <td width="75%"  ><?php echo  $datos['observaciones'];    ?>
             </td>

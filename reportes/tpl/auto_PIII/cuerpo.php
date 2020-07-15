@@ -31,7 +31,7 @@
                    $i++;
             }
        }//fin 2 for
-
+       $i=$i-1;
        if (($i % $numero) == 0) {
            $existe = false;
        } else {
@@ -43,7 +43,7 @@
        echo '</table>';
        echo '<table width="100%" cellpadding="5px"  border="1"> 
         <tr>
-            <td width="25%">Kilometraje Final               
+            <td width="25%">Kilometraje Final:               
             </td>
             <td width="25%" >'.$datosAsig['km_inicio'].'
             </td>
@@ -52,13 +52,13 @@
             </td>
         </tr>
         <tr>
-            <td width="25%">Kilometraje Inicial
+            <td width="25%">Kilometraje Inicial:
             </td>
             <td width="25%">'.$datosAsig['km_final'].'
             </td>
         </tr>
         <tr>
-            <td width="25%" rowspan="2" >Total Recorrido km.
+            <td width="25%" rowspan="2" >Total Recorrido km:
             </td>
             <td width="25%" rowspan="2" >'.$datosAsig['recorrido'].'
             </td>

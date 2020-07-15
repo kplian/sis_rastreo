@@ -5,7 +5,7 @@
             <td width="50%" height="35px">
                 <?php  echo '<br>'.ucwords(strtolower($this->datos_sol_vehiculo[0]['desc_funcionario']));?>
             </td>
-            <td width="10%" align="center">Dia
+            <td width="10%" align="center">Día
             </td>
             <td width="10%" align="center">Mes
             </td>
@@ -14,7 +14,7 @@
 
 		</tr>
         <tr >
-            <td width="25%" align="center">nombre
+            <td width="25%" align="center">Nombre
             </td>
             <td width="25%" align="center">Firma
             </td>
