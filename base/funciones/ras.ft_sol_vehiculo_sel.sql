@@ -287,6 +287,9 @@ BEGIN
                          JOIN segu.tusuario usu1 ON usu1.id_usuario = solvehi.id_usuario_reg
                          LEFT JOIN segu.tusuario usu2 ON usu2.id_usuario = solvehi.id_usuario_mod
                          LEFT JOIN ras.ttipo_equipo tipv on tipv.id_tipo_equipo = solvehi.id_tipo_equipo
+                         inner join wf.testado_wf ew on ew.id_proceso_wf = solvehi.id_proceso_wf and  ew.estado_reg = ''activo''
+                         left join orga.vfuncionario funi on funi.id_funcionario = ew.id_funcionario
+                         LEFT JOIN param.vcentro_costo cec on cec.id_centro_costo = solvehi.id_centro_costo
                          '||v_join||'
                          WHERE '||v_filtro;
 

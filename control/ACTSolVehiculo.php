@@ -73,6 +73,7 @@ class ACTSolVehiculo extends ACTbase{
         $this->objParam->defecto('dir_ordenacion','asc');
         $this->objParam->defecto('cantidad',1000000000);
         $this->objParam->defecto('puntero', 0);
+        $this->objParam->addParametro('nombreVista','');
 
         if($this->objParam->getParametro('id_sol_vehiculo')!=''){
             $this->objParam->addFiltro("solvehi.id_sol_vehiculo = ".$this->objParam->getParametro('id_sol_vehiculo'));
