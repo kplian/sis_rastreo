@@ -1,5 +1,3 @@
---------------- SQL ---------------
-
 CREATE OR REPLACE FUNCTION ras.ft_elemento_seg_equipo_sel (
   p_administrador integer,
   p_id_usuario integer,
@@ -19,7 +17,7 @@ $body$
  HISTORIAL DE MODIFICACIONES:
 #ISSUE                FECHA                AUTOR                DESCRIPCION
  #0                03-07-2020 14:59:28    egutierrez             Creacion
- #
+ #GDV-28              28/08/2020            EGS                 Se Agregan campos de estado y observacion
  ***************************************************************************/
 
 DECLARE
@@ -60,7 +58,9 @@ BEGIN
                         usu1.cuenta as usr_reg,
                         usu2.cuenta as usr_mod,
                         elemav.id_asig_vehiculo,
-                        ele.nombre as desc_elemento_seg
+                        ele.nombre as desc_elemento_seg,
+                        elemav.observacion, --#GDV-28
+                        elemav.estado_elemento --#GDV-28
                         FROM ras.telemento_seg_equipo elemav
                         JOIN segu.tusuario usu1 ON usu1.id_usuario = elemav.id_usuario_reg
                         LEFT JOIN segu.tusuario usu2 ON usu2.id_usuario = elemav.id_usuario_mod
@@ -92,6 +92,8 @@ BEGIN
                          FROM ras.telemento_seg_equipo elemav
                          JOIN segu.tusuario usu1 ON usu1.id_usuario = elemav.id_usuario_reg
                          LEFT JOIN segu.tusuario usu2 ON usu2.id_usuario = elemav.id_usuario_mod
+                         left join ras.telemento_seg ele on ele.id_elemento_seg = elemav.id_elemento_seg
+                         left join ras.tasig_vehiculo asig on asig.id_asig_vehiculo = elemav.id_asig_vehiculo
                          WHERE ';
 
             --Definicion de la respuesta

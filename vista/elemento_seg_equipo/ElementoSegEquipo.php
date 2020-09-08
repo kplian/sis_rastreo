@@ -9,7 +9,7 @@
 HISTORIAL DE MODIFICACIONES:
 #ISSUE                FECHA                AUTOR                DESCRIPCION
  #0                03-07-2020 14:59:28    egutierrez            Creacion    
- #   
+ #GDV-28              28/08/2020            EGS                 Se Agregan campos de estado y observacion
 
 *******************************************************************************************/
 
@@ -29,7 +29,8 @@ Phx.vista.ElementoSegEquipo=Ext.extend(Phx.gridInterfaz,{
         //llama al constructor de la clase padre
         Phx.vista.ElementoSegEquipo.superclass.constructor.call(this,config);
         this.init();
-        //this.iniciarEventos();
+        this.grid.addListener('afteredit', this.onAfterEdit, this);//#GDV-28
+        this.iniciarEventos();
         if (this.maestro==undefined){
             this.bloquearMenus();
         }else{
@@ -38,9 +39,12 @@ Phx.vista.ElementoSegEquipo=Ext.extend(Phx.gridInterfaz,{
 
     },
     iniciarEventos:function(){
-        this.Cmp.id_equipo.setValue(this.maestro.id_equipo);
-        this.Cmp.id_asig_vehiculo.setValue(this.maestro.id_asig_vehiculo);
-
+        //this.Cmp.id_equipo.setValue(this.maestro.id_equipo);
+        //this.Cmp.id_asig_vehiculo.setValue(this.maestro.id_asig_vehiculo);
+        this.Cmp.existe.on('Check', function (Seleccion, dato) {
+        console.log('Seleccion',Seleccion);
+        console.log('dato',dato);
+        }, this);
     },
             
     Atributos:[
@@ -91,7 +95,7 @@ Phx.vista.ElementoSegEquipo=Ext.extend(Phx.gridInterfaz,{
                     totalProperty: 'total',
                     fields: ['id_elemento_seg', 'nombre'],
                     remoteSort: true,
-                    baseParams: {par_filtro: 'elemseg.nombre',estado_reg:'activo'}
+                    baseParams: {par_filtro: 'ele.nombre',estado_reg:'activo'}
                 }),
                 valueField: 'id_elemento_seg',
                 displayField: 'nombre',
@@ -113,35 +117,137 @@ Phx.vista.ElementoSegEquipo=Ext.extend(Phx.gridInterfaz,{
             },
             type: 'ComboBox',
             id_grupo: 0,
-            filters: {pfiltro: 'elemseg.nombre',type: 'string'},
+            filters: {pfiltro: 'ele.nombre',type: 'string'},
+            bottom_filter:true,
             grid: true,
             form: true
         },
 
-        {
+        // {
+        //     config:{
+        //         name: 'existe',
+        //         fieldLabel: 'existe',
+        //         allowBlank: true,
+        //         anchor: '80%',
+        //         gwidth: 100,
+        //         renderer:function (value,p,record){
+        //
+        //             var checked = '';
+        //             var state = '';
+        //             // console.log('value',record)
+        //             if(value === 't'){
+        //                 checked = 'checked';
+        //             }
+        //             state ='enable';
+        //             return  String.format('<div style="vertical-align:middle;text-align:center;"><input style="height:37px;width:37px;" type="checkbox"  {0} {1}></div>',checked, state);
+        //         },
+        //         listeners: {
+        //             beforerowselect:  function( this, rowIndex, keepExisting, record){
+        //                 console.log('hola');
+        //             }
+        //         }
+        //     },
+        //         type:'Checkbox',
+        //         filters:{pfiltro:'elemav.existe',type:'boolean'},
+        //         id_grupo:1,
+        //         grid:true,
+        //         form:true
+		// },
+        {//#GDV-28
             config:{
-                name: 'existe',
-                fieldLabel: 'existe',
+                name:'existe',
+                fieldLabel:'Existe',
+                allowBlank:false,
+                emptyText:'...',
+                typeAhead: true,
+                triggerAction: 'all',
+                lazyRender:true,
+                mode: 'local',
+                gwidth: 100,
+                store:new Ext.data.ArrayStore({
+                    fields: ['ID', 'valor'],
+                    data :    [['t','si'],
+                        ['f','no']]
+
+                }),
+                valueField:'ID',
+                displayField:'valor',
+                minChars: 1,
+                renderer:function (value, p, record){if (value == 't') {return 'si'} else {return 'no'}}
+            },
+            type:'ComboBox',
+            valorInicial: 'no',
+            id_grupo:0,
+            grid:true,
+            form:true,
+            egrid: true
+        },
+        {//#GDV-28
+            config:{
+                name:'estado_elemento',
+                fieldLabel:'Estado Elemnto',
+                allowBlank:false,
+                emptyText:'...',
+                typeAhead: true,
+                triggerAction: 'all',
+                lazyRender:true,
+                mode: 'local',
+                gwidth: 100,
+                store:new Ext.data.ArrayStore({
+                    fields: ['ID', 'valor'],
+                    data : [
+                        ['malo','malo'],
+                        ['regular','regular'],
+                        ['bueno','bueno'],
+                        ['excelente','excelente']
+                    ]
+
+                }),
+                valueField:'ID',
+                displayField:'valor',
+                minChars: 1,
+                renderer : function(value, p, record) {
+                    if(record.data.nivel ==1){
+                        p.style="background-color:#cce6ff;";
+                    }
+                    if(record.data.estado_elemento =='' && record.data.nivel !=1){
+                        return 'Doble click a qui' //#2 endetr juan  placeholder en evalucaión curso
+                    }
+                    else{
+                        return String.format('{0}', record.data['estado_elemento']);
+                    }
+
+
+                },
+            },
+            type:'ComboBox',
+            valorInicial: 'bueno',
+            id_grupo:0,
+            grid:true,
+            form:true,
+            egrid: true
+        },
+        {//#GDV-28
+            config:{
+                name: 'observacion',
+                fieldLabel: 'Observaciones',
                 allowBlank: true,
                 anchor: '80%',
-                gwidth: 100,
-                renderer:function (value,p,record){
-                    var checked = '';
-                    var state = '';
-                    // console.log('value',record)
-                    if(value === 't'){
-                        checked = 'checked';
-                    }
-                    state ='disabled';
-                    return  String.format('<div style="vertical-align:middle;text-align:center;"><input style="height:37px;width:37px;" type="checkbox"  {0} {1}></div>',checked, state);
+                gwidth: 300,
+                maxLength:1000,
+                renderer: function(value, metaData, record, rowIndex, colIndex, store) {
+                    metaData.css = 'multilineColumn';
+                    return String.format('<div class="gridmultiline">{0}</div>', value);//#4
                 }
+
             },
-                type:'Checkbox',
-                filters:{pfiltro:'elemav.existe',type:'boolean'},
-                id_grupo:1,
-                grid:true,
-                form:true
-		},
+            type:'TextArea',
+            filters:{pfiltro:'elemav.observacion',type:'string'},
+            egrid:true,
+            id_grupo:1,
+            grid:true,
+            form:true
+        },
         {
             config:{
                 name: 'estado_reg',
@@ -271,6 +377,9 @@ Phx.vista.ElementoSegEquipo=Ext.extend(Phx.gridInterfaz,{
 		{name:'usr_reg', type: 'string'},
 		{name:'usr_mod', type: 'string'},
         {name:'desc_elemento_seg', type: 'string'},
+        {name:'observacion', type: 'string'},//##GDV-28
+        {name:'estado_elemento', type: 'string'},//##GDV-28
+
         
     ],
     sortInfo:{
@@ -293,8 +402,32 @@ Phx.vista.ElementoSegEquipo=Ext.extend(Phx.gridInterfaz,{
         Phx.vista.ElementoSegEquipo.superclass.onButtonEdit.call(this);
         //console.log("ver editar ",this.Cmp.habilitado);
         //console.log("ver editar2 ",this.sm.selections.items[0].data.habilitado);
-        if(this.sm.selections.items[0].data.existe=='t'){
-            this.Cmp.existe.setValue(true);
+        // if(this.sm.selections.items[0].data.existe=='t'){
+        //     this.Cmp.existe.setValue('si');
+        // }
+    },
+    onAfterEdit:function(field,x){//#GDV-28
+
+        var columna=field.field;
+        console.log("columna  ", columna);
+        console.log("probar stores  ", field);
+        console.log("valor cambiado  ",field.record.data['estado_elemento']);
+        console.log("valor original  ",field.originalValue);
+        if (columna == 'estado_elemento') {
+            if (field.record.data['estado_elemento'] == 'malo' || field.record.data['estado_elemento'] == 'regular' || field.record.data['estado_elemento'] == 'bueno' || field.record.data['estado_elemento'] == 'excelente') {
+
+            } else {
+                field.record.set('estado_elemento', field.originalValue);
+                alert("ALERTA!! No puede escribir, tiene que seleccionar una opcion. Se borrara la ultima opcion cambiada");
+            }
+        }else if  (columna == 'existe') {
+            if (field.record.data['existe'] == 'si' || field.record.data['existe'] == 'no') {
+
+            } else {
+                field.record.set('existe', field.originalValue);
+                alert("ALERTA!! No puede escribir, tiene que seleccionar una opcion. Se borrara la ultima opcion cambiada");
+            }
+
         }
     },
 

@@ -51,13 +51,14 @@ Phx.vista.AsigVehiculo={
 
        return tb
     },
-    tabeast: [{
+    east: {
         url:'../../../sis_rastreo/vista/elemento_seg_equipo/ElementoSegEquipo.php',
         title:'Elem. seguridad y señalizacion',
         width:'50%',
         height:'50%',
+        collapsed:true,//#.
         cls:'ElementoSegEquipo'
-    }],
+    },
 	}
 </script>
 		
