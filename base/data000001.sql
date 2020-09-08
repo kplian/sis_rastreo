@@ -128,3 +128,10 @@ select pxp.f_insert_tgui ('Ubicación de Vehículos', 'Búsqueda de vehículos p
 
 
 /***********************************F-DAT-EGS-RAS-0-15/07/2020****************************************/
+/***********************************I-DAT-EGS-RAS-1-28/08/2020****************************************/
+select param.f_import_tcatalogo_tipo ('insert','telemento_seg_equipo','RAS','telemento_seg_equipo');
+select param.f_import_tcatalogo ('insert','RAS','Malo','malo','telemento_seg_equipo');
+select param.f_import_tcatalogo ('insert','RAS','Regular','regular','telemento_seg_equipo');
+select param.f_import_tcatalogo ('insert','RAS','Bueno','bueno','telemento_seg_equipo');
+select param.f_import_tcatalogo ('insert','RAS','Excelento','excelente','telemento_seg_equipo');
+/***********************************F-DAT-EGS-RAS-1-28/08/2020****************************************/

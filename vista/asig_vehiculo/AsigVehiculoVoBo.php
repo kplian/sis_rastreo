@@ -31,6 +31,7 @@ Phx.vista.AsigVehiculoVoBo={
         Phx.vista.AsigVehiculoVoBo.superclass.preparaMenu.call(this,n);
         this.getBoton('btnElementSegu').enable();
         this.getBoton('btnViaje').enable();
+        this.getBoton('btnIncidencia').enable();//#.
         return tb
      }, 
      liberaMenu:function(){
@@ -38,6 +39,7 @@ Phx.vista.AsigVehiculoVoBo={
         if(tb){
             this.getBoton('btnElementSegu').disable();
             this.getBoton('btnViaje').disable();
+            this.getBoton('btnIncidencia').disable();//#.
         }
        return tb
     },
@@ -45,13 +47,14 @@ Phx.vista.AsigVehiculoVoBo={
     bedit:false,
     bdel:false,
     bsave:false,
-    tabeast: [{
+    east: {
         url:'../../../sis_rastreo/vista/elemento_seg_equipo/ElementoSegEquipo.php',
         title:'Elem. seguridad y señalizacion',
         width:'50%',
         height:'50%',
+        collapsed:true,//#.
         cls:'ElementoSegEquipo'
-    }],
+    },
 	}
 </script>
 		

@@ -8,8 +8,8 @@
 
  HISTORIAL DE MODIFICACIONES:
  #ISSUE                FECHA                AUTOR                DESCRIPCION
-  #0                03-07-2020 14:59:28    egutierrez             Creacion    
-  #
+  #0                03-07-2020 14:59:28    egutierrez             Creacion
+  #GDV-28              28/08/2020            EGS                 Se Agregan campos de estado y observacion
 *****************************************************************************************/
 
 class MODElementoSegEquipo extends MODbase{
@@ -40,6 +40,8 @@ class MODElementoSegEquipo extends MODbase{
         $this->captura('usr_mod','varchar');
         $this->captura('id_asig_vehiculo','int4');
         $this->captura('desc_elemento_seg','varchar');
+        $this->captura('observacion','varchar');//#GDV-28
+        $this->captura('estado_elemento','varchar');//#GDV-28
         
         //Ejecuta la instruccion
         $this->armarConsulta();
@@ -61,6 +63,8 @@ class MODElementoSegEquipo extends MODbase{
 		$this->setParametro('id_equipo','id_equipo','int4');
 		$this->setParametro('existe','existe','bool');
         $this->setParametro('id_asig_vehiculo','id_asig_vehiculo','int4');
+        $this->setParametro('observacion','observacion','varchar');//#GDV-28
+        $this->setParametro('estado_elemento','estado_elemento','varchar');//#GDV-28
 
         //Ejecuta la instruccion
         $this->armarConsulta();
@@ -82,6 +86,8 @@ class MODElementoSegEquipo extends MODbase{
 		$this->setParametro('id_elemento_seg','id_elemento_seg','int4');
 		$this->setParametro('id_equipo','id_equipo','int4');
 		$this->setParametro('existe','existe','bool');
+        $this->setParametro('observacion','observacion','varchar');//#GDV-28
+        $this->setParametro('estado_elemento','estado_elemento','varchar');//#GDV-28
 
         //Ejecuta la instruccion
         $this->armarConsulta();

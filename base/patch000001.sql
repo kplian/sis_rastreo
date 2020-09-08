@@ -366,3 +366,11 @@ CREATE TABLE ras.tasig_vehiculo_incidencia (
 ) INHERITS (pxp.tbase)
 WITH (oids = false);
 /***********************************F-SCP-EGS-RAS-1-15/07/2020****************************************/
+/***********************************I-SCP-EGS-RAS-2-26/08/2020****************************************/
+ALTER TABLE ras.telemento_seg_equipo
+  ADD COLUMN observacion VARCHAR;
+ALTER TABLE ras.telemento_seg_equipo
+  ADD COLUMN estado_elemento VARCHAR DEFAULT 'bueno' NOT NULL;
+/***********************************F-SCP-EGS-RAS-2-26/08/2020****************************************/
+
+

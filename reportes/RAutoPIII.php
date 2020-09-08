@@ -26,6 +26,7 @@ class RAutoPIII extends  ReportePDF {
         //var_dump('aui',$this->datos_elemento_seg_equipo);exit;
         $this->SetHeaderMargin(15); //margen top header
         $this->SetMargins(15, 40, 15);
+        //$this->SetFooterMargin(0);
 
     }
 
@@ -45,6 +46,7 @@ class RAutoPIII extends  ReportePDF {
     function generarReporte1() {
 
         $this->AddPage();
+
 
         $with_col = $this->with_col;
         //adiciona glosa
@@ -86,14 +88,12 @@ class RAutoPIII extends  ReportePDF {
             //$this->subtotales('Pasa a la siguiente página. '.$startY);
             //$this->subtotales('Pasa a la siguiente página');
             $startY = $this->GetY();
-            if($startY < 75){
-                //$this->AddPage();
+            if($startY > 250){
+                $this->AddPage();
             }
             else{
                 //$this->AddPage();
             }
-
-
             //$this->writeHTML('<p>text'.$startY.'</p>', false, false, true, false, '');
         }
     }

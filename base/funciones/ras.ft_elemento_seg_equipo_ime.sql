@@ -1,5 +1,3 @@
---------------- SQL ---------------
-
 CREATE OR REPLACE FUNCTION ras.ft_elemento_seg_equipo_ime (
   p_administrador integer,
   p_id_usuario integer,
@@ -19,7 +17,7 @@ $body$
  HISTORIAL DE MODIFICACIONES:
 #ISSUE                FECHA                AUTOR                DESCRIPCION
  #0                03-07-2020 14:59:28    egutierrez             Creacion
- #
+ #GDV-28              28/08/2020            EGS                 Se Agregan campos de estado y observacion
  ***************************************************************************/
 
 DECLARE
@@ -59,7 +57,9 @@ BEGIN
             usuario_ai,
             id_usuario_mod,
             fecha_mod,
-            id_asig_vehiculo
+            id_asig_vehiculo,
+            observacion, --#GDV-28
+            estado_elemento  --#GDV-28
               ) VALUES (
             'activo',
             v_parametros.id_elemento_seg,
@@ -71,7 +71,9 @@ BEGIN
             v_parametros._nombre_usuario_ai,
             null,
             null,
-            v_parametros.id_asig_vehiculo
+            v_parametros.id_asig_vehiculo,
+            v_parametros.observacion, --#GDV-28
+            v_parametros.estado_elemento --#GDV-28
             ) RETURNING id_elemento_seg_equipo into v_id_elemento_seg_equipo;
 
             --Definicion de la respuesta
@@ -101,7 +103,9 @@ BEGIN
             id_usuario_mod = p_id_usuario,
             fecha_mod = now(),
             id_usuario_ai = v_parametros._id_usuario_ai,
-            usuario_ai = v_parametros._nombre_usuario_ai
+            usuario_ai = v_parametros._nombre_usuario_ai,
+            observacion = v_parametros.observacion,  --#GDV-28
+            estado_elemento = v_parametros.estado_elemento  --#GDV-28
             WHERE id_elemento_seg_equipo=v_parametros.id_elemento_seg_equipo;
 
             --Definicion de la respuesta

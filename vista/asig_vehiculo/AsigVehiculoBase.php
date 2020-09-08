@@ -184,113 +184,6 @@ Phx.vista.AsigVehiculoBase=Ext.extend(Phx.gridInterfaz,{
         },
         {
             config:{
-                name: 'estado_reg',
-                fieldLabel: 'Estado Reg.',
-                allowBlank: true,
-                anchor: '80%',
-                gwidth: 100,
-            	maxLength:10
-            },
-                type:'TextField',
-                filters:{pfiltro:'asigvehi.estado_reg',type:'string'},
-                id_grupo:1,
-                grid:true,
-                form:false
-		},
-        {
-            config:{
-                name: 'id_usuario_ai',
-                fieldLabel: '',
-                allowBlank: true,
-                anchor: '80%',
-                gwidth: 100,
-            	maxLength:4
-            },
-                type:'Field',
-                filters:{pfiltro:'asigvehi.id_usuario_ai',type:'numeric'},
-                id_grupo:1,
-                grid:false,
-                form:false
-		},
-        {
-            config:{
-                name: 'fecha_reg',
-                fieldLabel: 'Fecha creación',
-                allowBlank: true,
-                anchor: '80%',
-                gwidth: 100,
-                            format: 'd/m/Y', 
-                            renderer:function (value,p,record){return value?value.dateFormat('d/m/Y H:i:s'):''}
-            },
-                type:'DateField',
-                filters:{pfiltro:'asigvehi.fecha_reg',type:'date'},
-                id_grupo:1,
-                grid:true,
-                form:false
-		},
-        {
-            config:{
-                name: 'usuario_ai',
-                fieldLabel: 'Funcionaro AI',
-                allowBlank: true,
-                anchor: '80%',
-                gwidth: 100,
-            	maxLength:300
-            },
-                type:'TextField',
-                filters:{pfiltro:'asigvehi.usuario_ai',type:'string'},
-                id_grupo:1,
-                grid:true,
-                form:false
-		},
-        {
-            config:{
-                name: 'usr_reg',
-                fieldLabel: 'Creado por',
-                allowBlank: true,
-                anchor: '80%',
-                gwidth: 100,
-            	maxLength:4
-            },
-                type:'Field',
-                filters:{pfiltro:'usu1.cuenta',type:'string'},
-                id_grupo:1,
-                grid:true,
-                form:false
-		},
-        {
-            config:{
-                name: 'fecha_mod',
-                fieldLabel: 'Fecha Modif.',
-                allowBlank: true,
-                anchor: '80%',
-                gwidth: 100,
-                            format: 'd/m/Y', 
-                            renderer:function (value,p,record){return value?value.dateFormat('d/m/Y H:i:s'):''}
-            },
-                type:'DateField',
-                filters:{pfiltro:'asigvehi.fecha_mod',type:'date'},
-                id_grupo:1,
-                grid:true,
-                form:false
-		},
-        {
-            config:{
-                name: 'usr_mod',
-                fieldLabel: 'Modificado por',
-                allowBlank: true,
-                anchor: '80%',
-                gwidth: 100,
-            	maxLength:4
-            },
-                type:'Field',
-                filters:{pfiltro:'usu2.cuenta',type:'string'},
-                id_grupo:1,
-                grid:true,
-                form:false
-		},
-        {
-            config:{
                 name: 'placa',
                 fieldLabel: 'Placa',
                 allowBlank: true,
@@ -337,9 +230,9 @@ Phx.vista.AsigVehiculoBase=Ext.extend(Phx.gridInterfaz,{
                 listWidth:600,
                 resizable:true,
                 anchor:'80%',
-                gwidth: 200,
+                gwidth: 150,
                 minChars : 1,
-                renderer:function(value, p, record){return String.format('{0}', record.data['marca']);}
+                renderer:function(value, p, record){return String.format('{0}', record.data['desc_marca']);}
             },
             type:'ComboBox',
             id_grupo:1,
@@ -432,6 +325,113 @@ Phx.vista.AsigVehiculoBase=Ext.extend(Phx.gridInterfaz,{
             filters: {pfiltro: 'movtip.nombre',type: 'string'},
             grid: true,
             form: true
+        },
+        {
+            config:{
+                name: 'estado_reg',
+                fieldLabel: 'Estado Reg.',
+                allowBlank: true,
+                anchor: '80%',
+                gwidth: 100,
+                maxLength:10
+            },
+            type:'TextField',
+            filters:{pfiltro:'asigvehi.estado_reg',type:'string'},
+            id_grupo:1,
+            grid:true,
+            form:false
+        },
+        {
+            config:{
+                name: 'id_usuario_ai',
+                fieldLabel: '',
+                allowBlank: true,
+                anchor: '80%',
+                gwidth: 100,
+                maxLength:4
+            },
+            type:'Field',
+            filters:{pfiltro:'asigvehi.id_usuario_ai',type:'numeric'},
+            id_grupo:1,
+            grid:false,
+            form:false
+        },
+        {
+            config:{
+                name: 'fecha_reg',
+                fieldLabel: 'Fecha creación',
+                allowBlank: true,
+                anchor: '80%',
+                gwidth: 100,
+                format: 'd/m/Y',
+                renderer:function (value,p,record){return value?value.dateFormat('d/m/Y H:i:s'):''}
+            },
+            type:'DateField',
+            filters:{pfiltro:'asigvehi.fecha_reg',type:'date'},
+            id_grupo:1,
+            grid:true,
+            form:false
+        },
+        {
+            config:{
+                name: 'usuario_ai',
+                fieldLabel: 'Funcionaro AI',
+                allowBlank: true,
+                anchor: '80%',
+                gwidth: 100,
+                maxLength:300
+            },
+            type:'TextField',
+            filters:{pfiltro:'asigvehi.usuario_ai',type:'string'},
+            id_grupo:1,
+            grid:true,
+            form:false
+        },
+        {
+            config:{
+                name: 'usr_reg',
+                fieldLabel: 'Creado por',
+                allowBlank: true,
+                anchor: '80%',
+                gwidth: 100,
+                maxLength:4
+            },
+            type:'Field',
+            filters:{pfiltro:'usu1.cuenta',type:'string'},
+            id_grupo:1,
+            grid:true,
+            form:false
+        },
+        {
+            config:{
+                name: 'fecha_mod',
+                fieldLabel: 'Fecha Modif.',
+                allowBlank: true,
+                anchor: '80%',
+                gwidth: 100,
+                format: 'd/m/Y',
+                renderer:function (value,p,record){return value?value.dateFormat('d/m/Y H:i:s'):''}
+            },
+            type:'DateField',
+            filters:{pfiltro:'asigvehi.fecha_mod',type:'date'},
+            id_grupo:1,
+            grid:true,
+            form:false
+        },
+        {
+            config:{
+                name: 'usr_mod',
+                fieldLabel: 'Modificado por',
+                allowBlank: true,
+                anchor: '80%',
+                gwidth: 100,
+                maxLength:4
+            },
+            type:'Field',
+            filters:{pfiltro:'usu2.cuenta',type:'string'},
+            id_grupo:1,
+            grid:true,
+            form:false
         },
 
     ],
