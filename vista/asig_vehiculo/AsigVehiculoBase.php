@@ -24,7 +24,6 @@ Phx.vista.AsigVehiculoBase=Ext.extend(Phx.gridInterfaz,{
         //llama al constructor de la clase padre
         Phx.vista.AsigVehiculoBase.superclass.constructor.call(this,config);
         this.init();
-        this.bloquearMenus();
         this.addButton('btnElementSegu', {
             text : 'Elem. Seguridad y Señalizacion',
             iconCls : 'bexecdb',
@@ -46,6 +45,14 @@ Phx.vista.AsigVehiculoBase=Ext.extend(Phx.gridInterfaz,{
             handler : this.openIncidencia,
             tooltip : '<b>Datos despues del viaje</b>'
         });
+        var dataPadre = Phx.CP.getPagina(this.idContenedorPadre).getSelectedData();
+        if(dataPadre){
+            this.onEnablePanel(this, dataPadre);
+        } else {
+            this.bloquearMenus();
+        }
+
+
         },
             
     Atributos:[
