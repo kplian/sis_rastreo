@@ -33,6 +33,7 @@ class MODResponsable extends MODbase{
 		$this->captura('usr_reg','varchar');
 		$this->captura('usr_mod','varchar');
 		$this->captura('desc_persona','text');
+        $this->captura('cod_funcionario','varchar');//#
 		
 		//Ejecuta la instruccion
 		$this->armarConsulta();

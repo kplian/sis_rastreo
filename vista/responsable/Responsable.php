@@ -33,7 +33,7 @@ Phx.vista.Responsable=Ext.extend(Phx.gridInterfaz,{
 		},
 		{
 			config:{
-				name: 'codigo',
+				name: 'cod_funcionario',
 				fieldLabel: 'Código',
 				allowBlank: true,
 				anchor: '80%',
@@ -189,7 +189,8 @@ Phx.vista.Responsable=Ext.extend(Phx.gridInterfaz,{
 		{name:'fecha_mod', type: 'date',dateFormat:'Y-m-d H:i:s.u'},
 		{name:'id_usuario_mod', type: 'numeric'},
 		{name:'usr_reg', type: 'string'},
-		{name:'usr_mod', type: 'string'},'desc_persona'
+		{name:'usr_mod', type: 'string'},'desc_persona',
+        {name:'cod_funcionario', type: 'string'}
 		
 	],
 	sortInfo:{

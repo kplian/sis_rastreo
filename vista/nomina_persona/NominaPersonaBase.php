@@ -23,9 +23,15 @@ Phx.vista.NominaPersonaBase=Ext.extend(Phx.gridInterfaz,{
         //llama al constructor de la clase padre
         Phx.vista.NominaPersonaBase.superclass.constructor.call(this,config);
         this.init();
-        //this.load({params:{start:0, limit:this.tam_pag}})
-        this.bloquearMenus();
         this.iniciarEventos();
+        //this.load({params:{start:0, limit:this.tam_pag}})
+        var dataPadre = Phx.CP.getPagina(this.idContenedorPadre).getSelectedData();
+        if(dataPadre){
+            this.onEnablePanel(this, dataPadre);
+        } else {
+            this.bloquearMenus();
+        }
+
     },
     iniciarEventos:function(){
         this.fecha = new Date();
