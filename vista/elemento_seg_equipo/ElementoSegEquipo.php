@@ -413,6 +413,7 @@ Phx.vista.ElementoSegEquipo=Ext.extend(Phx.gridInterfaz,{
         console.log("probar stores  ", field);
         console.log("valor cambiado  ",field.record.data['estado_elemento']);
         console.log("valor original  ",field.originalValue);
+        console.log("valor cambiado  ",field.record.data['existe']);
         if (columna == 'estado_elemento') {
             if (field.record.data['estado_elemento'] == 'malo' || field.record.data['estado_elemento'] == 'regular' || field.record.data['estado_elemento'] == 'bueno' || field.record.data['estado_elemento'] == 'excelente') {
 
@@ -421,7 +422,7 @@ Phx.vista.ElementoSegEquipo=Ext.extend(Phx.gridInterfaz,{
                 alert("ALERTA!! No puede escribir, tiene que seleccionar una opcion. Se borrara la ultima opcion cambiada");
             }
         }else if  (columna == 'existe') {
-            if (field.record.data['existe'] == 'si' || field.record.data['existe'] == 'no') {
+            if (field.record.data['existe'] == 't' || field.record.data['existe'] == 'f') {
 
             } else {
                 field.record.set('existe', field.originalValue);
