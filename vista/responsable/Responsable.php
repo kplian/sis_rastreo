@@ -46,23 +46,63 @@ Phx.vista.Responsable=Ext.extend(Phx.gridInterfaz,{
 			grid:true,
 			form:true
 		},
-		{
-			config: {
-				name: 'id_persona',
-				fieldLabel: 'Nombre completo',
-				anchor: '70%',
-				tinit: false,
-				allowBlank: true,
-				origen: 'PERSONA',
-				gdisplayField: 'desc_persona',
-				gwidth: 200
-			},
-			type: 'ComboRec',
-			id_grupo: 1,
-			filters:{pfiltro:'per.nombre?completo1',type:'string'},
-			grid: true,
-			form: true
-		},
+
+        {
+            config:{
+                name:'id_persona',
+                fieldLabel:'Nombre completo',
+                allowBlank:false,
+                emptyText:'Persona...',
+                store: new Ext.data.JsonStore({
+
+                    url: '../../sis_seguridad/control/Persona/listarPersona',
+                    id: 'id_persona',
+                    root: 'datos',
+                    sortInfo:{
+                        field: 'nombre_completo1',
+                        direction: 'ASC'
+                    },
+                    totalProperty: 'total',
+                    fields: ['id_persona','nombre_completo1','ci'],
+                    // turn on remote sorting
+                    remoteSort: true,
+                    baseParams:{par_filtro:'p.nombre_completo1#p.ci'}
+                }),
+                valueField: 'id_persona',
+                displayField: 'nombre_completo1',
+                gdisplayField:'desc_person',//mapea al store del grid
+                tpl:'<tpl for="."><div class="x-combo-list-item"><p>{nombre_completo1}</p><p>CI:{ci}</p> </div></tpl>',
+                hiddenName: 'id_persona',
+                forceSelection:true,
+                typeAhead: true,
+                triggerAction: 'all',
+                lazyRender:true,
+                mode:'remote',
+                pageSize:10,
+                queryDelay:1000,
+                width:250,
+                gwidth:280,
+                minChars:2,
+                turl:'../../../sis_rastreo/vista/responsable/PersonaConductor.php',
+                ttitle:'Personas',
+                // tconfig:{width:1800,height:500},
+                tdata:{nombreVista:'Conductores'},
+                tcls:'PersonaConductor',
+                pid:this.idContenedor,
+
+                renderer:function (value, p, record){return String.format('{0}', record.data['desc_persona']);}
+            },
+            type:'TrigguerCombo',
+            bottom_filter:true,
+            id_grupo:0,
+            filters:{
+                pfiltro:'nombre_completo1',
+                type:'string'
+            },
+
+            grid:true,
+            form:true
+        },
 		{
 			config:{
 				name: 'estado_reg',

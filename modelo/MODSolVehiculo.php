@@ -9,8 +9,8 @@
  HISTORIAL DE MODIFICACIONES:
  #ISSUE                FECHA                AUTOR                DESCRIPCION
   #0                02-07-2020 22:13:48    egutierrez             Creacion    
-  #
-*****************************************************************************************/
+#GDV-29              29/12/2020            EGS                 Añadiendo campo deexiste conductores
+ *****************************************************************************************/
 
 class MODSolVehiculo extends MODbase{
     
@@ -62,6 +62,7 @@ class MODSolVehiculo extends MODbase{
         $this->captura('monto','numeric');
         $this->captura('id_centro_costo','int4');
         $this->captura('desc_centro_costo','varchar');
+        $this->captura('existe_conductor','varchar');//#GDV-29
 
         if($this->objParam->getParametro('tipo_reporte')=='auto_PI' || $this->objParam->getParametro('tipo_reporte')=='auto_PII'){
             $this->captura('desc_jefe_dep','varchar');
@@ -104,6 +105,7 @@ class MODSolVehiculo extends MODbase{
 		$this->setParametro('estado','estado','varchar');
         $this->setParametro('monto','monto','numeric');
         $this->setParametro('id_centro_costo','id_centro_costo','int4');
+        $this->setParametro('existe_conductor','existe_conductor','varchar');//#GDV-29
 
         //Ejecuta la instruccion
         $this->armarConsulta();
@@ -141,6 +143,7 @@ class MODSolVehiculo extends MODbase{
 		$this->setParametro('estado','estado','varchar');
         $this->setParametro('monto','monto','numeric');
         $this->setParametro('id_centro_costo','id_centro_costo','int4');
+        $this->setParametro('existe_conductor','existe_conductor','varchar');//#GDV-29
 
 
 

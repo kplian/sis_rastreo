@@ -1,12 +1,12 @@
 --------------- SQL ---------------
 
 CREATE OR REPLACE FUNCTION ras.ft_sol_vehiculo_sel (
-  p_administrador integer,
-  p_id_usuario integer,
-  p_tabla varchar,
-  p_transaccion varchar
+    p_administrador integer,
+    p_id_usuario integer,
+    p_tabla varchar,
+    p_transaccion varchar
 )
-RETURNS varchar AS
+    RETURNS varchar AS
 $body$
 /**************************************************************************
  SISTEMA:        Gestion Vehicular
@@ -19,7 +19,7 @@ $body$
  HISTORIAL DE MODIFICACIONES:
 #ISSUE                FECHA                AUTOR                DESCRIPCION
  #0                02-07-2020 22:13:48    egutierrez             Creacion
- #
+#GDV-29                 13/01/2021          EGS                  Se agrega si exite conductor o no
  ***************************************************************************/
 
 DECLARE
@@ -52,30 +52,30 @@ BEGIN
             v_join = '';
             v_col = '';
 
-         IF p_administrador !=1 then
+            IF p_administrador !=1 then
 
-            --raise exception 'v_parametros.nombreVista %',v_parametros.nombreVista;
-         --si es la vista del help y estan en estado asignado y finalizado muestra solo os registristros del funcionario solicitante
-            IF v_parametros.nombreVista = 'SolVehiculo'   THEN
+                --raise exception 'v_parametros.nombreVista %',v_parametros.nombreVista;
+                --si es la vista del help y estan en estado asignado y finalizado muestra solo os registristros del funcionario solicitante
+                IF v_parametros.nombreVista = 'SolVehiculo'   THEN
 
-                v_filtro = '(solvehi.id_funcionario = '||v_parametros.id_funcionario_usu::varchar||' ) and ';
+                    v_filtro = '(solvehi.id_funcionario = '||v_parametros.id_funcionario_usu::varchar||' ) and ';
 
-            --Si no soy administrador y estoy en pendiente no veo nada
-            ElSIF v_parametros.nombreVista = 'SolVehiculoVoBo' or v_parametros.nombreVista = 'SolVehiculoAsig' THEN
-                v_filtro = '(ew.id_funcionario = '||v_parametros.id_funcionario_usu::varchar||' ) and ';
+                    --Si no soy administrador y estoy en pendiente no veo nada
+                ElSIF v_parametros.nombreVista = 'SolVehiculoVoBo' or v_parametros.nombreVista = 'SolVehiculoAsig' THEN
+                    v_filtro = '(ew.id_funcionario = '||v_parametros.id_funcionario_usu::varchar||' ) and ';
+
+                ELSE
+                    v_filtro = ' ';
+                END IF;
+
 
             ELSE
-            v_filtro = ' ';
+                v_filtro = ' ';
             END IF;
 
-
-         ELSE
-                 v_filtro = ' ';
-         END IF;
-
-         IF pxp.f_existe_parametro(p_tabla,'tipo_reporte') THEN
-            IF v_parametros.tipo_reporte = 'auto_PI' or v_parametros.tipo_reporte = 'auto_PII' THEN
-              v_with='with fun_jefe (id_proceso_wf,id_funcionario,desc_funcionario)AS(
+            IF pxp.f_existe_parametro(p_tabla,'tipo_reporte') THEN
+                IF v_parametros.tipo_reporte = 'auto_PI' or v_parametros.tipo_reporte = 'auto_PII' THEN
+                    v_with='with fun_jefe (id_proceso_wf,id_funcionario,desc_funcionario)AS(
                       SELECT
                            es.id_proceso_wf,
                            es.id_funcionario,
@@ -121,19 +121,19 @@ BEGIN
                                                                                  WHERE  tippppp.codigo =''vobojefeserv'' and  eswfff.id_proceso_wf = esss.id_proceso_wf
                                                                                   )
                        )';
-              v_col='
+                    v_col='
               ,fj.desc_funcionario::varchar as desc_jefe_dep
               ,ge.desc_funcionario::varchar as desc_gerente
               ,fjs.desc_funcionario::varchar as desc_jefe_serv
               ';
 
-              v_join='left join fun_jefe fj on fj.id_proceso_wf = solvehi.id_proceso_wf
+                    v_join='left join fun_jefe fj on fj.id_proceso_wf = solvehi.id_proceso_wf
                       left join fun_geren ge on ge.id_proceso_wf = solvehi.id_proceso_wf
                       left join fun_jefe_ser fjs on fjs.id_proceso_wf = solvehi.id_proceso_wf
               ';
 
+                END IF;
             END IF;
-         END IF;
             --Sentencia de la consulta
             v_consulta:='
                 '||v_with||'
@@ -169,7 +169,8 @@ BEGIN
                         fun.desc_funcionario1::varchar as desc_funcionario,
                         solvehi.monto,
                         solvehi.id_centro_costo,
-                        cec.codigo_cc::varchar as desc_centro_costo
+                        cec.codigo_cc::varchar as desc_centro_costo,
+                        solvehi.existe_conductor
                         '||v_col||'
                         FROM ras.tsol_vehiculo solvehi
                         JOIN segu.tusuario usu1 ON usu1.id_usuario = solvehi.id_usuario_reg
@@ -191,40 +192,40 @@ BEGIN
 
         END;
 
-    /*********************************
-     #TRANSACCION:  'RAS_SOLVEHI_CONT'
-     #DESCRIPCION:    Conteo de registros
-     #AUTOR:        egutierrez
-     #FECHA:        02-07-2020 22:13:48
-    ***********************************/
+        /*********************************
+         #TRANSACCION:  'RAS_SOLVEHI_CONT'
+         #DESCRIPCION:    Conteo de registros
+         #AUTOR:        egutierrez
+         #FECHA:        02-07-2020 22:13:48
+        ***********************************/
 
     ELSIF (p_transaccion='RAS_SOLVEHI_CONT') THEN
 
         BEGIN
-        v_with ='';
-        v_join = '';
-         IF p_administrador !=1 then
+            v_with ='';
+            v_join = '';
+            IF p_administrador !=1 then
 
-            --raise exception 'v_parametros.nombreVista %',v_parametros.nombreVista;
-         --si es la vista del help y estan en estado asignado y finalizado muestra solo os registristros del funcionario solicitante
-            IF v_parametros.nombreVista = 'SolVehiculo'   THEN
+                --raise exception 'v_parametros.nombreVista %',v_parametros.nombreVista;
+                --si es la vista del help y estan en estado asignado y finalizado muestra solo os registristros del funcionario solicitante
+                IF v_parametros.nombreVista = 'SolVehiculo'   THEN
 
-                v_filtro = '(solvehi.id_funcionario = '||v_parametros.id_funcionario_usu::varchar||' ) and ';
+                    v_filtro = '(solvehi.id_funcionario = '||v_parametros.id_funcionario_usu::varchar||' ) and ';
 
-            --Si no soy administrador y estoy en pendiente no veo nada
-            ElSIF v_parametros.nombreVista = 'SolVehiculoVoBo' THEN
-                v_filtro = '(ew.id_funcionario = '||v_parametros.id_funcionario_usu::varchar||' ) and ';
+                    --Si no soy administrador y estoy en pendiente no veo nada
+                ElSIF v_parametros.nombreVista = 'SolVehiculoVoBo' THEN
+                    v_filtro = '(ew.id_funcionario = '||v_parametros.id_funcionario_usu::varchar||' ) and ';
 
+                ELSE
+                    v_filtro = ' ';
+                END IF;
             ELSE
-            v_filtro = ' ';
-              END IF;
-         ELSE
-                 v_filtro = ' ';
-         END IF;
+                v_filtro = ' ';
+            END IF;
 
-         IF pxp.f_existe_parametro(p_tabla,'tipo_reporte') THEN
-           IF v_parametros.tipo_reporte = 'auto_PI' or v_parametros.tipo_reporte = 'auto_PII' THEN
-                v_with='with fun_jefe (id_proceso_wf,id_funcionario,desc_funcionario)AS(
+            IF pxp.f_existe_parametro(p_tabla,'tipo_reporte') THEN
+                IF v_parametros.tipo_reporte = 'auto_PI' or v_parametros.tipo_reporte = 'auto_PII' THEN
+                    v_with='with fun_jefe (id_proceso_wf,id_funcionario,desc_funcionario)AS(
                           SELECT
                                es.id_proceso_wf,
                                es.id_funcionario,
@@ -271,13 +272,13 @@ BEGIN
                                                                                       )
                            )';
 
-                v_join='left join fun_jefe fj on fj.id_proceso_wf = solvehi.id_proceso_wf
+                    v_join='left join fun_jefe fj on fj.id_proceso_wf = solvehi.id_proceso_wf
                         left join fun_geren ge on ge.id_proceso_wf = solvehi.id_proceso_wf
                         left join fun_jefe_ser fjs on fjs.id_proceso_wf = solvehi.id_proceso_wf
                 ';
 
-              END IF;
-           END IF;
+                END IF;
+            END IF;
 
             --Sentencia de la consulta de conteo de registros
             v_consulta:='
@@ -310,15 +311,16 @@ BEGIN
 EXCEPTION
 
     WHEN OTHERS THEN
-            v_resp='';
-            v_resp = pxp.f_agrega_clave(v_resp,'mensaje',SQLERRM);
-            v_resp = pxp.f_agrega_clave(v_resp,'codigo_error',SQLSTATE);
-            v_resp = pxp.f_agrega_clave(v_resp,'procedimientos',v_nombre_funcion);
-            RAISE EXCEPTION '%',v_resp;
+        v_resp='';
+        v_resp = pxp.f_agrega_clave(v_resp,'mensaje',SQLERRM);
+        v_resp = pxp.f_agrega_clave(v_resp,'codigo_error',SQLSTATE);
+        v_resp = pxp.f_agrega_clave(v_resp,'procedimientos',v_nombre_funcion);
+        RAISE EXCEPTION '%',v_resp;
 END;
 $body$
-LANGUAGE 'plpgsql'
-VOLATILE
-CALLED ON NULL INPUT
-SECURITY INVOKER
-COST 100;
+    LANGUAGE 'plpgsql'
+    VOLATILE
+    CALLED ON NULL INPUT
+    SECURITY INVOKER
+    PARALLEL UNSAFE
+    COST 100;
