@@ -21,6 +21,7 @@ Phx.vista.AsigVehiculoBase=Ext.extend(Phx.gridInterfaz,{
     existe_conductor:'',
     id_tipo_equipo:'',
     estado:'',//GDV-29
+    nombreVistaPadre:'',
     constructor:function(config){
         this.maestro=config.maestro;
 
@@ -500,15 +501,17 @@ Phx.vista.AsigVehiculoBase=Ext.extend(Phx.gridInterfaz,{
     bsave:false,
     onReloadPage: function(m) {
         this.maestro = m;
+        this.obtenerNombreVistaPadre();
+
         this.Atributos[this.getIndAtributo('id_sol_vehiculo')].valorInicial = this.maestro.id_sol_vehiculo;
+
         this.alquiler = this.maestro.alquiler;
         this.estado = this.maestro.estado;//GDV-29
         this.existe_conductor = this.maestro.existe_conductor;
         this.id_tipo_equipo = this.maestro.id_tipo_equipo;
+
         this.Cmp.id_equipo.store.baseParams.id_sol_vehiculo = this.maestro.id_sol_vehiculo;
-
         this.Cmp.id_equipo.store.baseParams.id_tipo_equipo = this.maestro.id_tipo_equipo;
-
         this.store.baseParams = {
             id_sol_vehiculo: this.maestro.id_sol_vehiculo,
             nombreVista:this.nombreVista ,
@@ -700,7 +703,10 @@ Phx.vista.AsigVehiculoBase=Ext.extend(Phx.gridInterfaz,{
         }
 
 
-    }
+    },
+    obtenerNombreVistaPadre:function(){
+        this.nombreVistaPadre =  Phx.CP.getPagina(this.idContenedorPadre).obtenerNombreVista();
+    },
     }
 )
 </script>
