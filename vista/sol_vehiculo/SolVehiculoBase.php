@@ -752,6 +752,9 @@ Phx.vista.SolVehiculoBase=Ext.extend(Phx.gridInterfaz,{
         this.reload();
 
     },
+    obtenerNombreVista: function () { //#GDV-29
+        return this.nombreVista;
+    }
 
     }
 )
