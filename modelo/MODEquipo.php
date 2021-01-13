@@ -212,6 +212,7 @@ class MODEquipo extends MODbase{
         $this->captura('marca','varchar');
         $this->captura('modelo','varchar');
         $this->captura('tipo_equipo','varchar');
+        $this->captura('id_tipo_equipo','int4');
 
         //Ejecuta la instruccion
         $this->armarConsulta();

@@ -9,7 +9,7 @@
 HISTORIAL DE MODIFICACIONES:
 #ISSUE                FECHA                AUTOR                DESCRIPCION
  #0                02-07-2020 22:13:48    egutierrez            Creacion    
- #   
+ #GDV-29              29/12/2020            EGS                 Añadiendo campo deexiste conductores
 
 *******************************************************************************************/
 
@@ -351,7 +351,7 @@ Phx.vista.SolVehiculoBase=Ext.extend(Phx.gridInterfaz,{
             config: {
                 name: 'id_tipo_equipo',
                 fieldLabel: 'Tipo Vehiculo',
-                allowBlank: true,
+                allowBlank: false,
                 emptyText: 'Elija una opción...',
                 store: new Ext.data.JsonStore({
                     url: '../../sis_rastreo/control/TipoEquipo/listarTipoEquipo',
@@ -465,6 +465,34 @@ Phx.vista.SolVehiculoBase=Ext.extend(Phx.gridInterfaz,{
             grid:true,
             form:true
         },
+        {//#GDV-29
+            config:{
+                name:'existe_conductor',
+                fieldLabel:'Conductor ?',
+                allowBlank:false,
+                emptyText:'...',
+                typeAhead: true,
+                triggerAction: 'all',
+                lazyRender:true,
+                mode: 'local',
+                gwidth: 100,
+                store:new Ext.data.ArrayStore({
+                    fields: ['ID', 'valor'],
+                    data :    [['si','si'],
+                        ['no','no']]
+
+                }),
+                valueField:'ID',
+                displayField:'valor',
+                renderer:function (value, p, record){if (value == 'si') {return 'si'} else {return 'no'}}
+            },
+            type:'ComboBox',
+            valorInicial: 'si',
+            filters:{pfiltro:'solvehi.existe_conductor',type:'string'},
+            id_grupo:1,
+            grid:true,
+            form:true
+        },
         {
             config:{
                 name: 'estado',
@@ -572,7 +600,7 @@ Phx.vista.SolVehiculoBase=Ext.extend(Phx.gridInterfaz,{
                 id_grupo:1,
                 grid:true,
                 form:false
-		}
+		},
     ],
     tam_pag:50,    
     title:'solvehi',
@@ -613,6 +641,7 @@ Phx.vista.SolVehiculoBase=Ext.extend(Phx.gridInterfaz,{
         {name:'monto', type: 'numeric'},
         {name:'id_centro_costo', type: 'numeric'},
         {name:'desc_centro_costo', type: 'string'},
+        {name:'existe_conductor', type: 'string'},//#GDV-29
         
     ],
     sortInfo:{

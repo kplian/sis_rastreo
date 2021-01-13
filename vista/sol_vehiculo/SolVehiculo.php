@@ -127,9 +127,13 @@ Phx.vista.SolVehiculo={
         this.Cmp.id_centro_costo.store.baseParams.query = data.id_centro_costo;
         this.Cmp.id_centro_costo.store.load({params:{start:0,limit:this.tam_pag},
             callback : function (r) {
-                if (r.length > 0 ) {
+                console.log('data',data.id_centro_costo);
+                if (r.length > 0  && (data.id_centro_costo != '' && data.id_centro_costo != null ) ) {
 
                     this.Cmp.id_centro_costo.setValue(r[0].data.id_centro_costo);
+                }
+                else {
+                    this.Cmp.id_centro_costo.reset();
                 }
 
             }, scope : this
@@ -142,7 +146,7 @@ Phx.vista.SolVehiculo={
         cls: 'NominaPersona'
     },{
         url: '../../../sis_rastreo/vista/asig_vehiculo/AsigVehiculoVoBo.php',
-        title: 'Vehiculos Asignados',
+        title: 'Vehiculos Asig/Viajes',
         height: '50%',
         cls: 'AsigVehiculoVoBo'
     }],

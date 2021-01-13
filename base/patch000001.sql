@@ -372,5 +372,10 @@ ALTER TABLE ras.telemento_seg_equipo
 ALTER TABLE ras.telemento_seg_equipo
   ADD COLUMN estado_elemento VARCHAR DEFAULT 'bueno' NOT NULL;
 /***********************************F-SCP-EGS-RAS-2-26/08/2020****************************************/
+/***********************************I-SCP-EGS-RAS-3-29/12/2020****************************************/
+ALTER TABLE ras.tsol_vehiculo
+    ADD COLUMN existe_conductor VARCHAR(2) DEFAULT 'si' NOT NULL;
+/***********************************F-SCP-EGS-RAS-3-29/12/2020****************************************/
+
 
 
