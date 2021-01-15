@@ -34,7 +34,8 @@ foreach ($this->datos_asig_vehiculo as $datos) {?><font size="10"><table  width=
 <?php
     $i++;
 }
-?><table width="100%" cellpadding="5px"  border="1">
+?>
+<font size="10"><table width="100%" cellpadding="5px"  border="1">
     <tr>
         <td width="100%" height="50px" > </td>
     </tr>
@@ -44,4 +45,4 @@ foreach ($this->datos_asig_vehiculo as $datos) {?><font size="10"><table  width=
     <tr>
         <td width="100%" align="center"  >Firma Jefe Division Servicios:</td>
     </tr>
-</table>
+</table></font>

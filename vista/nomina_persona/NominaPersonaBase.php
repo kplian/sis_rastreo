@@ -248,7 +248,7 @@ Phx.vista.NominaPersonaBase=Ext.extend(Phx.gridInterfaz,{
         direction: 'ASC'
     },
     bdel:true,
-    bsave:true,
+    bsave:false,
     onReloadPage: function(m) {
         this.maestro = m;
         this.Atributos[this.getIndAtributo('id_sol_vehiculo')].valorInicial = this.maestro.id_sol_vehiculo;
