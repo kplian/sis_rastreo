@@ -57,7 +57,7 @@ class MODAsigVehiculo extends MODbase{
         $this->captura('id_proveedor','int4');
         $this->captura('id_tipo_equipo','int4');
         $this->captura('incidencia','varchar');
-
+        $this->captura('id_marca','int4');
 
         //Ejecuta la instruccion
         $this->armarConsulta();

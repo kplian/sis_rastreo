@@ -1,12 +1,12 @@
 --------------- SQL ---------------
 
 CREATE OR REPLACE FUNCTION ras.ft_asig_vehiculo_sel (
-  p_administrador integer,
-  p_id_usuario integer,
-  p_tabla varchar,
-  p_transaccion varchar
+    p_administrador integer,
+    p_id_usuario integer,
+    p_tabla varchar,
+    p_transaccion varchar
 )
-RETURNS varchar AS
+    RETURNS varchar AS
 $body$
 /**************************************************************************
  SISTEMA:        Gestion Vehicular
@@ -97,7 +97,13 @@ BEGIN
                         equipa.modelo,
                         equipa.id_proveedor,
                         equipa.id_tipo_equipo,
-                        asigvehi.incidencia
+                        asigvehi.incidencia,
+                        case
+                        when solv.alquiler = ''si'' then
+                        equipa.id_marca
+                        else
+                        mar.id_marca
+                        end as id_marca
                         FROM ras.tasig_vehiculo asigvehi
                         JOIN segu.tusuario usu1 ON usu1.id_usuario = asigvehi.id_usuario_reg
                         LEFT JOIN segu.tusuario usu2 ON usu2.id_usuario = asigvehi.id_usuario_mod
@@ -122,12 +128,12 @@ BEGIN
 
         END;
 
-    /*********************************
-     #TRANSACCION:  'RAS_ASIGVEHI_CONT'
-     #DESCRIPCION:    Conteo de registros
-     #AUTOR:        egutierrez
-     #FECHA:        03-07-2020 15:02:14
-    ***********************************/
+        /*********************************
+         #TRANSACCION:  'RAS_ASIGVEHI_CONT'
+         #DESCRIPCION:    Conteo de registros
+         #AUTOR:        egutierrez
+         #FECHA:        03-07-2020 15:02:14
+        ***********************************/
 
     ELSIF (p_transaccion='RAS_ASIGVEHI_CONT') THEN
 
@@ -160,15 +166,16 @@ BEGIN
 EXCEPTION
 
     WHEN OTHERS THEN
-            v_resp='';
-            v_resp = pxp.f_agrega_clave(v_resp,'mensaje',SQLERRM);
-            v_resp = pxp.f_agrega_clave(v_resp,'codigo_error',SQLSTATE);
-            v_resp = pxp.f_agrega_clave(v_resp,'procedimientos',v_nombre_funcion);
-            RAISE EXCEPTION '%',v_resp;
+        v_resp='';
+        v_resp = pxp.f_agrega_clave(v_resp,'mensaje',SQLERRM);
+        v_resp = pxp.f_agrega_clave(v_resp,'codigo_error',SQLSTATE);
+        v_resp = pxp.f_agrega_clave(v_resp,'procedimientos',v_nombre_funcion);
+        RAISE EXCEPTION '%',v_resp;
 END;
 $body$
-LANGUAGE 'plpgsql'
-VOLATILE
-CALLED ON NULL INPUT
-SECURITY INVOKER
-COST 100;
+    LANGUAGE 'plpgsql'
+    VOLATILE
+    CALLED ON NULL INPUT
+    SECURITY INVOKER
+    PARALLEL UNSAFE
+    COST 100;
