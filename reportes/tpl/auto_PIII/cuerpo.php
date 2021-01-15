@@ -7,7 +7,7 @@
         $i = 1;
         $numero = 3;
         echo '<h3>'.$datosAsig['placa'].'</h3>';
-        echo '<p>Elementos de Seguridad y señalizacion </p>';
+        echo '<p>Elementos de Seguridad y señalizacion: </p>';
         echo '<table  width="100%" cellpadding="5px"  border="1" >';
         echo '<tr>';
         echo '<th align="center" width="30%">Elemento</th>';
@@ -24,7 +24,11 @@
                 echo  '<td width="10%" align="center">';
                 echo $datos['existe']=='t'?'x':'';
                 echo  '</td>';
-                echo '<td width="20%" >'. $datos['estado_elemento'] .'</td>';
+                if ($datos['existe']=='t'){
+                    echo '<td width="20%" >'. $datos['estado_elemento'] .'</td>';
+                }else{
+                    echo '<td width="20%" > </td>';
+                }
                 echo '<td width="40%" >'. $datos['observacion'] .'</td>';
                 echo '</tr>';
 
@@ -32,42 +36,49 @@
         }//fin 2 for
 
         echo '</table>';
-        echo '<p>Datos del viaje </p>';
+        echo '<p>Datos del viaje: </p>';
         echo '<table width="100%" cellpadding="5px"  border="1"> 
         <tr>
             <td width="25%">Kilometraje Final:               
             </td>
-            <td width="25%" >'.$datosAsig['km_inicio'].'
+            <td width="15%" >'.$datosAsig['km_inicio'].'
             </td>
-            <td width="50%" rowspan="2" >Observaciones / Novedades de Viaje / Estado de Vehículo:
+            <td width="60%" rowspan="3" >Observaciones / Novedades de Viaje / Estado de Vehículo:
                 '.$datosAsig['observacion_viaje'].'
             </td>
         </tr>
         <tr>
             <td width="25%">Kilometraje Inicial:
             </td>
-            <td width="25%">'.$datosAsig['km_final'].'
+            <td width="15%">'.$datosAsig['km_final'].'
             </td>
         </tr>
         <tr>
-            <td width="25%" rowspan="2" >Total Recorrido km:
+            <td width="25%" >Total Recorrido km:
             </td>
-            <td width="25%" rowspan="2" >'.$datosAsig['recorrido'].'
-            </td>
-            <td width="25%" rowspan="2" >Nombre y Firma Chofer:
-            </td>
-            <td width="25%">
-
+            <td width="15%" >'.$datosAsig['recorrido'].'
             </td>
         </tr>
          <tr>
-            <td width="25%" align="center">'.ucwords(strtolower($datosAsig['desc_persona'])).'
+            <td width="25%" rowspan="3" >Nombre y Firma Chofer:
+            </td>
+            <td width="75%" height="70px" rowspan="2">
+            </td>
+          
+        </tr>
+        <tr>
+         
+        </tr>
+         <tr>
+            <td width="75%" align="center">'.ucwords(strtolower($datosAsig['desc_persona'])).'
 
             </td>
-        </tr> </table>';
+         </tr> 
+        
+        </table>';
 
         if(  $datosAsig['incidencia']== 'si'  ) {
-
+            echo '<p>Incidencias:</p>';
             echo '<table border="1">';
             echo '<tr> 
                 <td width="30%" align="center">Incidencia</td>

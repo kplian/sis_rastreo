@@ -47,7 +47,7 @@ Phx.vista.SolVehiculo={
 						});
         this.addButton('btnSolAutorizacion', {
             text : 'Sol. Autorizacion ',
-            iconCls : 'bexecdb',
+            iconCls : 'bprint',
             disabled : false,
             handler : this.openSolAuto,
             tooltip : '<b>Autorizacion</b>'
@@ -76,14 +76,18 @@ Phx.vista.SolVehiculo={
          if (data.estado == 'borrador') {
          	this.getBoton('ant_estado').disable();
     		this.getBoton('sig_estado').enable();
+             this.getBoton('edit').enable();
+             this.getBoton('del').enable();
          }else {
-             if(data.estado == ('autorizado')){
+             if(data.estado == ('asignado')){
                  this.getBoton('ant_estado').enable();
                  this.getBoton('sig_estado').disable();
              }else{
                  this.getBoton('ant_estado').disable();
                  this.getBoton('sig_estado').disable();
              }
+             this.getBoton('edit').disable();
+             this.getBoton('del').disable();
          };
          return tb 
      }, 
@@ -93,7 +97,7 @@ Phx.vista.SolVehiculo={
 			this.getBoton('btnChequeoDocumentosWf').disable();          
             this.getBoton('diagrama_gantt').disable();
             this.getBoton('ant_estado').disable();
-    		this.getBoton('sig_estado').disable();  
+    		this.getBoton('sig_estado').disable();
         }
        return tb
     },
@@ -114,6 +118,16 @@ Phx.vista.SolVehiculo={
         });
         this.Cmp.id_funcionario.enable();
         this.obtenerGestion(this.Cmp.fecha_sol.getValue());
+
+        this.Cmp.monto.disable();
+        this.Cmp.alquiler.on('select',function(combo,record,index){
+            if(record.data.valor == 'si'){
+                this.Cmp.monto.enable();
+            }else{
+                this.Cmp.monto.disable();
+            };
+
+        },this)
 
     },
     onButtonEdit: function() {
@@ -138,6 +152,22 @@ Phx.vista.SolVehiculo={
 
             }, scope : this
         });
+
+        if(data.alquiler == 'si'){
+            this.Cmp.monto.enable();
+        }else{
+            this.Cmp.monto.disable();
+        };
+
+        this.Cmp.alquiler.on('select',function(combo,record,index){
+            if(record.data.valor == 'si'){
+                this.Cmp.monto.enable();
+            }else{
+                this.Cmp.monto.disable();
+            };
+
+        },this)
+
     },
     tabsouth: [{
         url: '../../../sis_rastreo/vista/nomina_persona/NominaPersona.php',

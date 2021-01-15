@@ -34,12 +34,28 @@ Phx.vista.NominaPersona={
       var data = this.getSelectedData();
       var tb =this.tbar;
         Phx.vista.NominaPersona.superclass.preparaMenu.call(this,n);
+        console.log('ms',this.maestro);
+
+         if(this.maestro.estado == 'borrador'){
+             this.getBoton('edit').enable();
+             this.getBoton('del').enable();
+         }else{
+             this.getBoton('edit').disable();
+             this.getBoton('del').disable();
+         };
 
          return tb 
      }, 
      liberaMenu:function(){
         var tb = Phx.vista.NominaPersona.superclass.liberaMenu.call(this);
         if(tb){
+
+            if(this.maestro.estado == 'borrador'){
+                this.getBoton('new').enable();
+            }else{
+                this.getBoton('new').disable();
+            };
+
 		        }
        return tb
     },

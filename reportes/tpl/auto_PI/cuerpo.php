@@ -76,13 +76,12 @@
             </td>
         </tr>
         <tr >
-            <td width="15%" rowspan="3"  >Observaciones:
+            <td width="50%" rowspan="3"  >Observaciones: <?php  echo  strtolower($this->datos_sol_vehiculo[0]['observacion']);?>
             </td>
-            <td width="35%" rowspan="3" ><?php  echo  strtolower($this->datos_sol_vehiculo[0]['observacion']);?>
-            </td>
+
 <!--            <td width="15%" rowspan="2">Nombre y Firma Autorizada:-->
 <!--            </td>-->
-            <td width="50%" height="50px" >
+            <td width="50%" height="60px" >
             </td>
         </tr>
         <tr>
