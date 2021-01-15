@@ -213,7 +213,7 @@ Phx.vista.SolVehiculoBase=Ext.extend(Phx.gridInterfaz,{
             config:{
                 name: 'fecha_salida',
                 fieldLabel: 'Fecha Salida',
-                allowBlank: true,
+                allowBlank: false,
                 anchor: '80%',
                 gwidth: 100,
                 format: 'd/m/Y',
@@ -229,7 +229,7 @@ Phx.vista.SolVehiculoBase=Ext.extend(Phx.gridInterfaz,{
             config:{
                 name: 'hora_salida',
                 fieldLabel: 'Hora Salida',
-                allowBlank: true,
+                allowBlank: false,
                 anchor: '80%',
                 gwidth: 100,
             	maxLength:8,
@@ -274,7 +274,7 @@ Phx.vista.SolVehiculoBase=Ext.extend(Phx.gridInterfaz,{
             config:{
                 name: 'fecha_retorno',
                 fieldLabel: 'Fecha Retorno',
-                allowBlank: true,
+                allowBlank: false,
                 anchor: '80%',
                 gwidth: 100,
                 format: 'd/m/Y',
@@ -290,7 +290,7 @@ Phx.vista.SolVehiculoBase=Ext.extend(Phx.gridInterfaz,{
             config:{
                 name: 'hora_retorno',
                 fieldLabel: 'Hora Retorno',
-                allowBlank: true,
+                allowBlank: false,
                 anchor: '80%',
                 gwidth: 100,
             	maxLength:8,
