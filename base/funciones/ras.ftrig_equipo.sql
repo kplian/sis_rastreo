@@ -1,3 +1,5 @@
+--------------- SQL ---------------
+
 CREATE OR REPLACE FUNCTION ras.ftrig_equipo (
 )
 RETURNS trigger AS
@@ -9,15 +11,15 @@ DECLARE
 BEGIN
 
 	IF (TG_OP = 'DELETE') THEN
-        delete from devices where uniqueid = OLD.uniqueid;
+        delete from public.tc_devices where uniqueid = OLD.uniqueid;
         RETURN NULL;
     ELSIF (TG_OP = 'UPDATE') THEN
-        update devices set
+        update public.tc_devices set
         name = NEW.placa
         where uniqueid = OLD.uniqueid;
         RETURN NULL;
     ELSIF (TG_OP = 'INSERT') THEN
-        insert into devices(
+        insert into public.tc_devices(
 		uniqueid,
 		phone,
 		groupid,
@@ -42,7 +44,7 @@ BEGIN
 		);
         RETURN NEW;
     END IF;
-    RETURN NULL; 
+    RETURN NULL;
 
 END;
 $body$
@@ -50,10 +52,5 @@ LANGUAGE 'plpgsql'
 VOLATILE
 CALLED ON NULL INPUT
 SECURITY INVOKER
+PARALLEL UNSAFE
 COST 100;
-
-DROP TRIGGER IF EXISTS tg_equipo ON ras.tequipo;
-CREATE TRIGGER tg_equipo
-  AFTER INSERT OR UPDATE OR DELETE 
-  ON ras.tequipo FOR EACH ROW 
-  EXECUTE PROCEDURE ras.ftrig_equipo();
