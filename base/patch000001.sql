@@ -257,7 +257,7 @@ ALTER TABLE ras.tequipo
 ALTER TABLE ras.tgrupo
   ADD COLUMN id_depto INTEGER;
 /***********************************F-SCP-JDJ-RAS-1-19/09/2019****************************************/
-/***********************************I-SCP-EGS-RAS-1-15/07/2020****************************************/
+/***********************************I-SCP-EGS-RAS-1-18/01/2021****************************************/
 CREATE TABLE ras.tsol_vehiculo (
   estado VARCHAR,
   id_estado_wf INTEGER,
@@ -365,17 +365,15 @@ CREATE TABLE ras.tasig_vehiculo_incidencia (
   CONSTRAINT tasig_vehiculo_incidencia_pkey PRIMARY KEY(id_asig_vehiculo_incidedencia)
 ) INHERITS (pxp.tbase)
 WITH (oids = false);
-/***********************************F-SCP-EGS-RAS-1-15/07/2020****************************************/
-/***********************************I-SCP-EGS-RAS-2-26/08/2020****************************************/
+
 ALTER TABLE ras.telemento_seg_equipo
   ADD COLUMN observacion VARCHAR;
 ALTER TABLE ras.telemento_seg_equipo
   ADD COLUMN estado_elemento VARCHAR DEFAULT 'bueno' NOT NULL;
-/***********************************F-SCP-EGS-RAS-2-26/08/2020****************************************/
-/***********************************I-SCP-EGS-RAS-3-29/12/2020****************************************/
+
 ALTER TABLE ras.tsol_vehiculo
     ADD COLUMN existe_conductor VARCHAR(2) DEFAULT 'si' NOT NULL;
-/***********************************F-SCP-EGS-RAS-3-29/12/2020****************************************/
+/***********************************F-SCP-EGS-RAS-3-18/01/2021****************************************/
 
 
 
