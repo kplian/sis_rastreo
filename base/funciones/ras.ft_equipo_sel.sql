@@ -159,14 +159,10 @@ BEGIN
  	#FECHA:		15-06-2017 17:50:17
 	***********************************/
 
-<<<<<<< HEAD
 	elsif(p_transaccion='RAS_EQUIP_CONT')then
 
 		begin
             --Sentencia de la consulta de conteo de registros
-=======
-        begin
->>>>>>> ae4eb1d... #RAS-1 Correccion de orden de dependencia triguer
             --#RAS-1
             --Sentencia de la consulta de conteo de registros
             v_consulta:='select count(id_equipo)
@@ -278,9 +274,5 @@ LANGUAGE 'plpgsql'
 VOLATILE
 CALLED ON NULL INPUT
 SECURITY INVOKER
-<<<<<<< HEAD
-COST 100;
-=======
 PARALLEL UNSAFE
 COST 100;
->>>>>>> ae4eb1d... #RAS-1 Correccion de orden de dependencia triguer
