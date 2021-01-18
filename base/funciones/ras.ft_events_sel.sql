@@ -1,7 +1,13 @@
-CREATE OR REPLACE FUNCTION "ras"."ft_events_sel"(	
-				p_administrador integer, p_id_usuario integer, p_tabla character varying, p_transaccion character varying)
-RETURNS character varying AS
-$BODY$
+--------------- SQL ---------------
+
+CREATE OR REPLACE FUNCTION ras.ft_events_sel (
+  p_administrador integer,
+  p_id_usuario integer,
+  p_tabla varchar,
+  p_transaccion varchar
+)
+RETURNS varchar AS
+$body$
 /**************************************************************************
  SISTEMA:		Traccar
  FUNCION: 		ras.ft_events_sel
@@ -15,6 +21,7 @@ $BODY$
  DESCRIPCION:	
  AUTOR:			
  FECHA:		
+  #RAS-1       15/01/2021        JJA            Actualizacion de traccar ultima version 
 ***************************************************************************/
 
 DECLARE
@@ -42,6 +49,7 @@ BEGIN
 	if(p_transaccion='PB_EVENT_SEL')then
      				
     	begin
+            --#RAS-1
     		--Sentencia de la consulta
 			v_consulta:='select
 						event.id,
@@ -62,8 +70,8 @@ BEGIN
 							when ''alarm'' then ''Alarma''::varchar
 							else event.type
 						end as desc_type
-						from events event
-						inner join positions pos
+						from public.tc_events event
+						inner join public.tc_positions pos
 						on pos.id = event.positionid
 				        where  ';
 			
@@ -86,10 +94,11 @@ BEGIN
 	elsif(p_transaccion='PB_EVENT_CONT')then
 
 		begin
+            --#RAS-1
 			--Sentencia de la consulta de conteo de registros
 			v_consulta:='select count(event.id)
-					    from events event
-					    inner join positions pos
+					    from public.tc_events event
+					    inner join public.tc_positions pos
 						on pos.id = event.positionid
 					    where ';
 			
@@ -135,6 +144,7 @@ BEGIN
 			v_eventos = replace(v_eventos,'6018','''6018''');
 
 			--Sentencia de la consulta
+            --#RAS-1
 			v_consulta:='select
                         eq.id_equipo, 
                         eq.uniqueid, 
@@ -164,12 +174,12 @@ BEGIN
 						pos.address,
 						pos.attributes as attributes_pos, 
 						pos.accuracy --20
-                        from events ev
-                        inner join devices dev
+                        from public.tc_events ev
+                        inner join public.tc_devices dev
                         on dev.id = ev.deviceid
                         left join ras.vequipo eq
                         on eq.uniqueid = dev.uniqueid
-                        left join positions pos
+                        left join public.tc_positions pos
                         on pos.id = ev.positionid
 						where eq.id_equipo in ('||v_parametros.ids||')'||'
 						and to_char(pos.devicetime,''dd-mm-yyyy HH24:MI:00'')::timestamp with time zone between '''||v_parametros.fecha_ini||'''::timestamp with time zone and '''||v_parametros.fecha_fin||'''::timestamp with time zone ';
@@ -197,8 +207,8 @@ BEGIN
 						pos.address,
 						pos.attributes as attributes_pos,
 						pos.accuracy --20
-						from positions pos
-						inner join devices dev
+						from public.tc_positions pos
+						inner join public.tc_devices dev
 						on dev.id = pos.deviceid
 						left join ras.vequipo eq
 						on eq.uniqueid = dev.uniqueid
@@ -254,6 +264,7 @@ BEGIN
 			v_eventos = replace(v_eventos,'6018','''6018''');
 
 			--Sentencia de la consulta
+            --#RAS-1
 			v_consulta:='select count(1) as total from (select
                         eq.id_equipo, 
                         eq.uniqueid, 
@@ -283,12 +294,12 @@ BEGIN
 						pos.address,
 						pos.attributes as attributes_pos, 
 						pos.accuracy --20
-                        from events ev
-                        inner join devices dev
+                        from public.tc_events ev
+                        inner join public.tc_devices dev
                         on dev.id = ev.deviceid
                         left join ras.vequipo eq
                         on eq.uniqueid = dev.uniqueid
-                        left join positions pos
+                        left join public.tc_positions pos
                         on pos.id = ev.positionid
 						where eq.id_equipo in ('||v_parametros.ids||')'||'
 						and to_char(pos.devicetime,''dd-mm-yyyy HH24:MI:00'')::timestamp with time zone between '''||v_parametros.fecha_ini||'''::timestamp with time zone and '''||v_parametros.fecha_fin||'''::timestamp with time zone ';
@@ -323,8 +334,8 @@ BEGIN
 						pos.address,
 						pos.attributes as attributes_pos,
 						pos.accuracy --20
-						from positions pos
-						inner join devices dev
+						from public.tc_positions pos
+						inner join public.tc_devices dev
 						on dev.id = pos.deviceid
 						left join ras.vequipo eq
 						on eq.uniqueid = dev.uniqueid
@@ -364,7 +375,10 @@ EXCEPTION
 			v_resp = pxp.f_agrega_clave(v_resp,'procedimientos',v_nombre_funcion);
 			raise exception '%',v_resp;
 END;
-$BODY$
-LANGUAGE 'plpgsql' VOLATILE
+$body$
+LANGUAGE 'plpgsql'
+VOLATILE
+CALLED ON NULL INPUT
+SECURITY INVOKER
+PARALLEL UNSAFE
 COST 100;
-ALTER FUNCTION "ras"."ft_events_sel"(integer, integer, character varying, character varying) OWNER TO postgres;
