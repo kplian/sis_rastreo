@@ -1,12 +1,12 @@
 --------------- SQL ---------------
 
 CREATE OR REPLACE FUNCTION ras.ft_equipo_sel (
-    p_administrador integer,
-    p_id_usuario integer,
-    p_tabla varchar,
-    p_transaccion varchar
+  p_administrador integer,
+  p_id_usuario integer,
+  p_tabla varchar,
+  p_transaccion varchar
 )
-    RETURNS varchar AS
+RETURNS varchar AS
 $body$
 /**************************************************************************
  SISTEMA:		Rastreo Satelital
@@ -129,14 +129,14 @@ BEGIN
 						from ras.vequipo equip
 						inner join segu.tusuario usu1 on usu1.id_usuario = equip.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = equip.id_usuario_mod
-						left join public.devices de
+						left join public.tc_devices de
 						on de.uniqueid = equip.uniqueid
-						left join positions pos
+						left join public.tc_positions pos
 						on pos.id = de.positionid
-						/*left join events event
+						/*left join public.tc_events event
 						on event.id  in (select
 									    ev.id
-									    from events ev
+									    from public.tc_events ev
 									    where ev.deviceid = de.id
 									    order by ev.servertime desc
 									    limit 1) --= ras.f_get_evento_ultimo(equip.id_equipo)*/
@@ -163,20 +163,20 @@ BEGIN
     elsif(p_transaccion='RAS_EQUIP_CONT')then
 
         begin
-            --Sentencia de la consulta de conteo de registros
             --#RAS-1
+            --Sentencia de la consulta de conteo de registros
             v_consulta:='select count(id_equipo)
 					    from ras.vequipo equip
 						inner join segu.tusuario usu1 on usu1.id_usuario = equip.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = equip.id_usuario_mod
-						left join public.devices de
+						left join public.tc_devices de
 						on de.uniqueid = equip.uniqueid
-						left join positions pos
+						left join public.tc_positions pos
 						on pos.id = de.positionid
-						/*left join events event
+						/*left join public.tc_events event
 						on event.positionid  in (select
 									    ev.id
-									    from events ev
+									    from public.tc_events ev
 									    where ev.deviceid = de.id
 									    order by ev.servertime desc
 									    limit 1) --= ras.f_get_evento_ultimo(equip.id_equipo)*/
@@ -401,9 +401,9 @@ EXCEPTION
         raise exception '%',v_resp;
 END;
 $body$
-    LANGUAGE 'plpgsql'
-    VOLATILE
-    CALLED ON NULL INPUT
-    SECURITY INVOKER
-    PARALLEL UNSAFE
-    COST 100;
+LANGUAGE 'plpgsql'
+VOLATILE
+CALLED ON NULL INPUT
+SECURITY INVOKER
+PARALLEL UNSAFE
+COST 100;
