@@ -14,13 +14,14 @@ $body$
  DESCRIPCION:   Funcion que devuelve conjuntos de registros de las consultas relacionadas con la tabla 'ras.positions'
  AUTOR: 		 (admin)
  FECHA:	        15-06-2017 20:34:23
- COMENTARIOS:	
+ COMENTARIOS:
 ***************************************************************************
- HISTORIAL DE MODIFICACIONES:	
- 
- ISSUES      FORK     AUTOR    FECHA     DESCRIPCION 
+ HISTORIAL DE MODIFICACIONES:
+
+ ISSUES      FORK     AUTOR    FECHA     DESCRIPCION
  #2          ENDETR   JUAN 03/06/2019    Mostrar la ultima posición satelital
  #3          ENDETR   JUAN 04/06/2019    Corregir hora del servidor al momento de registrar coordenadas
+ #RAS-1       15/01/2021        JJA            Actualizacion de traccar ultima version
 ***************************************************************************/
 
 DECLARE
@@ -42,17 +43,18 @@ BEGIN
 	v_nombre_funcion = 'ras.ft_positions_sel';
     v_parametros = pxp.f_get_record(p_tabla);
 
-	/*********************************    
+	/*********************************
  	#TRANSACCION:  'PB_POSIC_SEL'
  	#DESCRIPCION:	Consulta de datos
- 	#AUTOR:		admin	
+ 	#AUTOR:		admin
  	#FECHA:		15-06-2017 20:34:23
 	***********************************/
 
 	if(p_transaccion='PB_POSIC_SEL')then
-     				
+
     	begin
     		--Sentencia de la consulta
+            --#RAS-1
 			v_consulta:='select
 						posic.id,
 						posic.address,
@@ -70,22 +72,22 @@ BEGIN
 						posic.attributes,
 						posic.latitude,
 						posic.fixtime
-						from positions posic
+						from public.tc_positions posic
 				        where  ';
-			
+
 			--Definicion de la respuesta
 			v_consulta:=v_consulta||v_parametros.filtro;
 			v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
 
 			--Devuelve la respuesta
 			return v_consulta;
-						
+
 		end;
 
-	/*********************************    
+	/*********************************
  	#TRANSACCION:  'PB_POSIC_CONT'
  	#DESCRIPCION:	Conteo de registros
- 	#AUTOR:		admin	
+ 	#AUTOR:		admin
  	#FECHA:		15-06-2017 20:34:23
 	***********************************/
 
@@ -93,11 +95,12 @@ BEGIN
 
 		begin
 			--Sentencia de la consulta de conteo de registros
+            --#RAS-1
 			v_consulta:='select count(id)
-					    from positions posic
+					    from public.tc_positions posic
 					    where ';
-			
-			--Definicion de la respuesta		    
+
+			--Definicion de la respuesta
 			v_consulta:=v_consulta||v_parametros.filtro;
 
 			--Devuelve la respuesta
@@ -105,7 +108,7 @@ BEGIN
 
 		end;
 
-	/*********************************    
+	/*********************************
  	#TRANSACCION:  'PB_POSIC_ULT'
  	#DESCRIPCION:	Devuelve la posici n actual de los ids de equipos enviados
  	#AUTOR:			RCM
@@ -116,19 +119,19 @@ BEGIN
 
 		begin
 
-            --inicio issue #2 
+            --inicio issue #2
             for v_rec in (select p.deviceid,max(p.id) as ultimaPosicionId
-                          from public.positions p
-                          join public.devices d on d.id=p.deviceid
-                          group by p.deviceid) loop 
-                          
-                update public.devices
+                          from public.tc_positions p
+                          join public.tc_devices d on d.id=p.deviceid
+                          group by p.deviceid) loop
+
+                update public.tc_devices
                        set positionid=v_rec.ultimaPosicionId
                 where id=v_rec.deviceid;
-                       
+
             end loop;
             ---fin issue #2
-
+            --#RAS-1
 			v_consulta:='select
 						eq.id_equipo, eq.uniqueid,
 						eq.marca, eq.modelo, eq.placa,
@@ -152,13 +155,13 @@ BEGIN
 						pos.devicetime '||v_utc||' as devicetime,
 						eq.nro_movil
 						from ras.vequipo eq
-						inner join public.devices dev
+						inner join public.tc_devices dev
 						on dev.uniqueid = eq.uniqueid
-						inner join positions pos
+						inner join public.tc_positions pos
 						on pos.id = dev.positionid
 						--left join segu.vpersona per
 						--on per.id_persona = ras.f_get_responsable_ultimo(eq.id_equipo)
-						left join events ev
+						left join public.tc_events ev
 						on ev.positionid = pos.id
 						where ';
 
@@ -169,7 +172,7 @@ BEGIN
 							v_consulta = v_consulta || ' eq.id_equipo in ('||v_parametros.ids||')';
 
 						end if;
-						
+
 
 
 			--Devuelve la respuesta
@@ -177,7 +180,7 @@ BEGIN
 
 		end;
 
-	/*********************************    
+	/*********************************
  	#TRANSACCION:  'PB_POSRAN_SEL'
  	#DESCRIPCION:	Devuelve las posiciones en un rango de fechas de los ids de equipos enviados
  	#AUTOR:			RCM
@@ -238,7 +241,7 @@ BEGIN
 		end;
 
 
-	/*********************************    
+	/*********************************
  	#TRANSACCION:  'PB_POSRAN_CONT'
  	#DESCRIPCION:	Devuelve el conteo de las posiciones en un rango de fechas de los ids de equipos enviados
  	#AUTOR:			RCM
@@ -274,7 +277,7 @@ BEGIN
 
 		end;
 
-	/*********************************    
+	/*********************************
  	#TRANSACCION:  'PB_PORAPRO_SEL'
  	#DESCRIPCION:	Devuelve las posiciones en un rango de fechas de los ids de equipos enviados, verificando que no se mande las posiciones cuando esta detenido
  	#AUTOR:			RCM
@@ -317,6 +320,7 @@ BEGIN
 			) on commit drop;
 
 			--Sentencia de la consulta
+            --#RAS-1
 			v_consulta:='insert into ras_posiciones(
 				id_equipo,
 				uniqueid,
@@ -365,13 +369,13 @@ BEGIN
 						pos.devicetime '||v_utc||' as devicetime,
 						eq.nro_movil
 						from ras.vequipo eq
-						inner join public.devices de
+						inner join public.tc_devices de
 						on de.uniqueid = eq.uniqueid
-						inner join positions pos
+						inner join public.tc_positions pos
 						on pos.deviceid = de.id
 						--left join segu.vpersona per
 						--on per.id_persona = ras.f_get_responsable_fecha(eq.id_equipo,pos.devicetime::date)
-						left join events ev
+						left join public.tc_events ev
 						on ev.positionid = pos.id
 						where eq.id_equipo in ('||v_parametros.ids||')'||'
 						and to_char(pos.devicetime,''dd-mm-yyyy HH24:MI:00'')::timestamp with time zone between '''||v_parametros.fecha_ini||'''::timestamp with time zone and '''||v_parametros.fecha_fin||'''::timestamp with time zone
@@ -411,7 +415,7 @@ BEGIN
 
 		end;
 
-	/*********************************    
+	/*********************************
  	#TRANSACCION:  'PB_POSVEL_SEL'
  	#DESCRIPCION:	Devuelve rango de velocidades en un rango de fechas para los equipos enviados
  	#AUTOR:			RCM
@@ -423,6 +427,7 @@ BEGIN
 		begin
 
 			--Sentencia de la consulta
+            --#RAS-1
 			v_consulta:='select
 						eq.id_equipo, eq.uniqueid,
 						eq.marca, eq.modelo, eq.placa,
@@ -446,11 +451,11 @@ BEGIN
 						eq.tipo_equipo,
 						eq.nro_movil
 						from ras.vequipo eq
-						inner join public.devices de
+						inner join public.tc_devices de
 						on de.uniqueid = eq.uniqueid
-						inner join positions pos
+						inner join public.tc_positions pos
 						on pos.deviceid = de.id
-						left join events ev
+						left join public.tc_events ev
 						on ev.positionid = pos.id
 						where eq.id_equipo in ('||v_parametros.ids||')'||'
 						and to_char(pos.devicetime,''dd-mm-yyyy HH24:MI:00'')::timestamp with time zone between '''||v_parametros.fecha_ini||'''::timestamp with time zone and '''||v_parametros.fecha_fin||'''::timestamp with time zone
@@ -464,7 +469,7 @@ BEGIN
 
 		end;
 
-	/*********************************    
+	/*********************************
  	#TRANSACCION:  'PB_POSVEL_CONT'
  	#DESCRIPCION:	Devuelve conteo del rango de velocidades en un rango de fechas para los equipos enviados
  	#AUTOR:			RCM
@@ -474,16 +479,16 @@ BEGIN
 	elsif(p_transaccion='PB_POSVEL_CONT')then
 
 		begin
-
+            --#RAS-1
 			--Sentencia de la consulta
 			v_consulta:='select
 						count(1) as total
 						from ras.vequipo eq
-						inner join public.devices de
+						inner join public.tc_devices de
 						on de.uniqueid = eq.uniqueid
-						inner join positions pos
+						inner join public.tc_positions pos
 						on pos.deviceid = de.id
-						left join events ev
+						left join public.tc_events ev
 						on ev.positionid = pos.id
 						where eq.id_equipo in ('||v_parametros.ids||')'||'
 						and to_char(pos.devicetime,''dd-mm-yyyy HH24:MI:00'')::timestamp with time zone between '''||v_parametros.fecha_ini||'''::timestamp with time zone and '''||v_parametros.fecha_fin||'''::timestamp with time zone
@@ -496,15 +501,15 @@ BEGIN
 			return v_consulta;
 
 		end;
-					
+
 	else
-					     
+
 		raise exception 'Transaccion inexistente';
-					         
+
 	end if;
-					
+
 EXCEPTION
-					
+
 	WHEN OTHERS THEN
 			v_resp='';
 			v_resp = pxp.f_agrega_clave(v_resp,'mensaje',SQLERRM);
@@ -517,4 +522,5 @@ LANGUAGE 'plpgsql'
 VOLATILE
 CALLED ON NULL INPUT
 SECURITY INVOKER
+PARALLEL UNSAFE
 COST 100;

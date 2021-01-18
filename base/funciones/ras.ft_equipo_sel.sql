@@ -20,7 +20,7 @@ $body$
  HISTORIAL DE MODIFICACIONES:
  ISUUE			FECHA			 AUTHOR 		 DESCRIPCION
  * #6			19/09/2019		  JUAN		     Agregado de funcinalidad para el registro de vehiculos asociados a una regionales y grupos
-
+   #RAS-1       15/01/2021        JJA            Actualizacion de traccar ultima version
 ***************************************************************************/
 
 DECLARE
@@ -66,7 +66,7 @@ BEGIN
 
             END IF;
             -- fin #6
-
+            --#RAS-1
             v_consulta:='select
 						equip.id_equipo,
 						equip.id_tipo_equipo,
@@ -164,6 +164,7 @@ BEGIN
 
         begin
             --Sentencia de la consulta de conteo de registros
+            --#RAS-1
             v_consulta:='select count(id_equipo)
 					    from ras.vequipo equip
 						inner join segu.tusuario usu1 on usu1.id_usuario = equip.id_usuario_reg

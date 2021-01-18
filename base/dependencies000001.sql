@@ -612,3 +612,61 @@ ALTER TABLE ras.tasig_vehiculo
     NOT DEFERRABLE;
 /***********************************F-DEP-EGS-RAS-0-15/07/2020*****************************************/
 
+/***********************************I-DEP-JJA-RAS-0-15/01/2021*****************************************/
+--#RAS-1
+
+CREATE OR REPLACE FUNCTION ras.ftrig_equipo (
+)
+RETURNS trigger AS
+$body$
+DECLARE
+
+	v_id integer;
+
+BEGIN
+
+	IF (TG_OP = 'DELETE') THEN
+        delete from public.tc_devices where uniqueid = OLD.uniqueid;
+        RETURN NULL;
+    ELSIF (TG_OP = 'UPDATE') THEN
+        update public.tc_devices set
+        name = NEW.placa
+        where uniqueid = OLD.uniqueid;
+        RETURN NULL;
+    ELSIF (TG_OP = 'INSERT') THEN
+        insert into public.tc_devices(
+		uniqueid,
+		phone,
+		groupid,
+		lastupdate,
+		model,
+		attributes,
+		contact,
+		name,
+		category,
+		positionid
+	  	) values(
+		NEW.uniqueid,
+		NULL,
+		NULL,
+		now(),
+		NULL,
+		NULL,
+		NULL,
+		NEW.placa,
+		NULL,
+		NULL
+		);
+        RETURN NEW;
+    END IF;
+    RETURN NULL;
+
+END;
+$body$
+LANGUAGE 'plpgsql'
+VOLATILE
+CALLED ON NULL INPUT
+SECURITY INVOKER
+PARALLEL UNSAFE
+COST 100;
+/***********************************F-DEP-JJA-RAS-0-15/01/2021*****************************************/
