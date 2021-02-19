@@ -5,6 +5,8 @@
 *@author  (admin)
 *@date 15-06-2017 17:50:17
 *@description Clase que envia los parametros requeridos a la Base de datos para la ejecucion de las funciones, y que recibe la respuesta del resultado de la ejecucion de las mismas
+ *
+ *  #RAS-3          19/02/2021      JJA         Nuevo reporte de historial de movimientos de vehículos
 */
 
 class MODEquipo extends MODbase{
@@ -182,7 +184,7 @@ class MODEquipo extends MODbase{
 		$this->procedimiento='ras.ft_equipo_sel';
 		$this->transaccion='RAS_EQURAP_SEL';
 		$this->tipo_procedimiento='SEL';//tipo de transaccion
-				
+
 		//Definicion de la lista del resultado del query
 		$this->captura('id_equipo','int4');
 		$this->captura('placa','varchar');
@@ -198,6 +200,53 @@ class MODEquipo extends MODbase{
 		//Devuelve la respuesta
 		return $this->respuesta;
 	}
+    function listarEquipoEstado(){
+        //Definicion de variables para ejecucion del procedimientp
+        $this->procedimiento='ras.ft_equipo_sel';
+        $this->transaccion='RAS_EQUEST_SEL';
+        $this->tipo_procedimiento='SEL';//tipo de transaccion
+        $this->setParametro('id_sol_vehiculo','id_sol_vehiculo','int4');
+
+        //Definicion de la lista del resultado del query
+        $this->captura('id_equipo','int4');
+        $this->captura('placa','varchar');
+        $this->captura('nro_movil','varchar');
+        $this->captura('marca','varchar');
+        $this->captura('modelo','varchar');
+        $this->captura('tipo_equipo','varchar');
+        $this->captura('id_tipo_equipo','int4');
+
+        //Ejecuta la instruccion
+        $this->armarConsulta();
+        $this->ejecutarConsulta();
+
+        //Devuelve la respuesta
+        return $this->respuesta;
+    }
+    function ReporteHistorialVehiculo(){//#RAS-3 
+        $this->procedimiento='ras.ft_equipo_sel';
+        $this->transaccion='RAS_HISVEH_SEL';
+        $this->tipo_procedimiento='SEL';
+
+
+        $this->captura('ubicacion','varchar');
+        $this->captura('latitude','numeric');
+        $this->captura('longitude','numeric');
+        $this->captura('fecha_hora','date');
+        $this->captura('velocidad','numeric');
+        $this->captura('placa','varchar');
+        $this->captura('distancia','numeric');
+        $this->captura('volt_bateria','numeric');
+        $this->captura('odometro','numeric');
+        $this->captura('estado','varchar');
+
+        //Ejecuta la instruccion
+        $this->armarConsulta();
+        $this->ejecutarConsulta();
+        //var_dump($this->consulta); exit;
+        //Devuelve la respuesta
+        return $this->respuesta;
+    }
 			
 }
 ?>

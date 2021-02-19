@@ -374,3 +374,6 @@ ALTER TABLE ras.telemento_seg_equipo
 ALTER TABLE ras.tsol_vehiculo
     ADD COLUMN existe_conductor VARCHAR(2) DEFAULT 'si' NOT NULL;
 /***********************************F-SCP-EGS-RAS-3-18/01/2021****************************************/
+
+
+
