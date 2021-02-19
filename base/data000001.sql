@@ -149,3 +149,8 @@ select wf.f_import_testructura_estado ('insert','vobojefeserv','asigvehiculo','S
 select wf.f_import_testructura_estado ('insert','vobogerente','vobojefeserv','SOLVEH',1,'','no');
 select wf.f_import_testructura_estado ('insert','asigvehiculo','asignacion','SOLVEH',1,'','no');
 /***********************************F-DAT-EGS-RAS-GDV-29-13/01/2021****************************************/
+
+/***********************************I-DAT-JJA-RAS-GDV-29-19/02/2021****************************************/
+--#RAS-3
+select pxp.f_insert_tgui ('Historial de vehículos', 'Historial de vehículos', 'HISVEH', 'si', 4, 'sis_rastreo/reportes/RHistorialVehiculo.php', 3, '', 'RHistorialVehiculo', 'RAS');
+/***********************************F-DAT-JJA-RAS-GDV-29-19/02/2021****************************************/
