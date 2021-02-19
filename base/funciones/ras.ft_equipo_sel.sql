@@ -400,7 +400,7 @@ BEGIN
                     p.address::varchar as ubicacion,
                     p.latitude::numeric,
                     p.longitude::numeric,
-                    (to_char( p.devicetime, ''''DD-MM-YYYY'''')||'''' ''''||to_char( p.devicetime, ''''hh:mi:ss''''))::VARCHAR   as fecha_hora,
+                    (to_char( p.devicetime, ''DD-MM-YYYY'')||'' ''||to_char( p.devicetime, ''hh:mi:ss''))::VARCHAR   as fecha_hora,
                     p.speed::numeric as velocidad,
                     eq.placa::varchar,
                     (cast(p.attributes as json)->>''distance'')::numeric as distancia,
