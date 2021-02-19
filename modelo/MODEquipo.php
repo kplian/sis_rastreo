@@ -5,6 +5,8 @@
 *@author  (admin)
 *@date 15-06-2017 17:50:17
 *@description Clase que envia los parametros requeridos a la Base de datos para la ejecucion de las funciones, y que recibe la respuesta del resultado de la ejecucion de las mismas
+ *
+ *  #RAS-3          19/02/2021      JJA         Nuevo reporte de historial de movimientos de vehículos
 */
 
 class MODEquipo extends MODbase{
@@ -218,6 +220,30 @@ class MODEquipo extends MODbase{
         $this->armarConsulta();
         $this->ejecutarConsulta();
 
+        //Devuelve la respuesta
+        return $this->respuesta;
+    }
+    function ReporteHistorialVehiculo(){//#RAS-3 
+        $this->procedimiento='ras.ft_equipo_sel';
+        $this->transaccion='RAS_HISVEH_SEL';
+        $this->tipo_procedimiento='SEL';
+
+
+        $this->captura('ubicacion','varchar');
+        $this->captura('latitude','numeric');
+        $this->captura('longitude','numeric');
+        $this->captura('fecha_hora','date');
+        $this->captura('velocidad','numeric');
+        $this->captura('placa','varchar');
+        $this->captura('distancia','numeric');
+        $this->captura('volt_bateria','numeric');
+        $this->captura('odometro','numeric');
+        $this->captura('estado','varchar');
+
+        //Ejecuta la instruccion
+        $this->armarConsulta();
+        $this->ejecutarConsulta();
+        //var_dump($this->consulta); exit;
         //Devuelve la respuesta
         return $this->respuesta;
     }

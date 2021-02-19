@@ -21,6 +21,7 @@ $body$
  ISUUE			FECHA			 AUTHOR 		 DESCRIPCION
  * #6			19/09/2019		  JUAN		     Agregado de funcinalidad para el registro de vehiculos asociados a una regionales y grupos
    #RAS-1       15/01/2021        JJA            Actualizacion de traccar ultima version
+   #RAS-3          19/02/2021      JJA         Nuevo reporte de historial de movimientos de vehículos
 ***************************************************************************/
 
 DECLARE
@@ -384,7 +385,43 @@ BEGIN
             return v_consulta;
 
         end;
+        /*********************************
+     #TRANSACCION:  'RAS_HISVEH_SEL'
+     #DESCRIPCION:	Consulta de datos
+     #AUTOR:		JUAN
+     #FECHA:		19-02-2021 17:50:17
+    ***********************************/
 
+    elsif(p_transaccion='RAS_HISVEH_SEL')then --#RAS-3
+
+        begin
+
+            v_consulta:='select
+                    p.address::varchar as ubicacion,
+                    p.latitude::numeric,
+                    p.longitude::numeric,
+                    p.devicetime::date as fecha_hora,
+                    p.speed::numeric as velocidad,
+                    eq.placa::varchar,
+                    (cast(p.attributes as json)->>''distance'')::numeric as distancia,
+                    (cast(p.attributes as json)->>''power'')::numeric as volt_bateria,
+                    (cast(p.attributes as json)->>''odometer'')::numeric as odometro,
+                    (case when cast(p.attributes as json)->>''ignition''=''true'' then ''encendido'' else ''apagado'' end)::varchar as estado
+                    from public.tc_positions p
+                    join public.tc_devices dev on dev.id=p.deviceid
+                    left join public.tc_events ev on ev.positionid=p.id
+                    join ras.tequipo eq on eq.uniqueid=dev.uniqueid
+                    where (cast(p.attributes as json)->>''event'')::integer =0
+                    AND  ';
+
+            v_consulta:=v_consulta||v_parametros.filtro;
+            --v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
+            raise notice 'noticeee %',v_consulta;
+            --raise exception 'error %',v_consulta;
+            --Devuelve la respuesta
+            return v_consulta;
+
+        end;
     else
 
         raise exception 'Transaccion inexistente';

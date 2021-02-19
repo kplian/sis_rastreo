@@ -8,7 +8,7 @@
 */
 
 class MODPositions extends MODbase{
-	
+
 	function __construct(CTParametro $pParam){
 		parent::__construct($pParam);
 	}
@@ -309,6 +309,53 @@ class MODPositions extends MODbase{
 		//Devuelve la respuesta
 		return $this->respuesta;
 	}
-			
+
+
+    function listarDireccionesFaltantes(){
+
+        $this->procedimiento='ras.ft_positions_sel';
+        $this->transaccion='RAS_DIRFAL_SEL';
+        $this->tipo_conexion='seguridad';
+        $this->tipo_procedimiento='SEL';
+        $this->count=false;
+
+        $this->arreglo=array("id_usuario" =>1,"tipo"=>'TODOS');
+        //Define los parametros para ejecucion de la funcion
+        $this->setParametro('id_usuario','id_usuario','integer');
+        $this->setParametro('tipo','tipo','varchar');
+
+
+        $this->captura('id','integer');
+        $this->captura('address','varchar');
+        $this->captura('latitude','numeric');
+        $this->captura('longitude','numeric');
+
+        $this->armarConsulta();
+        $this->ejecutarConsulta();
+
+        return $this->respuesta;
+    }
+    function InsertarDireccionesFaltantes(){
+
+        $this->procedimiento='ras.ft_positions_ime';
+        $this->transaccion='RAS_INSDIR_INS';
+        $this->tipo_conexion='seguridad';
+        $this->tipo_procedimiento='IME';
+        $this->count=false;
+
+        $this->setParametro('id_position','id_position','int4');
+        $this->setParametro('ubicacion','ubicacion','varchar');
+        $this->arreglo=array("id_usuario" =>1,"tipo"=>'TODOS');
+        //Define los parametros para ejecucion de la funcion
+        $this->setParametro('id_usuario','id_usuario','int4');
+        $this->setParametro('tipo','tipo','varchar');
+
+
+        //$this->objParam->getParametro('ubicacion');
+        $this->armarConsulta();
+        $this->ejecutarConsulta();
+       // var_dump($this->objParam->getParametro);
+        return $this->respuesta;
+    }
 }
 ?>
