@@ -137,7 +137,7 @@ class RHistorialVehiculoPDF extends  ReportePDF {
 
     function generarCabecera(){
         $this->Ln(10);
-        $conf_par_tablewidths=array(70,20,20,25,25,20,25,25,25,15);
+        $conf_par_tablewidths=array(58,20,20,35,25,20,25,25,25,17);
         $conf_par_tablealigns=array('C','C','C','C','C','C','C','C','C','C');
         $conf_par_tablenumbers=array(0,0,0,0,0,0,0,0,0,0);
 
@@ -156,16 +156,16 @@ class RHistorialVehiculoPDF extends  ReportePDF {
         $this->SetFont('','B',8);
 
         $RowArray = array(
-            's0' => 'UBICACIÓN',
-            's1' => 'LATITUD',
-            's2' => "LONGITUD",
-            's3' => 'FECHA Y HORA',
-            's4' => 'VELOCIDAD',
-            's5' => 'PLACA',
-            's6' => "DISTANCIA",
-            's7' => "VOLT. BATERIA",
-            's8' => "ODOMETRO",
-            's9' => "ESTADO"
+            's1' => 'UBICACIÓN',
+            's2' => 'LATITUD',
+            's3' => "LONGITUD",
+            's4' => 'FECHA Y HORA',
+            's5' => 'VELOCIDAD',
+            's6' => 'PLACA',
+            's7' => "DISTANCIA",
+            's8' => "VOLT. BATERIA",
+            's9' => "ODOMETRO",
+            's10' => "ESTADO"
         );
 
         $this->MultiRow($RowArray, true, 1);
@@ -180,19 +180,16 @@ class RHistorialVehiculoPDF extends  ReportePDF {
 
         $this->total = count($detalle);
         $this->s1 = "";
-        $this->s2 = 0;
-        $this->s3 = 0;
-        $this->s4 = 0;
-        $this->s5 = 0;
-        $this->s6 = 0;
-        $this->s7 = 0;
-        $this->s8 = 0;
-        $this->s9 = 0;
-        $this->s10 = 0;
-        $this->s11 = 0;
-        $this->s12 = 0;
-        $this->s13 = 0;
-        $this->s14 = 0;
+        $this->s2 = "";
+        $this->s3 = "";
+        $this->s4 = "";
+        $this->s5 = "";
+        $this->s6 = "";
+        $this->s7 = "";
+        $this->s8 = "";
+        $this->s9 = "";
+        $this->s10 = "";
+
        // var_dump($detalle);
         foreach ($detalle as $val) {
 
@@ -211,9 +208,9 @@ class RHistorialVehiculoPDF extends  ReportePDF {
         $this->SetFont('','',8);
 
 
-        $conf_par_tablewidths=array(70,20,20,25,25,20,25,25,25,15);
+        $conf_par_tablewidths=array(58,20,20,35,25,20,25,25,25,17);
         $conf_par_tablealigns=array('L','L','R','R','R','R','R','R','R','R');
-        $conf_par_tablenumbers=array(0,0,2,2,0,2,0,0,0,0);
+        $conf_par_tablenumbers=array(0,0,2,0,0,2,0,0,0,0);
         $conf_tableborders=array('LRB','LRB','LRB','LRB','LRB','LRB','LRB','LRB' ,'LRB','LRB');
 
         $this->tablewidths=$conf_par_tablewidths;
@@ -223,17 +220,19 @@ class RHistorialVehiculoPDF extends  ReportePDF {
         $this->tabletextcolor=$conf_tabletextcolor;
 
 
+        $fecha=(int)$val['mes'];
+        //var_dump($val['fecha']);
         $RowArray = array(
-            's0'  => trim($val['ubicacion']),
-            's1' => trim($val['latitude']),
-            's2' => $val['longitude'],
-            's3' => $val['fecha_hora'],
-            's4' => $val['velocidad'],
-            's5' => $val['placa'],
-            's6' => $val['distancia'],
-            's7' => $val['volt_bateria'],
-            's8' => $val['odometro'],
-            's9' => $val['estado']
+            's1'  => trim($val['ubicacion']),
+            's2' => trim($val['latitude']),
+            's3' => $val['longitude'],
+            's4' => $val['fecha_hora'],
+            's5' => $val['velocidad'],
+            's6' => $val['placa'],
+            's7' => $val['distancia'],
+            's8' => number_format($val['volt_bateria'], 2, ',', ' ')  ,
+            's9' => $val['odometro'],
+            's10' => $val['estado']
         );
 
         $this-> MultiRow($RowArray,$fill,1);
@@ -241,6 +240,7 @@ class RHistorialVehiculoPDF extends  ReportePDF {
 
     function revisarfinPagina(){
         $dimensions = $this->getPageDimensions();
+
         $hasBorder = false; //flag for fringe case
 
         $startY = $this->GetY();
