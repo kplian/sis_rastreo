@@ -223,7 +223,7 @@ class MODEquipo extends MODbase{
         //Devuelve la respuesta
         return $this->respuesta;
     }
-    function ReporteHistorialVehiculo(){//#RAS-3 
+    function ReporteHistorialVehiculo(){//#RAS-3
         $this->procedimiento='ras.ft_equipo_sel';
         $this->transaccion='RAS_HISVEH_SEL';
         $this->tipo_procedimiento='SEL';
@@ -232,7 +232,7 @@ class MODEquipo extends MODbase{
         $this->captura('ubicacion','varchar');
         $this->captura('latitude','numeric');
         $this->captura('longitude','numeric');
-        $this->captura('fecha_hora','date');
+        $this->captura('fecha_hora','varchar');
         $this->captura('velocidad','numeric');
         $this->captura('placa','varchar');
         $this->captura('distancia','numeric');
