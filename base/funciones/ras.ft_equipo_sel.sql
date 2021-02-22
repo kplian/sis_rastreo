@@ -414,7 +414,7 @@ BEGIN
                     where (cast(p.attributes as json)->>''event'')::integer =0
                     AND  ';
 
-            v_consulta:=v_consulta||v_parametros.filtro;
+            v_consulta:=v_consulta||v_parametros.filtro||' order by p.devicetime asc';
             --v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
             raise notice 'noticeee %',v_consulta;
             --raise exception 'error %',v_consulta;
