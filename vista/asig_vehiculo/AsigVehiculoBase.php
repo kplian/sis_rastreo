@@ -10,7 +10,7 @@ HISTORIAL DE MODIFICACIONES:
 #ISSUE                FECHA                AUTOR                DESCRIPCION
  #0                03-07-2020 15:02:14    egutierrez            Creacion    
 #GDV-29               13/01/2021            EGS                 Se habilita la asignacion de vehiculos a jefe de servicio
-
+GDV-32                18/02/2021            EGS                 Se habilita que se pueda cambiar de tipo de equipo en la asignacion
 *******************************************************************************************/
 
 header("content-type: text/javascript; charset=UTF-8");
@@ -82,9 +82,52 @@ Phx.vista.AsigVehiculoBase=Ext.extend(Phx.gridInterfaz,{
         },
         {
             config: {
+                name: 'id_tipo_equipo',
+                fieldLabel: 'Tipo Vehiculo',
+                allowBlank: false,
+                emptyText: 'Elija una opción...',
+                store: new Ext.data.JsonStore({
+                    url: '../../sis_rastreo/control/TipoEquipo/listarTipoEquipo',
+                    id: 'id_tipo_equipo',
+                    root: 'datos',
+                    sortInfo: {
+                        field: 'nombre',
+                        direction: 'ASC'
+                    },
+                    totalProperty: 'total',
+                    fields: ['id_tipo_equipo', 'nombre', 'codigo'],
+                    remoteSort: true,
+                    baseParams: {par_filtro: 'tipveh.id_tipo_equipo#tipveh.nombre#tipveh.codigo',start: 0,limit: 50}
+                }),
+                valueField: 'id_tipo_equipo',
+                displayField: 'nombre',
+                gdisplayField: 'desc_tipo_equipo',
+                hiddenName: 'id_tipo_equipo',
+                forceSelection: true,
+                typeAhead: false,
+                triggerAction: 'all',
+                lazyRender: true,
+                mode: 'remote',
+                pageSize: 15,
+                queryDelay: 1000,
+                anchor: '80%',
+                gwidth: 100,
+                minChars: 2,
+                renderer : function(value, p, record) {
+                    return String.format('{0}', record.data['desc_tipo_equipo']);
+                }
+            },
+            type: 'ComboBox',
+            id_grupo: 0,
+            filters: {pfiltro: 'movtip.nombre',type: 'string'},
+            grid: true,
+            form: true
+        },
+        {
+            config: {
                 name: 'id_equipo',
                 fieldLabel: 'Vehiculo',
-                allowBlank: true,
+                allowBlank: false,
                 emptyText: 'Elija una opción...',
                 store: new Ext.data.JsonStore({
                     url: '../../sis_rastreo/control/Equipo/listarEquipoEstado',
@@ -300,49 +343,7 @@ Phx.vista.AsigVehiculoBase=Ext.extend(Phx.gridInterfaz,{
             id_grupo: 0,
             form:true
         },
-        {
-            config: {
-                name: 'id_tipo_equipo',
-                fieldLabel: 'Tipo Vehiculo',
-                allowBlank: true,
-                emptyText: 'Elija una opción...',
-                store: new Ext.data.JsonStore({
-                    url: '../../sis_rastreo/control/TipoEquipo/listarTipoEquipo',
-                    id: 'id_tipo_equipo',
-                    root: 'datos',
-                    sortInfo: {
-                        field: 'nombre',
-                        direction: 'ASC'
-                    },
-                    totalProperty: 'total',
-                    fields: ['id_tipo_equipo', 'nombre', 'codigo'],
-                    remoteSort: true,
-                    baseParams: {par_filtro: 'tipveh.id_tipo_equipo#tipveh.nombre#tipveh.codigo',start: 0,limit: 50}
-                }),
-                valueField: 'id_tipo_equipo',
-                displayField: 'nombre',
-                gdisplayField: 'desc_tipo_equipo',
-                hiddenName: 'id_tipo_equipo',
-                forceSelection: true,
-                typeAhead: false,
-                triggerAction: 'all',
-                lazyRender: true,
-                mode: 'remote',
-                pageSize: 15,
-                queryDelay: 1000,
-                anchor: '80%',
-                gwidth: 100,
-                minChars: 2,
-                renderer : function(value, p, record) {
-                    return String.format('{0}', record.data['desc_tipo_equipo']);
-                }
-            },
-            type: 'ComboBox',
-            id_grupo: 0,
-            filters: {pfiltro: 'movtip.nombre',type: 'string'},
-            grid: true,
-            form: true
-        },
+
         {
             config:{
                 name: 'estado_reg',
@@ -509,9 +510,8 @@ Phx.vista.AsigVehiculoBase=Ext.extend(Phx.gridInterfaz,{
         this.estado = this.maestro.estado;//GDV-29
         this.existe_conductor = this.maestro.existe_conductor;
         this.id_tipo_equipo = this.maestro.id_tipo_equipo;
-
+        //es para saber la fecha de salida de la solicitud
         this.Cmp.id_equipo.store.baseParams.id_sol_vehiculo = this.maestro.id_sol_vehiculo;
-        this.Cmp.id_equipo.store.baseParams.id_tipo_equipo = this.maestro.id_tipo_equipo;
         this.store.baseParams = {
             id_sol_vehiculo: this.maestro.id_sol_vehiculo,
             nombreVista:this.nombreVista ,
@@ -566,7 +566,7 @@ Phx.vista.AsigVehiculoBase=Ext.extend(Phx.gridInterfaz,{
             this.mostrarComponente(this.Cmp.placa);
             this.mostrarComponente(this.Cmp.modelo);
             //this.mostrarComponente(this.Cmp.marca);
-            this.mostrarComponente(this.Cmp.id_tipo_equipo);
+            //this.mostrarComponente(this.Cmp.id_tipo_equipo);
             this.mostrarComponente(this.Cmp.id_proveedor);
             this.mostrarComponente(this.Cmp.id_marca);
 
@@ -577,7 +577,7 @@ Phx.vista.AsigVehiculoBase=Ext.extend(Phx.gridInterfaz,{
             this.ocultarComponente(this.Cmp.placa);
             this.ocultarComponente(this.Cmp.modelo);
             //this.ocultarComponente(this.Cmp.marca);
-            this.ocultarComponente(this.Cmp.id_tipo_equipo);
+           // this.ocultarComponente(this.Cmp.id_tipo_equipo);
             this.ocultarComponente(this.Cmp.id_proveedor);
             this.ocultarComponente(this.Cmp.id_marca);
 
@@ -601,7 +601,25 @@ Phx.vista.AsigVehiculoBase=Ext.extend(Phx.gridInterfaz,{
                 }
             }, scope : this
         });
+
+        this.Cmp.id_tipo_equipo.on('select',function(combo,record,index){//GDV-32
+
+            this.Cmp.id_equipo.store.baseParams.id_tipo_equipo = record.data.id_tipo_equipo;
+            this.Cmp.id_equipo.store.load({params:{start:0,limit:this.tam_pag},
+                callback : function (r) {
+                    if (r.length > 0 ) {
+                        // this.Cmp.id_equipo.setValue(r[0].data.id_equipo);
+                        this.Cmp.id_equipo.reset();
+                    }else{
+                        this.Cmp.id_equipo.reset();
+                    }
+                }, scope : this
+            });
+        },this)
+
+
         this.Cmp.id_equipo.on('expand', function (Combo) {
+            this.Cmp.id_equipo.store.baseParams.id_tipo_equipo =this.Cmp.id_tipo_equipo.getValue();
             this.Cmp.id_equipo.store.load({params:{start:0,limit:this.tam_pag},
                 callback : function (r) {
                     if (r.length > 0 ) {
@@ -614,6 +632,7 @@ Phx.vista.AsigVehiculoBase=Ext.extend(Phx.gridInterfaz,{
         }, this);
 
 
+
     },
     onButtonEdit:function(){
         var data = this.getSelectedData();
@@ -624,7 +643,7 @@ Phx.vista.AsigVehiculoBase=Ext.extend(Phx.gridInterfaz,{
             this.mostrarComponente(this.Cmp.placa);
             this.mostrarComponente(this.Cmp.modelo);
             //this.mostrarComponente(this.Cmp.marca);
-            this.mostrarComponente(this.Cmp.id_tipo_equipo);
+            //this.mostrarComponente(this.Cmp.id_tipo_equipo);
             this.mostrarComponente(this.Cmp.id_proveedor);
             this.mostrarComponente(this.Cmp.id_marca);
 
@@ -670,7 +689,7 @@ Phx.vista.AsigVehiculoBase=Ext.extend(Phx.gridInterfaz,{
             this.ocultarComponente(this.Cmp.placa);
             this.ocultarComponente(this.Cmp.modelo);
             //this.ocultarComponente(this.Cmp.marca);
-            this.ocultarComponente(this.Cmp.id_tipo_equipo);
+            //this.ocultarComponente(this.Cmp.id_tipo_equipo);
             this.ocultarComponente(this.Cmp.id_proveedor);
             this.ocultarComponente(this.Cmp.id_marca);
 
@@ -689,6 +708,7 @@ Phx.vista.AsigVehiculoBase=Ext.extend(Phx.gridInterfaz,{
 
         }
         this.Cmp.id_equipo.on('expand', function (Combo) {
+            this.Cmp.id_equipo.store.baseParams.id_tipo_equipo =this.Cmp.id_tipo_equipo.getValue();
             this.Cmp.id_equipo.store.reload(true);
         }, this);
         this.Cmp.id_tipo_equipo.on('expand', function (Combo) {
@@ -701,6 +721,21 @@ Phx.vista.AsigVehiculoBase=Ext.extend(Phx.gridInterfaz,{
         }else{
             this.ocultarComponente(this.Cmp.id_responsable);
         }
+
+        this.Cmp.id_tipo_equipo.on('select',function(combo,record,index){//GDV-32
+            console.log('record',record.data.id_tipo_equipo);
+            this.Cmp.id_equipo.store.baseParams.id_tipo_equipo = record.data.id_tipo_equipo;
+            this.Cmp.id_equipo.store.load({params:{start:0,limit:this.tam_pag},
+                callback : function (r) {
+                    if (r.length > 0 ) {
+                       // this.Cmp.id_equipo.setValue(r[0].data.id_equipo);
+                        this.Cmp.id_equipo.reset();
+                    }else{
+                        this.Cmp.id_equipo.reset();
+                    }
+                }, scope : this
+            });
+        },this)
 
 
     },

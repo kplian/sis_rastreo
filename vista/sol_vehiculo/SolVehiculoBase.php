@@ -152,6 +152,21 @@ Phx.vista.SolVehiculoBase=Ext.extend(Phx.gridInterfaz,{
             form:true,
             bottom_filter:true
         },
+        {
+            config:{
+                name: 'estado',
+                fieldLabel: 'Estado',
+                allowBlank: true,
+                anchor: '80%',
+                gwidth: 100,
+                maxLength:-5
+            },
+            type:'TextField',
+            filters:{pfiltro:'solvehi.nro_tramite',type:'string'},
+            id_grupo:1,
+            grid:true,
+            form:false
+        },
 
         //
         // {
@@ -493,22 +508,6 @@ Phx.vista.SolVehiculoBase=Ext.extend(Phx.gridInterfaz,{
             grid:true,
             form:true
         },
-        {
-            config:{
-                name: 'estado',
-                fieldLabel: 'Estado',
-                allowBlank: true,
-                anchor: '80%',
-                gwidth: 100,
-                maxLength:-5
-            },
-            type:'TextField',
-            filters:{pfiltro:'solvehi.nro_tramite',type:'string'},
-            id_grupo:1,
-            grid:true,
-            form:false
-        },
-
         {
             config:{
                 name: 'id_usuario_ai',
