@@ -264,7 +264,9 @@ header("content-type: text/javascript; charset=UTF-8");
                     Phx.CP.loadingHide();
                     var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
                     console.log('reg',reg);
-                    this.Cmp.km_inicio.setValue(reg.datos[0]['kilometraje_inicial']);
+                    if(reg.datos[0]['kilometraje_inicial'] != null){ //GDV-33
+                        this.Cmp.km_inicio.setValue(reg.datos[0]['kilometraje_inicial']);
+                    }
 
                 },
                 failure: this.conexionFailure,
