@@ -7,6 +7,7 @@
 *@description Clase que envia los parametros requeridos a la Base de datos para la ejecucion de las funciones, y que recibe la respuesta del resultado de la ejecucion de las mismas
  *
  *  #RAS-3          19/02/2021      JJA         Nuevo reporte de historial de movimientos de vehículos
+ * #GDV-33         22/02/2021      EGS         Se agrega kilometraje inicial
 */
 
 class MODEquipo extends MODbase{
@@ -244,6 +245,25 @@ class MODEquipo extends MODbase{
         $this->armarConsulta();
         $this->ejecutarConsulta();
         //var_dump($this->consulta); exit;
+        //Devuelve la respuesta
+        return $this->respuesta;
+    }
+    function listarKilometrajeInicialEquipo(){ //#GDV-33
+        //Definicion de variables para ejecucion del procedimientp
+        $this->procedimiento='ras.ft_equipo_sel';
+        $this->transaccion='RAS_EQUKILINI_SEL';
+        $this->tipo_procedimiento='SEL';//tipo de transaccion
+        $this->setCount(false);
+        $this->setParametro('id_equipo','id_equipo','int4');
+        $this->setParametro('id_asig_vehiculo','id_asig_vehiculo','int4');
+        //Definicion de la lista del resultado del query
+        $this->captura('id_equipo','int4');
+        $this->captura('kilometraje_inicial','numeric');
+        $this->captura('fecha_reg','timestamp');
+        //Ejecuta la instruccion
+        $this->armarConsulta();
+        $this->ejecutarConsulta();
+
         //Devuelve la respuesta
         return $this->respuesta;
     }

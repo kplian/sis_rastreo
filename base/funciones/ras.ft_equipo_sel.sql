@@ -22,6 +22,7 @@ $body$
  * #6			19/09/2019		  JUAN		     Agregado de funcinalidad para el registro de vehiculos asociados a una regionales y grupos
    #RAS-1       15/01/2021        JJA            Actualizacion de traccar ultima version
    #RAS-3          19/02/2021      JJA         Nuevo reporte de historial de movimientos de vehículos
+  #GDV-33       22/02/2021        EGS           Se recupera kilometraje
 ***************************************************************************/
 
 DECLARE
@@ -418,6 +419,40 @@ BEGIN
             --v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
             raise notice 'noticeee %',v_consulta;
             --raise exception 'error %',v_consulta;
+            --Devuelve la respuesta
+            return v_consulta;
+
+        end;
+        /*********************************
+        #TRANSACCION:  'RAS_EQUKILINI_SEL'
+        #DESCRIPCION:	Consulta de datos
+        #AUTOR:		admin
+        #FECHA:		15-06-2017 17:50:17
+        #ISSUE:     GDV-33
+       ***********************************/
+
+    elsif(p_transaccion='RAS_EQUKILINI_SEL')then
+
+        begin
+            --Sentencia de la consulta
+            v_filtro = '';
+
+            v_consulta:='SELECT
+                            asi.id_equipo,
+                            asi.km_final as kilometraje_inicial,
+                            asi.fecha_reg
+                        FROM ras.tasig_vehiculo  asi
+                        WHERE asi.fecha_reg = (
+                            SELECT
+                                MAX(asi.fecha_reg)
+                            FROM ras.tasig_vehiculo  asi
+                            where asi.id_equipo = '||v_parametros.id_equipo||'
+                            and asi.id_asig_vehiculo <>  '||v_parametros.id_asig_vehiculo||'
+                        )
+                        and asi.id_equipo ='||  v_parametros.id_equipo ;
+
+            --Definicion de la respuesta
+            raise notice 'noticeee %',v_consulta;
             --Devuelve la respuesta
             return v_consulta;
 

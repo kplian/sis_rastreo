@@ -5,6 +5,9 @@
  *@author
  *  *@date
  *@description Reporte Material Entregado/Recibido
+ * ISSUE			FECHA			AUTHOR 					DESCRIPCION
+ * #GDV-31          18/02/2021      EGS                     Se calcula el recorrido segun kilometraje inicial y final
+ * #GDV-33          22/02/2019      EGS                     Se setea el kilometaje inicial
  */
 header("content-type: text/javascript; charset=UTF-8");
 ?>
@@ -38,6 +41,15 @@ header("content-type: text/javascript; charset=UTF-8");
             this.Cmp.km_final.setValue(this.maestro.km_final);
             this.Cmp.recorrido.setValue(this.maestro.recorrido);
             this.Cmp.observacion_viaje.setValue(this.maestro.observacion_viaje);
+            this.Cmp.km_inicio.on('valid',function(field){//GDV-31
+                this.Cmp.recorrido.setValue(this.Cmp.km_final.getValue()-this.Cmp.km_inicio.getValue());
+            } ,this);
+            this.Cmp.km_final.on('valid',function(field){//GDV-31
+                this.Cmp.recorrido.setValue(this.Cmp.km_final.getValue()-this.Cmp.km_inicio.getValue());
+            } ,this);
+            
+            this.Cmp.recorrido.disable(true);
+            this.obtenerKilometrajeInicial(this.maestro) //#GDV-33
 
         },
         Atributos : [
@@ -239,6 +251,27 @@ header("content-type: text/javascript; charset=UTF-8");
                 this.idContenedor,
                 'AsigVehiculoIncidencia'
             );
+        },
+        obtenerKilometrajeInicial: function(config){//GDV-33
+            Phx.CP.loadingShow();
+            Ext.Ajax.request({
+                url:'../../sis_rastreo/control/Equipo/listarKilometrajeInicialEquipo',
+                params:{
+                    id_equipo: config.id_equipo,
+                    id_asig_vehiculo: config.id_asig_vehiculo
+                },
+                success: function(resp){
+                    Phx.CP.loadingHide();
+                    var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
+                    console.log('reg',reg);
+                    this.Cmp.km_inicio.setValue(reg.datos[0]['kilometraje_inicial']);
+
+                },
+                failure: this.conexionFailure,
+                timeout: this.timeout,
+                scope:this
+            });
+
         },
 
     })
