@@ -215,6 +215,27 @@ class MODSolVehiculo extends MODbase{
         //Devuelve la respuesta
         return $this->respuesta;
     }
+    function listarSolVehiculoKilometraje(){
+        //Definicion de variables para ejecucion del procedimientp
+        $this->procedimiento='ras.ft_sol_vehiculo_sel';
+        $this->transaccion='RAS_SOLVEHIKIL_SEL';
+        $this->tipo_procedimiento='SEL';//tipo de transaccion
+
+        $this->setParametro('id_funcionario_usu','id_funcionario_usu','int4');
+
+        //Definicion de la lista del resultado del query
+        $this->captura('id_sol_vehiculo','int4');
+        $this->captura('nro_tramite','varchar');
+        $this->captura('km_inicio','numeric');
+        $this->captura('km_final','numeric');
+        $this->captura('recorrido','numeric');
+    //Ejecuta la instruccion
+        $this->armarConsulta();
+        $this->ejecutarConsulta();
+
+        //Devuelve la respuesta
+        return $this->respuesta;
+    }
             
 }
 ?>

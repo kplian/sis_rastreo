@@ -1,12 +1,12 @@
 --------------- SQL ---------------
 
 CREATE OR REPLACE FUNCTION ras.ft_equipo_sel (
-  p_administrador integer,
-  p_id_usuario integer,
-  p_tabla varchar,
-  p_transaccion varchar
+    p_administrador integer,
+    p_id_usuario integer,
+    p_tabla varchar,
+    p_transaccion varchar
 )
-RETURNS varchar AS
+    RETURNS varchar AS
 $body$
 /**************************************************************************
  SISTEMA:		Rastreo Satelital
@@ -127,7 +127,8 @@ BEGIN
 						equip.color_grupo,
 						equip.nro_celular,
 						equip.id_marca,
-                        equip.id_depto
+                        equip.id_depto,
+                        equip.km_inicial
 						from ras.vequipo equip
 						inner join segu.tusuario usu1 on usu1.id_usuario = equip.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = equip.id_usuario_mod
@@ -437,22 +438,148 @@ BEGIN
             --Sentencia de la consulta
             v_filtro = '';
 
-            v_consulta:='SELECT
-                            asi.id_equipo,
-                            asi.km_final as kilometraje_inicial,
-                            asi.fecha_reg
-                        FROM ras.tasig_vehiculo  asi
-                        WHERE asi.fecha_reg = (
-                            SELECT
-                                MAX(asi.fecha_reg)
-                            FROM ras.tasig_vehiculo  asi
-                            where asi.id_equipo = '||v_parametros.id_equipo||'
-                            and asi.id_asig_vehiculo <>  '||v_parametros.id_asig_vehiculo||'
-                        )
-                        and asi.id_equipo ='||  v_parametros.id_equipo ;
+            v_consulta:='
+                        WITH km ( id_equipo, km_final, fecha_reg )as( SELECT
+                                                     asi.id_equipo,
+                                                     km_final,
+                                                     asi.fecha_reg
+                                              FROM ras.tasig_vehiculo asi
+                                              WHERE
+                                              asi.fecha_reg =(
+                                                     SELECT MAX(a.fecha_reg)
+                                                      FROM ras.tasig_vehiculo a
+                                                      where a.id_equipo =
+                                                        asi.id_equipo
+                                                         and a.id_asig_vehiculo <> '||v_parametros.id_asig_vehiculo||'
+                                                        )
+                                              )
+                                              SELECT sol.id_equipo,
+                                                     CASE
+                                                       WHEN k.km_final is not null THEN
+                                                       k.km_final
+                                                       ELSE
+                                                       sol.km_inicial
+                                                     END as
+                                                       kilometraje_inicial
+,
+                                                     sol.fecha_reg
+
+                                              FROM ras.tequipo sol
+                                                   left join km k on  k.id_equipo =  sol.id_equipo
+                                              WHERE sol.id_equipo = '||  v_parametros.id_equipo ;
 
             --Definicion de la respuesta
+            --raise exception 'noticeee %',v_consulta;
             raise notice 'noticeee %',v_consulta;
+            --Devuelve la respuesta
+            return v_consulta;
+
+        end;
+
+        /*********************************
+     #TRANSACCION:  'RAS_EQUIPKL_SEL'
+     #DESCRIPCION:	Consulta de datos
+     #AUTOR:		admin
+     #FECHA:		15-06-2017 17:50:17
+    ***********************************/
+
+    elseif(p_transaccion='RAS_EQUIPKL_SEL')then
+
+        begin
+            v_filtro = '';
+            IF p_administrador !=1 THEN
+
+            END IF;
+
+            v_consulta:='
+            with km (
+                    id_equipo,
+                    km_final,
+                    fecha_reg
+              )
+             AS
+              ( SELECT
+                  asi.id_equipo,
+                  asi.km_final,
+                  asi.fecha_reg
+              FROM ras.tasig_vehiculo  asi
+              WHERE asi.fecha_reg = (
+                  SELECT
+                      MAX(asis.fecha_reg)
+                  FROM ras.tasig_vehiculo  asis
+                  where asis.km_final is not null
+                  and asis.id_equipo  = asi.id_equipo
+              )
+              )
+            select
+						equip.id_equipo,
+						equip.id_tipo_equipo,
+						equip.id_modelo,
+						equip.id_localizacion,
+						equip.placa,
+						equip.estado,
+						equip.fecha_alta,
+						equip.estado_reg,
+						equip.nro_chasis,
+						equip.pta,
+						equip.gestion,
+						equip.fecha_baja,
+						equip.usuario_ai,
+						equip.fecha_reg,
+						equip.id_usuario_reg,
+						equip.id_usuario_ai,
+						equip.fecha_mod,
+						equip.id_usuario_mod,
+						usu1.cuenta as usr_reg,
+						usu2.cuenta as usr_mod,
+						equip.tipo_equipo as desc_tipo_equipo,
+						equip.modelo as desc_modelo,
+						equip.marca as desc_marca,
+						equip.uniqueid,
+						equip.desc_equipo,
+						equip.id_grupo,
+						equip.desc_grupo,
+						equip.color_grupo,
+						equip.id_marca,
+                        equip.id_depto,
+                        equip.km_inicial,
+                        k.km_final as km_actual
+						from ras.vequipo equip
+						inner join segu.tusuario usu1 on usu1.id_usuario = equip.id_usuario_reg
+						left join segu.tusuario usu2 on usu2.id_usuario = equip.id_usuario_mod
+                        left join km k on k.id_equipo = equip.id_equipo
+				        where ';
+
+            --Definicion de la respuesta
+            v_consulta:=v_consulta||v_parametros.filtro;
+            v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
+            --Devuelve la respuesta
+            raise notice 'v_consulta %',v_consulta;
+            return v_consulta;
+
+        end;
+
+        /*********************************
+         #TRANSACCION:  'RAS_EQUIPKL_CONT'
+         #DESCRIPCION:	Conteo de registros
+         #AUTOR:		admin
+         #FECHA:		15-06-2017 17:50:17
+        ***********************************/
+
+    elsif(p_transaccion='RAS_EQUIPKL_CONT')then
+
+        begin
+            --#RAS-1
+            --Sentencia de la consulta de conteo de registros
+            v_consulta:='select count(id_equipo)
+					    from ras.vequipo equip
+						inner join segu.tusuario usu1 on usu1.id_usuario = equip.id_usuario_reg
+						left join segu.tusuario usu2 on usu2.id_usuario = equip.id_usuario_mod
+				        where  ';
+
+            --Definicion de la respuesta
+            v_consulta:=v_consulta||v_parametros.filtro;
+
             --Devuelve la respuesta
             return v_consulta;
 
@@ -473,9 +600,9 @@ EXCEPTION
         raise exception '%',v_resp;
 END;
 $body$
-LANGUAGE 'plpgsql'
-VOLATILE
-CALLED ON NULL INPUT
-SECURITY INVOKER
-PARALLEL UNSAFE
-COST 100;
+    LANGUAGE 'plpgsql'
+    VOLATILE
+    CALLED ON NULL INPUT
+    SECURITY INVOKER
+    PARALLEL UNSAFE
+    COST 100;

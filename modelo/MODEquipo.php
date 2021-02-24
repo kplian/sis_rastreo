@@ -8,6 +8,7 @@
  *
  *  #RAS-3          19/02/2021      JJA         Nuevo reporte de historial de movimientos de vehículos
  * #GDV-33         22/02/2021      EGS         Se agrega kilometraje inicial
+ * #GDV-34          22/02/2021      EGS        Se agregan km_inicial y km_actual a los equipos
 */
 
 class MODEquipo extends MODbase{
@@ -72,6 +73,7 @@ class MODEquipo extends MODbase{
 		$this->captura('nro_celular','varchar');
 		$this->captura('id_marca','int4');
         $this->captura('id_depto','int4'); //#6
+        $this->captura('km_inicial','numeric');//#GDV-34
 
 		
 		//Ejecuta la instruccion
@@ -114,7 +116,10 @@ class MODEquipo extends MODbase{
 
         $this->setParametro('id_depto','id_depto','int4'); //#6
 
-		//Ejecuta la instruccion
+        $this->setParametro('km_inicial','km_inicial','numeric'); //#GDV-34
+
+
+        //Ejecuta la instruccion
 		$this->armarConsulta();
 		$this->ejecutarConsulta();
 
@@ -154,6 +159,8 @@ class MODEquipo extends MODbase{
 		$this->setParametro('nro_celular','nro_celular','varchar');
 
         $this->setParametro('id_depto','id_depto','int4'); //#6
+
+        $this->setParametro('km_inicial','km_inicial','numeric'); //#GDV-34
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -260,6 +267,54 @@ class MODEquipo extends MODbase{
         $this->captura('id_equipo','int4');
         $this->captura('kilometraje_inicial','numeric');
         $this->captura('fecha_reg','timestamp');
+        //Ejecuta la instruccion
+        $this->armarConsulta();
+        $this->ejecutarConsulta();
+
+        //Devuelve la respuesta
+        return $this->respuesta;
+    }
+    function listarEquipoKilometraje(){//#GDV-34
+        //Definicion de variables para ejecucion del procedimientp
+        $this->procedimiento='ras.ft_equipo_sel';
+        $this->transaccion='RAS_EQUIPKL_SEL';
+        $this->tipo_procedimiento='SEL';//tipo de transaccion
+
+        //Definicion de la lista del resultado del query
+        $this->captura('id_equipo','int4');
+        $this->captura('id_tipo_equipo','int4');
+        $this->captura('id_modelo','int4');
+        $this->captura('id_localizacion','int4');
+        $this->captura('placa','varchar');
+        $this->captura('estado','varchar');
+        $this->captura('fecha_alta','date');
+        $this->captura('estado_reg','varchar');
+        $this->captura('nro_chasis','varchar');
+        $this->captura('pta','varchar');
+        $this->captura('gestion','int4');
+        $this->captura('fecha_baja','date');
+        $this->captura('usuario_ai','varchar');
+        $this->captura('fecha_reg','timestamp');
+        $this->captura('id_usuario_reg','int4');
+        $this->captura('id_usuario_ai','int4');
+        $this->captura('fecha_mod','timestamp');
+        $this->captura('id_usuario_mod','int4');
+        $this->captura('usr_reg','varchar');
+        $this->captura('usr_mod','varchar');
+        $this->captura('desc_tipo_equipo','varchar');
+        $this->captura('desc_modelo','varchar');
+        $this->captura('desc_marca','varchar');
+        $this->captura('uniqueid','varchar');
+        $this->captura('desc_equipo','text');
+        $this->captura('id_grupo','integer');
+        $this->captura('desc_grupo','varchar');
+        $this->captura('color_grupo','varchar');
+        $this->captura('id_marca','int4');
+        $this->captura('id_depto','int4');
+        $this->captura('km_inicial','numeric');
+        $this->captura('km_actual','numeric');
+
+
         //Ejecuta la instruccion
         $this->armarConsulta();
         $this->ejecutarConsulta();

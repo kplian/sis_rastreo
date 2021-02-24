@@ -154,3 +154,7 @@ select wf.f_import_testructura_estado ('insert','asigvehiculo','asignacion','SOL
 --#RAS-3
 select pxp.f_insert_tgui ('Historial de vehículos', 'Historial de vehículos', 'HISVEH', 'si', 4, 'sis_rastreo/reportes/RHistorialVehiculo.php', 3, '', 'RHistorialVehiculo', 'RAS');
 /***********************************F-DAT-JJA-RAS-GDV-29-19/02/2021****************************************/
+/***********************************I-DAT-JJA-RAS-GDV-34-24/02/2021****************************************/
+select pxp.f_insert_tgui ('Historial Vehículos Kilometraje', 'Historial Vehículos Kilometraje', 'VHK', 'si', 5, 'sis_rastreo/vista/equipo/EquipoKilometraje.php', 3, '', 'EquipoKilometraje', 'RAS');
+/***********************************F-DAT-JJA-RAS-GDV-34-24/02/2021****************************************/
+

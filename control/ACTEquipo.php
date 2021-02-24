@@ -136,6 +136,26 @@ class ACTEquipo extends ACTbase{
 
         $this->res->imprimirRespuesta($this->res->generarJson());
     }
+    function listarEquipoKilometraje(){//#GDV-34
+        $this->objParam->defecto('ordenacion','id_equipo');
+        $this->objParam->defecto('dir_ordenacion','asc');
+
+        if ($this->objParam->getParametro('id_depto') != '') {
+            $this->objParam->addFiltro("equip.id_depto = ".$this->objParam->getParametro('id_depto'));
+        } else {
+            $this->objParam->addFiltro("equip.id_depto = 0");
+        }
+
+        if($this->objParam->getParametro('tipoReporte')=='excel_grid' || $this->objParam->getParametro('tipoReporte')=='pdf_grid'){
+            $this->objReporte = new Reporte($this->objParam,$this);
+            $this->res = $this->objReporte->generarReporteListado('MODEquipo','listarEquipoKilometraje');
+        } else{
+            $this->objFunc=$this->create('MODEquipo');
+
+            $this->res=$this->objFunc->listarEquipoKilometraje($this->objParam);
+        }
+        $this->res->imprimirRespuesta($this->res->generarJson());
+    }
 
 }
 
