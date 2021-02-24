@@ -383,4 +383,9 @@ ALTER TABLE ras.tequipo
 COMMENT ON COLUMN ras.tequipo.km_inicial
     IS 'Kilometraje inicial del vehiculo al ingresar al sistema.';
 
+ALTER TABLE ras.tequipo
+    ADD COLUMN km_actual NUMERIC;
+
+COMMENT ON COLUMN ras.tequipo.km_actual
+    IS 'Kilometraje actual del vehiculo';
 /***********************************F-SCP-EGS-RAS-4-22/02/2021****************************************/
