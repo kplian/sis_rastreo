@@ -375,7 +375,7 @@ ALTER TABLE ras.tsol_vehiculo
     ADD COLUMN existe_conductor VARCHAR(2) DEFAULT 'si' NOT NULL;
 /***********************************F-SCP-EGS-RAS-3-18/01/2021****************************************/
 
-/***********************************F-SCP-EGS-RAS-4-22/02/2021****************************************/
+/***********************************I-SCP-EGS-RAS-4-22/02/2021****************************************/
 
 ALTER TABLE ras.tequipo
     ADD COLUMN km_inicial NUMERIC;
@@ -383,4 +383,4 @@ ALTER TABLE ras.tequipo
 COMMENT ON COLUMN ras.tequipo.km_inicial
     IS 'Kilometraje inicial del vehiculo al ingresar al sistema.';
 
-/***********************************I-SCP-EGS-RAS-4-22/02/2021****************************************/
+/***********************************F-SCP-EGS-RAS-4-22/02/2021****************************************/
