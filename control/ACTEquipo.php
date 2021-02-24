@@ -7,6 +7,7 @@
  *@description Clase que recibe los parametros enviados por la vista para mandar a la capa de Modelo
  *
  *  #RAS-3          19/02/2021      JJA         Nuevo reporte de historial de movimientos de vehículos
+ *  #GDV-33         22/02/2021      EGS         Se agrega kilometraje inicial
  */
 
 require_once(dirname(__FILE__).'/../reportes/RHistorialVehiculoPDF.php');//#RAS-3
@@ -105,6 +106,55 @@ class ACTEquipo extends ACTbase{
         $this->mensajeExito->setMensaje('EXITO', 'Reporte.php', 'Reporte generado','Se generó con éxito el reporte: ' . $nombreArchivo, 'control');
         $this->mensajeExito->setArchivoGenerado($nombreArchivo);
         $this->mensajeExito->imprimirRespuesta($this->mensajeExito->generarJson());
+    }
+    function listarEquipoEstado(){
+        $this->objParam->defecto('ordenacion','id_equipo');
+        $this->objParam->defecto('dir_ordenacion','asc');
+
+        if($this->objParam->getParametro('id_tipo_equipo')!=''){
+            $this->objParam->addFiltro("equip.id_tipo_equipo = ".$this->objParam->getParametro('id_tipo_equipo'));
+        }
+
+        if($this->objParam->getParametro('tipoReporte')=='excel_grid' || $this->objParam->getParametro('tipoReporte')=='pdf_grid'){
+            $this->objReporte = new Reporte($this->objParam,$this);
+            $this->res = $this->objReporte->generarReporteListado('MODEquipo','listarEquipoEstado');
+        } else{
+            $this->objFunc=$this->create('MODEquipo');
+
+            $this->res=$this->objFunc->listarEquipoEstado($this->objParam);
+        }
+        $this->res->imprimirRespuesta($this->res->generarJson());
+    }
+
+    function listarKilometrajeInicialEquipo(){//#GDV-33
+        $this->objParam->defecto('ordenacion','id_equipo');
+        $this->objParam->defecto('dir_ordenacion','asc');
+
+        $this->objFunc=$this->create('MODEquipo');
+
+        $this->res=$this->objFunc->listarKilometrajeInicialEquipo($this->objParam);
+
+        $this->res->imprimirRespuesta($this->res->generarJson());
+    }
+    function listarEquipoKilometraje(){//#GDV-34
+        $this->objParam->defecto('ordenacion','id_equipo');
+        $this->objParam->defecto('dir_ordenacion','asc');
+
+        if ($this->objParam->getParametro('id_depto') != '') {
+            $this->objParam->addFiltro("equip.id_depto = ".$this->objParam->getParametro('id_depto'));
+        } else {
+            $this->objParam->addFiltro("equip.id_depto = 0");
+        }
+
+        if($this->objParam->getParametro('tipoReporte')=='excel_grid' || $this->objParam->getParametro('tipoReporte')=='pdf_grid'){
+            $this->objReporte = new Reporte($this->objParam,$this);
+            $this->res = $this->objReporte->generarReporteListado('MODEquipo','listarEquipoKilometraje');
+        } else{
+            $this->objFunc=$this->create('MODEquipo');
+
+            $this->res=$this->objFunc->listarEquipoKilometraje($this->objParam);
+        }
+        $this->res->imprimirRespuesta($this->res->generarJson());
     }
 
 }

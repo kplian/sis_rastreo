@@ -301,6 +301,51 @@ BEGIN
             RETURN v_consulta;
 
         END;
+        /*********************************
+ #TRANSACCION:  'RAS_SOLVEHIKIL_SEL'
+ #DESCRIPCION:    Conteo de registros
+ #AUTOR:        egutierrez
+ #FECHA:        02-07-2020 22:13:48
+***********************************/
+
+    ELSIF (p_transaccion='RAS_SOLVEHIKIL_SEL') THEN
+
+        BEGIN
+            v_consulta = 'SELECT
+                      solv.id_sol_vehiculo,
+                      solv.nro_tramite,
+                      asi.km_inicio,
+                      asi.km_final,
+                      asi.recorrido
+                  FROM ras.tsol_vehiculo solv
+                  left join ras.tasig_vehiculo asi on asi.id_sol_vehiculo =  solv.id_sol_vehiculo
+                  WHERE ';
+            --Definicion de la respuesta
+            v_consulta:=v_consulta||v_parametros.filtro;
+            v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
+
+            --Devuelve la respuesta
+            RETURN v_consulta;
+        END;
+        /*********************************
+           #TRANSACCION:  'RAS_SSOLVEHIKIL_CONT'
+           #DESCRIPCION:    Conteo de registros
+           #AUTOR:        egutierrez
+           #FECHA:        02-07-2020 22:13:48
+          ***********************************/
+    ELSEIF (p_transaccion='RAS_SOLVEHIKIL_CONT') THEN
+        BEGIN
+            v_consulta = '
+              SELECT
+                  count(solv.id_sol_vehiculo)
+              FROM ras.tsol_vehiculo solv
+              left join ras.tasig_vehiculo asi on asi.id_sol_vehiculo =  solv.id_sol_vehiculo
+                WHERE ';
+            --Definicion de la respuesta
+            v_consulta:=v_consulta||v_parametros.filtro;
+
+            RETURN v_consulta;
+        END;
 
     ELSE
 

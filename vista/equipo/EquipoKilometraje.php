@@ -5,20 +5,18 @@
 *@author  (admin)
 *@date 15-06-2017 17:50:17
 *@description Archivo con la interfaz de usuario que permite la ejecucion de todas las funcionalidades del sistema
- ISSUE			FECHA			AUTHOR 					DESCRIPCION
- #GDV-34        22/02/201       EGS                     Se agrega campo de kilometraje inicial
 */
 
 header("content-type: text/javascript; charset=UTF-8");
 ?>
 <script>
-Phx.vista.Equipo=Ext.extend(Phx.gridInterfaz,{
+Phx.vista.EquipoKilometraje=Ext.extend(Phx.gridInterfaz,{
 
 	constructor:function(config){
 		this.maestro=config.maestro;
         this.initButtons = [this.cmbDepto];
     	//llama al constructor de la clase padre
-		Phx.vista.Equipo.superclass.constructor.call(this,config);
+		Phx.vista.EquipoKilometraje.superclass.constructor.call(this,config);
 		this.init();
 		this.load({params:{start:0, limit:this.tam_pag}});
 
@@ -139,56 +137,6 @@ Phx.vista.Equipo=Ext.extend(Phx.gridInterfaz,{
 				grid:true,
 				form:false,
 				bottom_filter:true
-		},
-		{
-			config:{
-				name: 'ultimo_envio',
-				fieldLabel: 'Última Sincronización',
-				allowBlank: false,
-				anchor: '100%',
-				gwidth: 150,
-				maxLength:128,
-				renderer: function(value,p,record){
-					var icon='wifi1.png';
-					if(record.data['type']=='deviceOffline'||record.data['type']=='deviceUnknown'){
-						icon='nowifi2.png';
-					}
-					return	'<tpl for=".">\
-								<table>\
-								  <tr>\
-								    <th style="vertical-align:middle;">\
-										<img src=\'../../../lib/imagenes/'+icon+'\' width=32 height=32>\
-								    </th>\
-								    <th>\
-								    	<div class="x-combo-list-item" style="font-size: x-small">\
-											<p><b>Hace: </b> '+record.data['ultimo_envio']+'</p>\
-										</div>\
-								    </th>\
-								  </tr>\
-								</table>\
-							</tpl>';
-					/*return	'<tpl for=".">\
-								<table>\
-								  <tr>\
-								    <th style="vertical-align:middle;">\
-										<img src=\'../../../lib/imagenes/'+icon+'\' width=32 height=32>\
-								    </th>\
-								    <th>\
-								    	<div class="x-combo-list-item" style="font-size: x-small">\
-											<p><b>Fecha Ult. Sinc.: </b> '+record.data['ultimo_envio']+'</p>\
-											<p><b>Conductor: </b>'+record.data['responsable']+'</p>\
-											<p><b>Evento: </b>'+record.data['desc_type']+'</p>\
-										</div>\
-								    </th>\
-								  </tr>\
-								</table>\
-							</tpl>';*/
-				}
-			},
-				type:'TextField',
-				id_grupo:1,
-				grid:true,
-				form:false
 		},
 		{
 			config: {
@@ -326,94 +274,8 @@ Phx.vista.Equipo=Ext.extend(Phx.gridInterfaz,{
 				form:true,
 				bottom_filter:true
 		},
-		{
-			config:{
-				name: 'nro_movil',
-				fieldLabel: 'Nro.Móvil',
-				allowBlank: false,
-				anchor: '100%',
-				gwidth: 100,
-				maxLength:50
-			},
-				type:'TextField',
-				filters:{pfiltro:'equip.nro_movil',type:'string'},
-				id_grupo:1,
-				grid:true,
-				form:true,
-				bottom_filter:true
-		},
-		{
-			config:{
-				name: 'nro_celular',
-				fieldLabel: 'Nro.Celular GPS',
-				allowBlank: true,
-				anchor: '100%',
-				gwidth: 100,
-				maxLength:50
-			},
-				type:'TextField',
-				filters:{pfiltro:'equip.nro_celular',type:'string'},
-				id_grupo:1,
-				grid:true,
-				form:true
-		},
-		{
-			config: {
-				name: 'id_grupo',
-				fieldLabel: 'Grupo',
-				allowBlank: true,
-				emptyText: 'Elija una opción...',
-				store: new Ext.data.JsonStore({
-					url: '../../sis_rastreo/control/Grupo/listarMonitoreoGrupo',//#6
-					id: 'id_grupo',
-					root: 'datos',
-					sortInfo: {
-						field: 'nombre',
-						direction: 'ASC'
-					},
-					totalProperty: 'total',
-					fields: ['id_grupo', 'nombre', 'codigo','color'],
-					remoteSort: true,
-					baseParams: {par_filtro: 'grupo.nombre#grupo.codigo'}
-				}),
-				valueField: 'id_grupo',
-				displayField: 'nombre',
-				gdisplayField: 'desc_grupo',
-				hiddenName: 'id_grupo',
-				forceSelection: true,
-				typeAhead: false,
-				triggerAction: 'all',
-				lazyRender: true,
-				mode: 'remote',
-				pageSize: 15,
-				queryDelay: 1000,
-				anchor: '100%',
-				gwidth: 130,
-				minChars: 2,
-				tpl:'<tpl for="."><div class="x-combo-list-item">Código: {codigo}<p>Nombre: <span style="background-color: {color}">&nbsp&nbsp&nbsp&nbsp</span> {nombre}</p> </div></tpl>',
-			},
-			type: 'ComboBox',
-			id_grupo: 0,
-			filters: {pfiltro: 'equip.desc_grupo',type: 'string'},
-			grid: true,
-			form: true,
-			bottom_filter: true
-		},
-		{
-			config:{
-				name: 'monto',
-				fieldLabel: 'Monto (Bs.)',
-				allowBlank: true,
-				anchor: '100%',
-				gwidth: 100,
-				maxLength:1179650
-			},
-				type:'NumberField',
-				filters:{pfiltro:'equip.monto',type:'numeric'},
-				id_grupo:1,
-				grid:true,
-				form:true
-		},
+
+
 		{
 			config:{
 				name: 'pta',
@@ -444,112 +306,38 @@ Phx.vista.Equipo=Ext.extend(Phx.gridInterfaz,{
 				grid:false,
 				form:true
 		},
-		{
-			config:{
-				name: 'nro_motor',
-				fieldLabel: 'Nro.Motor',
-				allowBlank: true,
-				anchor: '100%',
-				gwidth: 100,
-				maxLength:50
-			},
-				type:'TextField',
-				filters:{pfiltro:'equip.nro_motor',type:'string'},
-				id_grupo:1,
-				grid:true,
-				form:true
-		},
-		{
-			config:{
-				name: 'cilindrada',
-				fieldLabel: 'Cilindrada(cc)',
-				allowBlank: true,
-				anchor: '100%',
-				gwidth: 100,
-				maxLength:1179650
-			},
-				type:'NumberField',
-				filters:{pfiltro:'equip.cilindrada',type:'numeric'},
-				id_grupo:1,
-				grid:true,
-				form:true
-		},
-		{
-			config: {
-				name: 'cabina',
-				fieldLabel: 'Cabina',
-				anchor: '100%',
-				tinit: false,
-				allowBlank: true,
-				origen: 'CATALOGO',
-				gdisplayField: 'cabina',
-				hiddenName: 'cabina',
-				gwidth: 55,
-				baseParams:{
-					cod_subsistema:'RAS',
-					catalogo_tipo:'tequipo__cabina'
-				},
-				valueField: 'codigo'
-			},
-			type: 'ComboRec',
-			id_grupo: 0,
-			filters:{pfiltro:'equip.cabina',type:'string'},
-			grid: true,
-			form: true
-		},
-		{
-			config: {
-				name: 'traccion',
-				fieldLabel: 'Tracción',
-				anchor: '100%',
-				tinit: false,
-				allowBlank: true,
-				origen: 'CATALOGO',
-				gdisplayField: 'traccion',
-				hiddenName: 'traccion',
-				gwidth: 55,
-				baseParams:{
-					cod_subsistema:'RAS',
-					catalogo_tipo:'tequipo__traccion'
-				},
-				valueField: 'codigo'
-			},
-			type: 'ComboRec',
-			id_grupo: 0,
-			filters:{pfiltro:'equip.traccion',type:'string'},
-			grid: true,
-			form: true
-		},
-		{
-			config:{
-				name: 'color',
-				fieldLabel: 'Color',
-				allowBlank: true,
-				anchor: '100%',
-				gwidth: 100,
-				maxLength:50
-			},
-				type:'TextField',
-				filters:{pfiltro:'equip.color',type:'string'},
-				id_grupo:1,
-				grid:true,
-				form:true
-		},
-		{
-			config:{
-				name: 'propiedad',
-				fieldLabel: 'Propiedad',
-				allowBlank: true,
-				anchor: '100%',
-				gwidth: 100,
-				maxLength:50
-			},
-				type:'TextField',
-				filters:{pfiltro:'equip.propiedad',type:'string'},
-				id_grupo:1,
-				grid:true,
-				form:true
-		},
+        {
+            config:{
+                name: 'km_inicial',
+                fieldLabel: 'Kilometraje Inicial',
+                allowBlank: true,
+                anchor: '100%',
+                gwidth: 150,
+                maxLength:1179650
+            },
+            type:'NumberField',
+            filters:{pfiltro:'equip.km_inicial',type:'numeric'},
+            id_grupo:1,
+            grid:true,
+            form:true
+        },
+        {
+            config:{
+                name: 'km_actual',
+                fieldLabel: 'Kilometraje Actual',
+                allowBlank: true,
+                anchor: '100%',
+                gwidth: 150,
+                maxLength:1179650
+            },
+            type:'NumberField',
+            filters:{pfiltro:'equip.km_actual',type:'numeric'},
+            id_grupo:1,
+            grid:true,
+            form:true
+        },
+
+
 		{
 			config:{
 				name: 'estado',
@@ -565,51 +353,8 @@ Phx.vista.Equipo=Ext.extend(Phx.gridInterfaz,{
 				grid:true,
 				form:true
 		},
-		{
-			config:{
-				name: 'fecha_alta',
-				fieldLabel: 'Fecha Alta',
-				allowBlank: true,
-				gwidth: 100,
-							format: 'd/m/Y', 
-							renderer:function (value,p,record){return value?value.dateFormat('d/m/Y'):''}
-			},
-				type:'DateField',
-				filters:{pfiltro:'equip.fecha_alta',type:'date'},
-				id_grupo:1,
-				grid:true,
-				form:true
-		},
-		{
-			config:{
-				name: 'fecha_baja',
-				fieldLabel: 'Fecha Baja',
-				allowBlank: true,
-				gwidth: 100,
-							format: 'd/m/Y', 
-							renderer:function (value,p,record){return value?value.dateFormat('d/m/Y'):''}
-			},
-				type:'DateField',
-				filters:{pfiltro:'equip.fecha_baja',type:'date'},
-				id_grupo:1,
-				grid:true,
-				form:true
-		},
-        {
-            config:{//#GDV-34
-                name: 'km_inicial',
-                fieldLabel: 'Kilometraje Inicial',
-                allowBlank: true,
-                anchor: '100%',
-                gwidth: 100,
-                maxLength:1179650
-            },
-            type:'NumberField',
-            filters:{pfiltro:'equip.monto',type:'numeric'},
-            id_grupo:1,
-            grid:true,
-            form:true
-        },
+
+
 		{
 			config:{
 				name: 'estado_reg',
@@ -732,26 +477,20 @@ Phx.vista.Equipo=Ext.extend(Phx.gridInterfaz,{
 	title:'Vehiculos',
 	ActSave:'../../sis_rastreo/control/Equipo/insertarEquipo',
 	ActDel:'../../sis_rastreo/control/Equipo/eliminarEquipo',
-	ActList:'../../sis_rastreo/control/Equipo/listarEquipo',
+	ActList:'../../sis_rastreo/control/Equipo/listarEquipoKilometraje',
 	id_store:'id_equipo',
 	fields: [
 		{name:'id_equipo', type: 'numeric'},
 		{name:'id_tipo_equipo', type: 'numeric'},
 		{name:'id_modelo', type: 'numeric'},
 		{name:'id_localizacion', type: 'numeric'},
-		{name:'nro_motor', type: 'string'},
 		{name:'placa', type: 'string'},
 		{name:'estado', type: 'string'},
 		{name:'nro_movil', type: 'string'},
 		{name:'fecha_alta', type: 'date',dateFormat:'Y-m-d'},
-		{name:'cabina', type: 'string'},
 		{name:'estado_reg', type: 'string'},
-		{name:'propiedad', type: 'string'},
 		{name:'nro_chasis', type: 'string'},
-		{name:'cilindrada', type: 'numeric'},
-		{name:'color', type: 'string'},
 		{name:'pta', type: 'string'},
-		{name:'traccion', type: 'string'},
 		{name:'gestion', type: 'numeric'},
 		{name:'fecha_baja', type: 'date',dateFormat:'Y-m-d'},
 		{name:'monto', type: 'numeric'},
@@ -770,12 +509,6 @@ Phx.vista.Equipo=Ext.extend(Phx.gridInterfaz,{
 		{name:'desc_marca', type: 'string'},
 		{name:'uniqueid', type: 'string'},
 		{name:'deviceid', type: 'numeric'},
-		{name:'ultimo_envio', type: 'string'},
-		{name:'latitude', type: 'numeric'},
-		{name:'longitude', type: 'numeric'},
-		{name:'speed', type: 'numeric'},
-		{name:'attributes', type: 'string'},
-		{name:'address', type: 'string'},
 		{name:'desc_type', type: 'string'},
 		{name:'desc_equipo', type: 'string'},
 		{name:'responsable', type: 'string'},
@@ -783,17 +516,19 @@ Phx.vista.Equipo=Ext.extend(Phx.gridInterfaz,{
 		{name:'id_grupo', type: 'numeric'},
 		{name:'desc_grupo', type: 'string'},
 		{name:'color_grupo', type: 'string'},
-		{name:'nro_celular', type: 'string'},
         {name:'id_depto', type: 'numeric'},
-        {name:'km_inicial', type: 'numeric'} //#GDV-34
+        {name:'km_inicial', type: 'numeric'},
+        {name:'km_actual', type: 'numeric'}
 
 	],
 	sortInfo:{
 		field: 'id_equipo',
 		direction: 'ASC'
 	},
-	bdel:true,
-	bsave:true,
+	bdel:false,
+	bsave:false,
+    bedit:false,
+    bnew:false,
     cmbDepto : new Ext.form.ComboBox({
         name : 'id_depto',
         fieldLabel : 'Depto',
@@ -862,9 +597,16 @@ Phx.vista.Equipo=Ext.extend(Phx.gridInterfaz,{
         }
     },
     loadValoresIniciales: function () {
-        Phx.vista.Equipo.superclass.loadValoresIniciales.call(this);
+        Phx.vista.EquipoKilometraje.superclass.loadValoresIniciales.call(this);
         this.getComponente('id_depto').setValue(this.cmbDepto.getValue());
-    }
+    },
+    tabeast: [{
+        url: '../../../sis_rastreo/vista/sol_vehiculo/SolVehiculoKilometraje.php',
+        title: 'Historial',
+        width:'50%',
+        //height: '40%',
+        cls: 'SolVehiculoKilometraje'
+    }],
 
 	}
 )

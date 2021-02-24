@@ -152,6 +152,21 @@ Phx.vista.SolVehiculoBase=Ext.extend(Phx.gridInterfaz,{
             form:true,
             bottom_filter:true
         },
+        {
+            config:{
+                name: 'estado',
+                fieldLabel: 'Estado',
+                allowBlank: true,
+                anchor: '80%',
+                gwidth: 100,
+                maxLength:-5
+            },
+            type:'TextField',
+            filters:{pfiltro:'solvehi.nro_tramite',type:'string'},
+            id_grupo:1,
+            grid:true,
+            form:false
+        },
 
         //
         // {
@@ -211,6 +226,21 @@ Phx.vista.SolVehiculoBase=Ext.extend(Phx.gridInterfaz,{
         },
         {
             config:{
+                name: 'nro_tramite',
+                fieldLabel: 'Nro Tramite',
+                allowBlank: true,
+                anchor: '80%',
+                gwidth: 200,
+                maxLength:-5
+            },
+            type:'TextField',
+            filters:{pfiltro:'solvehi.nro_tramite',type:'string'},
+            id_grupo:1,
+            grid:true,
+            form:false
+        },
+        {
+            config:{
                 name: 'fecha_salida',
                 fieldLabel: 'Fecha Salida',
                 allowBlank: false,
@@ -244,21 +274,7 @@ Phx.vista.SolVehiculoBase=Ext.extend(Phx.gridInterfaz,{
                 form:true
 		},
 
-        {
-            config:{
-                name: 'nro_tramite',
-                fieldLabel: 'Nro Tramite',
-                allowBlank: true,
-                anchor: '80%',
-                gwidth: 100,
-            	maxLength:-5
-            },
-                type:'TextField',
-                filters:{pfiltro:'solvehi.nro_tramite',type:'string'},
-                id_grupo:1,
-                grid:true,
-                form:false
-		},
+
         {
             //configuracion del componente
             config:{
@@ -495,22 +511,6 @@ Phx.vista.SolVehiculoBase=Ext.extend(Phx.gridInterfaz,{
         },
         {
             config:{
-                name: 'estado',
-                fieldLabel: 'Estado',
-                allowBlank: true,
-                anchor: '80%',
-                gwidth: 100,
-                maxLength:-5
-            },
-            type:'TextField',
-            filters:{pfiltro:'solvehi.nro_tramite',type:'string'},
-            id_grupo:1,
-            grid:true,
-            form:false
-        },
-
-        {
-            config:{
                 name: 'id_usuario_ai',
                 fieldLabel: '',
                 allowBlank: true,
@@ -646,7 +646,7 @@ Phx.vista.SolVehiculoBase=Ext.extend(Phx.gridInterfaz,{
     ],
     sortInfo:{
         field: 'id_sol_vehiculo',
-        direction: 'ASC'
+        direction: 'DESC'
     },
     bdel:true,
     bsave:true,

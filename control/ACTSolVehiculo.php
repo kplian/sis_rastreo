@@ -192,6 +192,26 @@ class ACTSolVehiculo extends ACTbase{
             $this->mensajeExito->imprimirRespuesta($this->mensajeExito->generarJson());
 
         }
+    }
+        function listarSolVehiculoKilometraje(){
+            $this->objParam->defecto('ordenacion','id_sol_vehiculo');
+            $this->objParam->defecto('dir_ordenacion','asc');
+            $this->objParam->addParametro('id_funcionario_usu',$_SESSION["ss_id_funcionario"]);
+            
+            if($this->objParam->getParametro('id_equipo')!=''){
+                $this->objParam->addFiltro("asi.id_equipo = ".$this->objParam->getParametro('id_equipo'));
+            }
+
+            if($this->objParam->getParametro('tipoReporte')=='excel_grid' || $this->objParam->getParametro('tipoReporte')=='pdf_grid'){
+                $this->objReporte = new Reporte($this->objParam,$this);
+                $this->res = $this->objReporte->generarReporteListado('MODSolVehiculo','listarSolVehiculoKilometraje');
+            } else{
+                $this->objFunc=$this->create('MODSolVehiculo');
+
+                $this->res=$this->objFunc->listarSolVehiculoKilometraje($this->objParam);
+            }
+            $this->res->imprimirRespuesta($this->res->generarJson());
+
 
     }
 }
