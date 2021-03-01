@@ -316,9 +316,12 @@ BEGIN
                       solv.nro_tramite,
                       asi.km_inicio,
                       asi.km_final,
-                      asi.recorrido
+                      asi.recorrido,
+                      fun.desc_funcionario1::varchar as desc_funcionario, --#GDV-32
+                      solv.destino  --#GDV-32
                   FROM ras.tsol_vehiculo solv
                   left join ras.tasig_vehiculo asi on asi.id_sol_vehiculo =  solv.id_sol_vehiculo
+                  left join orga.vfuncionario fun on fun.id_funcionario = solv.id_funcionario
                   WHERE ';
             --Definicion de la respuesta
             v_consulta:=v_consulta||v_parametros.filtro;
@@ -340,6 +343,8 @@ BEGIN
                   count(solv.id_sol_vehiculo)
               FROM ras.tsol_vehiculo solv
               left join ras.tasig_vehiculo asi on asi.id_sol_vehiculo =  solv.id_sol_vehiculo
+              left join orga.vfuncionario fun on fun.id_funcionario = solv.id_funcionario
+
                 WHERE ';
             --Definicion de la respuesta
             v_consulta:=v_consulta||v_parametros.filtro;
