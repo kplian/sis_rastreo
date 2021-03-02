@@ -20,6 +20,7 @@ $body$
 #ISSUE                FECHA                AUTOR                DESCRIPCION
  #0                02-07-2020 22:13:48    egutierrez             Creacion
 #GDV-29                 13/01/2021          EGS                  Se agrega si exite conductor o no
+#GDV-36                 02/03/2021          EGS                   Se agrega tab para filtro de estado
  ***************************************************************************/
 
 DECLARE
@@ -61,9 +62,8 @@ BEGIN
                     v_filtro = '(solvehi.id_funcionario = '||v_parametros.id_funcionario_usu::varchar||' ) and ';
 
                     --Si no soy administrador y estoy en pendiente no veo nada
-                ElSIF v_parametros.nombreVista = 'SolVehiculoVoBo' or v_parametros.nombreVista = 'SolVehiculoAsig' THEN
+                ElSIF v_parametros.nombreVista = 'SolVehiculoVoBo' or (v_parametros.nombreVista = 'SolVehiculoAsig' and v_parametros.estado = 'asigvehiculo') THEN --#GDV-36
                     v_filtro = '(ew.id_funcionario = '||v_parametros.id_funcionario_usu::varchar||' ) and ';
-
                 ELSE
                     v_filtro = ' ';
                 END IF;

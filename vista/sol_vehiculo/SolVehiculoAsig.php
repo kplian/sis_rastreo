@@ -5,6 +5,8 @@
 *@author  (admin)
 *@date 07-03-2019 13:53:18
 *@description Archivo con la interfaz de usuario que permite la ejecucion de todas las funcionalidades del sistema
+ ISSUE			FECHA			AUTHOR 					DESCRIPCION
+ #GDV-36        02/03/2021      EGS                     Se agrega tab para filtro de estado
 */
 
 header("content-type: text/javascript; charset=UTF-8");
@@ -22,6 +24,7 @@ Phx.vista.SolVehiculoAsig={
     	//llama al constructor de la clase padre
 		Phx.vista.SolVehiculoAsig.superclass.constructor.call(this,config);
 		this.init();
+        this.finCons = true;//#GDV-36
 		this.load({params:{start:0,
                     limit:this.tam_pag ,
                     nombreVista:this.nombreVista ,
@@ -42,7 +45,7 @@ Phx.vista.SolVehiculoAsig={
 						grupo:[0,1,2],
 						iconCls: 'badelante', 
 						disabled: false,
-						handler: this.sigEstado, 
+						handler: this.sigEstado,
 						tooltip: '<b>Pasar al Siguiente Estado</b>'
 						});
 	},
@@ -108,7 +111,19 @@ Phx.vista.SolVehiculoAsig={
     bdel:false,
     bnew:false,
     bedit:false,
-    bsave:false
+    bsave:false,
+    gruposBarraTareas:[//#GDV-36
+        {name:'asigvehiculo',title:'<H1 align="center"><i class="fa fa-eye"></i>Asiganción</h1>',grupo:0,height:0},
+        {name:'asignado',title:'<H1 align="center"><i class="fa fa-eye"></i>Asignado</h1>',grupo:0,height:0}
+    ],
+    actualizarSegunTab: function(name, indice){//#GDV-36
+        if(this.finCons) {
+            //this.store.baseParams.nombre_estado= name;
+            this.store.baseParams.estado= name;
+            this.store.baseParams.nombreVista = this.nombreVista ;
+            this.load({params:{start:0, limit:this.tam_pag}});
+        }
+    },
 
 	}
 </script>
