@@ -28,6 +28,7 @@ Phx.vista.SolVehiculoAsig={
 		this.load({params:{start:0,
                     limit:this.tam_pag ,
                     nombreVista:this.nombreVista ,
+                    estado:'asigvehiculo' //#GDV-36
                     //id_funcionario:this.maestro.id_funcionario
 		}});
 		
