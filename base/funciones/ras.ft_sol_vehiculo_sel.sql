@@ -33,6 +33,7 @@ DECLARE
     v_with                varchar;
     v_join                varchar;
     v_col                 varchar;
+    v_estado              varchar;
 
 BEGIN
 
@@ -55,6 +56,14 @@ BEGIN
 
             IF p_administrador !=1 then
 
+                IF  pxp.f_existe_parametro(p_tabla,'estado') THEN
+
+                    v_estado = v_parametros.estado;
+                ELSE
+                    v_estado = '';
+                END IF;
+
+
                 --raise exception 'v_parametros.nombreVista %',v_parametros.nombreVista;
                 --si es la vista del help y estan en estado asignado y finalizado muestra solo os registristros del funcionario solicitante
                 IF v_parametros.nombreVista = 'SolVehiculo'   THEN
@@ -62,7 +71,7 @@ BEGIN
                     v_filtro = '(solvehi.id_funcionario = '||v_parametros.id_funcionario_usu::varchar||' ) and ';
 
                     --Si no soy administrador y estoy en pendiente no veo nada
-                ElSIF v_parametros.nombreVista = 'SolVehiculoVoBo' or (v_parametros.nombreVista = 'SolVehiculoAsig' and v_parametros.estado = 'asigvehiculo') THEN --#GDV-36
+                ElSIF v_parametros.nombreVista = 'SolVehiculoVoBo' or (v_parametros.nombreVista = 'SolVehiculoAsig' and v_estado = 'asigvehiculo') THEN --#GDV-36
                     v_filtro = '(ew.id_funcionario = '||v_parametros.id_funcionario_usu::varchar||' ) and ';
                 ELSE
                     v_filtro = ' ';
