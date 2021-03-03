@@ -229,7 +229,10 @@ class MODSolVehiculo extends MODbase{
         $this->captura('km_inicio','numeric');
         $this->captura('km_final','numeric');
         $this->captura('recorrido','numeric');
-    //Ejecuta la instruccion
+        $this->captura('desc_funcionario','varchar');
+        $this->captura('destino','varchar');
+
+        //Ejecuta la instruccion
         $this->armarConsulta();
         $this->ejecutarConsulta();
 

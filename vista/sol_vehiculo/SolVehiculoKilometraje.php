@@ -108,6 +108,36 @@ header("content-type: text/javascript; charset=UTF-8");
                 },
                 {
                     config:{
+                        name: 'desc_funcionario',
+                        fieldLabel: 'Funcionario',
+                        allowBlank: true,
+                        anchor: '80%',
+                        gwidth: 200,
+                        maxLength:-5
+                    },
+                    type:'TextField',
+                    filters:{pfiltro:'solvehi.nro_tramite',type:'string'},
+                    id_grupo:1,
+                    grid:true,
+                    form:false
+                },
+                {
+                    config:{
+                        name: 'destino',
+                        fieldLabel: 'Destino',
+                        allowBlank: true,
+                        anchor: '80%',
+                        gwidth: 200,
+                        maxLength:-5
+                    },
+                    type:'TextField',
+                    filters:{pfiltro:'solvehi.nro_tramite',type:'string'},
+                    id_grupo:1,
+                    grid:true,
+                    form:false
+                },
+                {
+                    config:{
                         name: 'id_usuario_ai',
                         fieldLabel: '',
                         allowBlank: true,
@@ -209,6 +239,8 @@ header("content-type: text/javascript; charset=UTF-8");
                 {name:'nro_tramite', type: 'string'},
                 {name:'km_inicio', type: 'string'},
                 {name:'recorrido', type: 'numeric'},
+                {name:'desc_funcionario', type: 'string'},
+                {name:'destino', type: 'string'},
 
 
             ],

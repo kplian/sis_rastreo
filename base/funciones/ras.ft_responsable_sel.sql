@@ -17,10 +17,8 @@ $body$
  COMENTARIOS:
 ***************************************************************************
  HISTORIAL DE MODIFICACIONES:
-
- DESCRIPCION:
- AUTOR:
- FECHA:
+ ISSUE			FECHA			AUTHOR 					DESCRIPCION
+ #GDV-35       02/03/2020      EGS                     Se modifica codigo
 ***************************************************************************/
 
 DECLARE
@@ -50,7 +48,6 @@ BEGIN
 						conduc.id_responsable,
 						conduc.id_persona,
 						conduc.estado_reg,
-						conduc.codigo,
 						conduc.id_usuario_reg,
 						conduc.usuario_ai,
 						conduc.fecha_reg,
@@ -60,7 +57,12 @@ BEGIN
 						usu1.cuenta as usr_reg,
 						usu2.cuenta as usr_mod,
 						per.nombre_completo1 as desc_persona,
-                        fun.codigo as cod_funcionario
+                        case     --#GDV-35
+                        when fun.id_funcionario is not null then
+                        fun.codigo
+                        else
+                        conduc.codigo
+                        end as codigo
 						from ras.tresponsable conduc
 						left join segu.vpersona per
 						on per.id_persona = conduc.id_persona
@@ -125,4 +127,5 @@ $body$
     VOLATILE
     CALLED ON NULL INPUT
     SECURITY INVOKER
+    PARALLEL UNSAFE
     COST 100;

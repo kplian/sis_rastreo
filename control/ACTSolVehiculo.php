@@ -8,8 +8,9 @@
 
  HISTORIAL DE MODIFICACIONES:
  #ISSUE                FECHA                AUTOR                DESCRIPCION
-  #0                02-07-2020 22:13:48    egutierrez             Creacion    
-  #
+  #0                02-07-2020 22:13:48    egutierrez             Creacion
+  #GDV-36        02/03/2021      EGS                     Se agrega tab para filtro de estado
+#
 *****************************************************************************************/
 require_once(dirname(__FILE__).'/../../pxp/pxpReport/DataSource.php');
 require_once dirname(__FILE__).'/../../pxp/lib/lib_reporte/ReportePDFFormulario.php';
@@ -25,8 +26,8 @@ class ACTSolVehiculo extends ACTbase{
         if ($this->objParam->getParametro('nombreVista') == 'SolVehiculoVoBo') {
             $this->objParam->addFiltro("solvehi.estado in (''vobojefedep'',''vobogerente'',''vobojefeserv'')");
         }
-        if ($this->objParam->getParametro('nombreVista') == 'SolVehiculoAsig') {
-            $this->objParam->addFiltro("solvehi.estado in (''asigvehiculo'')");
+        if ($this->objParam->getParametro('nombreVista') == 'SolVehiculoAsig') { //#GDV-36
+            $this->objParam->addFiltro("solvehi.estado = ''".$this->objParam->getParametro('estado')."''");
         }
         $this->objParam->defecto('dir_ordenacion','asc');
 		if($this->objParam->getParametro('tipoReporte')=='excel_grid' || $this->objParam->getParametro('tipoReporte')=='pdf_grid'){

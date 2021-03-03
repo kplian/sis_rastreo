@@ -141,13 +141,13 @@ select param.f_import_tcatalogo ('insert','RAS','Asignado','asignado','tequipo_e
 select param.f_import_tcatalogo ('insert','RAS','Mantenimiento','mantenimiento','tequipo_estado');
 /***********************************F-DAT-EGS-RAS-2-16/12/2020****************************************/
 /***********************************I-DAT-EGS-RAS-GDV-29-13/01/2021****************************************/
-select wf.f_import_ttipo_estado ('insert','asignacion','SOLVEH','asignacion','no','no','si','anterior','','ninguno','','','no','no',NULL,'<font color="99CC00" size="5"><font size="4">{TIPO_PROCESO}</font></font><br><br><b>&nbsp;</b>Tramite:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; &nbsp;&nbsp; <b>{NUM_TRAMITE}</b><br><b>&nbsp;</b>Usuario :<b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {USUARIO_PREVIO} </b>en estado<b>&nbsp; {ESTADO_ANTERIOR}<br></b>&nbsp;<b>Responsable:&nbsp;&nbsp; &nbsp;&nbsp; </b><b>{FUNCIONARIO_PREVIO}&nbsp; {DEPTO_PREVIO}<br>&nbsp;</b>Estado Actual<b>: &nbsp; &nbsp;&nbsp; {ESTADO_ACTUAL}</b><br><br><br>&nbsp;{OBS} <br>','Aviso WF ,  {PROCESO_MACRO}  ({NUM_TRAMITE})','','no','','','','','','','',NULL,'no','asignacion','','',NULL,'no',NULL,'','');
+select wf.f_import_ttipo_estado ('insert','asignado','SOLVEH','asignado','no','no','si','anterior','','ninguno','','','no','no',NULL,'<font color="99CC00" size="5"><font size="4">{TIPO_PROCESO}</font></font><br><br><b>&nbsp;</b>Tramite:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; &nbsp;&nbsp; <b>{NUM_TRAMITE}</b><br><b>&nbsp;</b>Usuario :<b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {USUARIO_PREVIO} </b>en estado<b>&nbsp; {ESTADO_ANTERIOR}<br></b>&nbsp;<b>Responsable:&nbsp;&nbsp; &nbsp;&nbsp; </b><b>{FUNCIONARIO_PREVIO}&nbsp; {DEPTO_PREVIO}<br>&nbsp;</b>Estado Actual<b>: &nbsp; &nbsp;&nbsp; {ESTADO_ACTUAL}</b><br><br><br>&nbsp;{OBS} <br>','Aviso WF ,  {PROCESO_MACRO}  ({NUM_TRAMITE})','','no','','','','','','','',NULL,'no','asignacion','','',NULL,'no',NULL,'','');
 select wf.f_import_testructura_estado ('insert','borrador','vobojefedep','SOLVEH',1,'','no');
 select wf.f_import_testructura_estado ('insert','vobojefedep','vobogerente','SOLVEH',1,'"{$tabla.alquiler_numero}"=1','no');
 select wf.f_import_testructura_estado ('insert','vobojefedep','vobojefeserv','SOLVEH',1,'"{$tabla.alquiler_numero}"=0','no');
 select wf.f_import_testructura_estado ('insert','vobojefeserv','asigvehiculo','SOLVEH',1,'','si');
 select wf.f_import_testructura_estado ('insert','vobogerente','vobojefeserv','SOLVEH',1,'','no');
-select wf.f_import_testructura_estado ('insert','asigvehiculo','asignacion','SOLVEH',1,'','no');
+select wf.f_import_testructura_estado ('insert','asigvehiculo','asignado','SOLVEH',1,'','no');
 /***********************************F-DAT-EGS-RAS-GDV-29-13/01/2021****************************************/
 
 /***********************************I-DAT-JJA-RAS-GDV-29-19/02/2021****************************************/
