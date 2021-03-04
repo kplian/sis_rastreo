@@ -22,6 +22,7 @@ $body$
  #2          ENDETR   JUAN 03/06/2019    Mostrar la ultima posición satelital
  #3          ENDETR   JUAN 04/06/2019    Corregir hora del servidor al momento de registrar coordenadas
  #RAS-1       15/01/2021        JJA            Actualizacion de traccar ultima version
+ #RAS-5       04/03/2021        JJA            Agregar tiempo de parqueo en los mapas
 ***************************************************************************/
 
 DECLARE
@@ -38,6 +39,9 @@ DECLARE
 	--v_utc				varchar = '- interval ''4 hour'''; --#3  se comento por que suma 4 horas al momento de mostrar en la vista del navegador
     v_utc				varchar = '- interval ''0 hour'''; --#3
 
+  v_id_position integer; --#RAS-5
+  v_bandera_aux integer; --#RAS-5
+  v_hora TIMESTAMP;      --#RAS-5
 BEGIN
 
 	v_nombre_funcion = 'ras.ft_positions_sel';
@@ -120,7 +124,8 @@ BEGIN
 		begin
 
             --inicio issue #2
-            for v_rec in (select p.deviceid,max(p.id) as ultimaPosicionId
+            --#
+            /*for v_rec in (select p.deviceid,max(p.id) as ultimaPosicionId
                           from public.tc_positions p
                           join public.tc_devices d on d.id=p.deviceid
                           group by p.deviceid) loop
@@ -129,7 +134,7 @@ BEGIN
                        set positionid=v_rec.ultimaPosicionId
                 where id=v_rec.deviceid;
 
-            end loop;
+            end loop;*/
             ---fin issue #2
             --#RAS-1
 			v_consulta:='select
@@ -316,7 +321,8 @@ BEGIN
 				send boolean default true,
 				distance numeric,
 				devicetime timestamp,
-				nro_movil varchar
+				nro_movil varchar,
+                tiempo_detenido varchar
 			) on commit drop;
 
 			--Sentencia de la consulta
@@ -345,8 +351,10 @@ BEGIN
 				attributes_event,
 				desc_type,
 				devicetime,
-				nro_movil)
+				nro_movil,
+                tiempo_detenido)
 						select
+
 						eq.id_equipo, eq.uniqueid,
 						eq.marca, eq.modelo, eq.placa,
 						--per.nombre_completo1 as responsable, per.ci,per.celular1, per.correo,
@@ -366,8 +374,11 @@ BEGIN
 							when ''alarm'' then ''Alarma''::varchar
 							else ev.type
 						end as desc_type,
-						pos.devicetime '||v_utc||' as devicetime,
-						eq.nro_movil
+						pos.devicetime as devicetime,
+						eq.nro_movil,
+
+                        0::varchar as tiempo_detenido --#RAS-5
+
 						from ras.vequipo eq
 						inner join public.tc_devices de
 						on de.uniqueid = eq.uniqueid
@@ -377,21 +388,29 @@ BEGIN
 						--on per.id_persona = ras.f_get_responsable_fecha(eq.id_equipo,pos.devicetime::date)
 						left join public.tc_events ev
 						on ev.positionid = pos.id
+
 						where eq.id_equipo in ('||v_parametros.ids||')'||'
+                        -- and (cast(pos.attributes as json)->>''event'')::integer!=0
 						and to_char(pos.devicetime,''dd-mm-yyyy HH24:MI:00'')::timestamp with time zone between '''||v_parametros.fecha_ini||'''::timestamp with time zone and '''||v_parametros.fecha_fin||'''::timestamp with time zone
-						order by pos.devicetime';
+
+                        order by pos.devicetime asc';
 
 			execute(v_consulta);
---raise notice 'CONS: %',v_consulta;
+            --raise notice 'CONS: %',v_consulta;
 
 			--Recorrido de las posiciones obtenidas para verificar de no mandar posiciones repetidas cuando este detenido
 			v_detenido = false;
 			v_total_distancia = 0;
-			for v_rec in select * from ras_posiciones loop
+
+            v_id_position=0; --#RAS-5
+            v_bandera_aux=0; --#RAS-5
+            v_hora=now()::TIMESTAMP; --#RAS-5
+
+			for v_rec in select * from ras_posiciones order by devicetime asc loop
 				v_distance = cast(v_rec.attributes as json)->>'distance';
 				v_total_distancia = v_total_distancia + cast(v_distance as numeric);
 				--Pregunta si esta detenido
-				if v_rec.desc_type = 'deviceStopped'  then
+				if v_rec.desc_type = 'deviceStopped' then
 					if v_detenido = true then
 						update ras_posiciones set send = false where id = v_rec.id;
 					else
@@ -401,6 +420,17 @@ BEGIN
 					v_detenido = false;
 				end if;
 
+        --calculo de tiempo de estacionado quitando eventos repetidos
+        if(v_rec.type = 'ignitionOff' and v_bandera_aux=0)then  --#RAS-5
+          v_id_position=v_rec.id;
+          v_bandera_aux=1;
+          v_hora=v_rec.devicetime;
+        else
+          if(v_bandera_aux=1 and (cast(v_rec.attributes as json)->>'event')::integer=0 and (cast(v_rec.attributes as json)->>'ignition')::varchar = 'true' )then
+            update ras_posiciones set tiempo_detenido = to_char ((   extract(epoch from age(v_rec.devicetime::TIMESTAMP, v_hora::TIMESTAMP))    ||' seconds')::interval, 'HH24:MI:SS' ) where id = v_id_position;
+            v_bandera_aux=0;
+          end if;
+        end if;
 
 			end loop;
 
@@ -408,7 +438,12 @@ BEGIN
 				update ras_posiciones set distance = v_total_distancia where id = v_rec.id;
 			end loop;
 
-			v_consulta = 'select * from ras_posiciones where send = true order by devicetime';
+			v_consulta = 'select *
+             from ras_posiciones
+
+             where send = true
+             --and case when type=''ignitionOff'' then  split_part((split_part(tiempo_detenido,'':'',3)),''.'',1)::INTEGER >30 else 0=0 end
+             order by devicetime asc ';
 
 			--Devuelve la respuesta
 			return v_consulta;

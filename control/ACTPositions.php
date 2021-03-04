@@ -5,6 +5,8 @@
 *@author  (admin)
 *@date 15-06-2017 20:34:23
 *@description Clase que recibe los parametros enviados por la vista para mandar a la capa de Modelo
+
+  #RAS-5       04/03/2021        JJA            Agregar tiempo de parqueo en los mapas
 */
 
 class ACTPositions extends ACTbase{    
@@ -71,7 +73,7 @@ class ACTPositions extends ACTbase{
 		$this->res->imprimirRespuesta($this->res->generarJson());
 	}
 
-	function listarPosicionesRangoProcesado(){
+	function listarPosicionesRangoProcesado(){ //#RAS-5
 		$this->objParam->defecto('ordenacion','id');
 		$this->objParam->defecto('dir_ordenacion','asc');
 
