@@ -1,5 +1,8 @@
 <?php
 header("content-type: text/javascript; charset=UTF-8");
+/**
+#RAS-5       04/03/2021        JJA            Agregar tiempo de parqueo en los mapas
+ */
 ?>
 <script>
 var address=null;
@@ -279,7 +282,7 @@ Ext.define('Phx.vista.Monitoreo', {
 			            me.winInfo = new Ext.Window({
 			                layout:'fit',
 			                width:500,
-			                height:300,
+			                height:330,
 			                closeAction:'hide',
 			                plain: true,
 			                items: me.panelResumen,			
@@ -341,7 +344,7 @@ Ext.define('Phx.vista.Monitoreo', {
             //var el = moment(element.servertime).utc().format('DD/MM/YYYY HH:mm:00');
     		me.dibujarPunto({   latitud : element.latitude  ,
 	    			            longitud: element.longitude,
-	    			            codigo: element.nro_movil ,
+	    			            codigo: element.placa ,
 	    			            nombre: element.placa,
 	    			            attributes: element.attributes,
 	    			            speed: element.speed,
@@ -518,63 +521,62 @@ Ext.define('Phx.vista.Monitoreo', {
 	updateResumen:function(datos){
         address='';
         // #5 endetr JUAN 19/08/2019  se agrego la opcion Ver en google maps
-		var plantilla = "<div style='overflow-y: initial;'><br><b>PLACA {16}</b><br></b> \
+        //#RAS-5 se agrego el target en la plantilla
+        var plantilla = "<div style='overflow-y: initial;'><br><b>PLACA {13}</b><br></b> \
 		       					<b>Posicion:</b> (Lat {2}, Lon {1} , Alt {14})</br>\
-                                <b>Nro.Móvil:</b> {15}</br>\
+                                <b>Nro.Móvil:</b> {12}</br>\
 								<b>Estado:</b> {3}</br>\
 								<b>Responsable:</b> {4}</br>\
 								<b>Descripcion:</b> {5}</br>\
 								<b>Velocidad:</b> {6}</br>\
 								<b>Distancia:</b> {7}</br>\
 								<b>Total Distancia:</b> {8}</br>\
-								<b>Odometro:</b> {9}</br>\
-								<b>Consumo de combustible:</b> {10}</br>\
-								<b>Battery:</b> {11}</br>\
-								<b>Rssi:</b> {12}</br>\
-                                <b>Dirección:</b><div id='direccion'> {13} </div></br>\
-                                <b>Ver en google maps:</b> <a href=\"http://maps.google.com/maps?z=12&t=m&q=loc:{2}+{1}\">Click a qui</a>  </br></br></div>\
-                                <b>Hora del Dispositivo:</b> {17}</br></br></div>";
+								<b>Battery:</b> {9}</br>\
+                                <b>Dirección:</b><div id='direccion'> {10} </div></br>\
+                                <b>Hora del Dispositivo:</b> {14}</br>\
+                                <b>Ver en google maps:</b> <a href=\"http://maps.google.com/maps?z=12&t=m&q=loc:{2}+{1}\" target=\"_blank\" >Click a qui</a>  </br></br></div>\
+                                </div>\
+                                ";
 
 
 
 		var  reg   = Ext.util.JSON.decode(Ext.util.Format.trim(datos.attributes));
         var hora = new Date(datos.devicetime).dateFormat('H:i:s.u  d/m/Y');
 
-        fetch('http://nominatim.openstreetmap.org/reverse?format=json&lon=' + parseFloat(datos.longitud) + '&lat=' + parseFloat(datos.latitud)).then(function(response) {
+        /*fetch('http://nominatim.openstreetmap.org/reverse?format=json&lon=' + parseFloat(datos.longitud) + '&lat=' + parseFloat(datos.latitud)).then(function(response) {
           return response.json();
         }).then(function(json) {
           address=json.display_name;
           if(address!=''){
             document.getElementById("direccion").innerHTML = address;
           }
-        })
+        })*/
+        console.log("ver posiciones ",datos);
+        //#RAS-5 cambio de orden en el panelResumen
+        this.panelResumen.update( String.format(plantilla,
+            datos.codigo,
+            datos.longitud,
+            datos.latitud,
+            datos.estado||'desconocido',
+            datos.responsable||'no designado',
+            datos.desc_equipo||'sin descripcion',
+            datos.speed+' Km/h'||0,
+            reg.distance+' Metros'||0,
+            reg.totalDistance+' Metros'||0,
+            reg.power.toPrecision(5)+" Volt."||0,
+            datos.address||'',
+            //address||'',
+            datos.altitud||0,
+            datos.nro_movil,
+            datos.placa,
+            hora||'desconocido'
+        ));
 
-		this.panelResumen.update( String.format(plantilla,
-			                                           datos.codigo, 
-			                                           datos.longitud,
-			                                           datos.latitud,
-			                                           datos.estado||'desconocido',
-			                                           datos.responsable||'no designado',
-			                                           datos.desc_equipo||'sin descripcion',
-			                                           datos.speed||0,
-			                                           reg.distance||0,
-			                                           reg.totalDistance||0,
-			                                           reg.odometer||0,
-			                                           reg.fuelConsumption||0,			                                           
-			                                           reg.battery||0,
-			                                           reg.rssi||0,
-			                                           //datos.address||'',
-                                                       address||'',
-			                                           datos.altitud||0,
-			                                           datos.nro_movil,
-                                                       datos.placa,
-                                                       hora||'desconocido'
-			                                           ));
-			                                           
-			                                           
-			                                         
-		
-	},
+
+
+
+
+    },
     simpleReverseGeocoding: function(lon, lat) {
         fetch('http://nominatim.openstreetmap.org/reverse?format=json&lon=' + lon + '&lat=' + lat).then(function(response) {
           return response.json();
