@@ -631,6 +631,17 @@ Phx.vista.AsigVehiculoBase=Ext.extend(Phx.gridInterfaz,{
             });
         }, this);
 
+        if( this.estado == 'vobojefeserv' && this.nombreVistaPadre == 'SolVehiculoVoBo' ){ //GDV-32
+            this.ocultarComponente(this.Cmp.id_tipo_equipo);
+            this.ocultarComponente(this.Cmp.id_equipo);
+            this.ocultarComponente(this.Cmp.observaciones);
+
+        }else{
+            this.mostrarComponente(this.Cmp.id_tipo_equipo);
+            this.mostrarComponente(this.Cmp.id_equipo);
+            this.mostrarComponente(this.Cmp.observaciones);
+        }
+
 
 
     },
@@ -736,6 +747,18 @@ Phx.vista.AsigVehiculoBase=Ext.extend(Phx.gridInterfaz,{
                 }, scope : this
             });
         },this)
+
+        if( this.estado == 'vobojefeserv' && this.nombreVistaPadre == 'SolVehiculoVoBo' ){ //GDV-32
+            this.ocultarComponente(this.Cmp.id_tipo_equipo);
+            this.ocultarComponente(this.Cmp.id_equipo);
+            this.ocultarComponente(this.Cmp.observaciones);
+
+        }else{
+            this.mostrarComponente(this.Cmp.id_tipo_equipo);
+            this.mostrarComponente(this.Cmp.id_equipo);
+            this.mostrarComponente(this.Cmp.observaciones);
+        }
+
 
 
     },

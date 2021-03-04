@@ -23,7 +23,6 @@ class MODResponsable extends MODbase{
 		$this->captura('id_responsable','int4');
 		$this->captura('id_persona','int4');
 		$this->captura('estado_reg','varchar');
-		$this->captura('codigo','varchar');
 		$this->captura('id_usuario_reg','int4');
 		$this->captura('usuario_ai','varchar');
 		$this->captura('fecha_reg','timestamp');
@@ -33,8 +32,8 @@ class MODResponsable extends MODbase{
 		$this->captura('usr_reg','varchar');
 		$this->captura('usr_mod','varchar');
 		$this->captura('desc_persona','text');
-        $this->captura('cod_funcionario','varchar');//#
-		
+        $this->captura('codigo','varchar');//#GDV-35
+
 		//Ejecuta la instruccion
 		$this->armarConsulta();
 		$this->ejecutarConsulta();

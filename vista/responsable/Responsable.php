@@ -5,7 +5,9 @@
 *@author  (admin)
 *@date 15-06-2017 17:50:03
 *@description Archivo con la interfaz de usuario que permite la ejecucion de todas las funcionalidades del sistema
-*/
+  ISSUE			FECHA			AUTHOR 					DESCRIPCION
+ *#GDV-35       02/03/2020      EGS                     Se modifica codigo
+ */
 
 header("content-type: text/javascript; charset=UTF-8");
 ?>
@@ -33,7 +35,7 @@ Phx.vista.Responsable=Ext.extend(Phx.gridInterfaz,{
 		},
 		{
 			config:{
-				name: 'cod_funcionario',
+				name: 'codigo',//#GDV-35
 				fieldLabel: 'Código',
 				allowBlank: true,
 				anchor: '80%',
