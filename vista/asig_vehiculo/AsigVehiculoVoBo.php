@@ -36,6 +36,7 @@ Phx.vista.AsigVehiculoVoBo={
         this.getBoton('btnIncidencia').enable();//#.
         if( this.estado == 'vobojefeserv' && this.nombreVistaPadre == 'SolVehiculoVoBo' ){ //GDV-29
             this.getBoton('edit').enable();
+
         }else{
             this.getBoton('edit').disable();
         }

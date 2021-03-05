@@ -284,6 +284,15 @@ BEGIN
                      inner join wf.testado_wf ew on ew.id_estado_wf = c.id_estado_wf
             where c.id_sol_vehiculo = v_parametros.id_sol_vehiculo;
 
+            --recuperamos la nomina de personas
+            IF not EXISTS(
+                    SELECT
+                        1
+                    FROM ras.tnomina_persona np
+                    WHERE np.id_sol_vehiculo = v_parametros.id_sol_vehiculo ) THEN
+                RAISE EXCEPTION 'Debe existir por lo menos un registro en nomina de personas';
+            END IF;
+
             --Recupera datos del estado
             select
                 ew.id_tipo_estado,

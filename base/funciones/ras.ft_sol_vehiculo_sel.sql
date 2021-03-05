@@ -20,6 +20,7 @@ $body$
 #ISSUE                FECHA                AUTOR                DESCRIPCION
  #0                02-07-2020 22:13:48    egutierrez             Creacion
 #GDV-29                 13/01/2021          EGS                  Se agrega si exite conductor o no
+#GDV-36                 02/03/2021          EGS                   Se agrega tab para filtro de estado
  ***************************************************************************/
 
 DECLARE
@@ -32,6 +33,7 @@ DECLARE
     v_with                varchar;
     v_join                varchar;
     v_col                 varchar;
+    v_estado              varchar;
 
 BEGIN
 
@@ -54,6 +56,14 @@ BEGIN
 
             IF p_administrador !=1 then
 
+                IF  pxp.f_existe_parametro(p_tabla,'estado') THEN
+
+                    v_estado = v_parametros.estado;
+                ELSE
+                    v_estado = '';
+                END IF;
+
+
                 --raise exception 'v_parametros.nombreVista %',v_parametros.nombreVista;
                 --si es la vista del help y estan en estado asignado y finalizado muestra solo os registristros del funcionario solicitante
                 IF v_parametros.nombreVista = 'SolVehiculo'   THEN
@@ -61,9 +71,8 @@ BEGIN
                     v_filtro = '(solvehi.id_funcionario = '||v_parametros.id_funcionario_usu::varchar||' ) and ';
 
                     --Si no soy administrador y estoy en pendiente no veo nada
-                ElSIF v_parametros.nombreVista = 'SolVehiculoVoBo' or v_parametros.nombreVista = 'SolVehiculoAsig' THEN
+                ElSIF v_parametros.nombreVista = 'SolVehiculoVoBo' or (v_parametros.nombreVista = 'SolVehiculoAsig' and v_estado = 'asigvehiculo') THEN --#GDV-36
                     v_filtro = '(ew.id_funcionario = '||v_parametros.id_funcionario_usu::varchar||' ) and ';
-
                 ELSE
                     v_filtro = ' ';
                 END IF;
@@ -300,6 +309,56 @@ BEGIN
             --Devuelve la respuesta
             RETURN v_consulta;
 
+        END;
+        /*********************************
+ #TRANSACCION:  'RAS_SOLVEHIKIL_SEL'
+ #DESCRIPCION:    Conteo de registros
+ #AUTOR:        egutierrez
+ #FECHA:        02-07-2020 22:13:48
+***********************************/
+
+    ELSIF (p_transaccion='RAS_SOLVEHIKIL_SEL') THEN
+
+        BEGIN
+            v_consulta = 'SELECT
+                      solv.id_sol_vehiculo,
+                      solv.nro_tramite,
+                      asi.km_inicio,
+                      asi.km_final,
+                      asi.recorrido,
+                      fun.desc_funcionario1::varchar as desc_funcionario, --#GDV-32
+                      solv.destino  --#GDV-32
+                  FROM ras.tsol_vehiculo solv
+                  left join ras.tasig_vehiculo asi on asi.id_sol_vehiculo =  solv.id_sol_vehiculo
+                  left join orga.vfuncionario fun on fun.id_funcionario = solv.id_funcionario
+                  WHERE ';
+            --Definicion de la respuesta
+            v_consulta:=v_consulta||v_parametros.filtro;
+            v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
+
+            --Devuelve la respuesta
+            RETURN v_consulta;
+        END;
+        /*********************************
+           #TRANSACCION:  'RAS_SSOLVEHIKIL_CONT'
+           #DESCRIPCION:    Conteo de registros
+           #AUTOR:        egutierrez
+           #FECHA:        02-07-2020 22:13:48
+          ***********************************/
+    ELSEIF (p_transaccion='RAS_SOLVEHIKIL_CONT') THEN
+        BEGIN
+            v_consulta = '
+              SELECT
+                  count(solv.id_sol_vehiculo)
+              FROM ras.tsol_vehiculo solv
+              left join ras.tasig_vehiculo asi on asi.id_sol_vehiculo =  solv.id_sol_vehiculo
+              left join orga.vfuncionario fun on fun.id_funcionario = solv.id_funcionario
+
+                WHERE ';
+            --Definicion de la respuesta
+            v_consulta:=v_consulta||v_parametros.filtro;
+
+            RETURN v_consulta;
         END;
 
     ELSE

@@ -5,7 +5,9 @@
 *@author  (admin)
 *@date 15-06-2017 20:34:23
 *@description Clase que envia los parametros requeridos a la Base de datos para la ejecucion de las funciones, y que recibe la respuesta del resultado de la ejecucion de las mismas
-*/
+
+ #RAS-5       04/03/2021        JJA            Agregar tiempo de parqueo en los mapas
+ */
 
 class MODPositions extends MODbase{
 
@@ -257,6 +259,7 @@ class MODPositions extends MODbase{
 		$this->captura('distance','numeric');
 		$this->captura('devicetime','timestamp');
 		$this->captura('nro_movil','varchar');
+        $this->captura('tiempo_detenido','varchar'); //#RAS-5
 		
 		//Ejecuta la instruccion
 		$this->armarConsulta();
