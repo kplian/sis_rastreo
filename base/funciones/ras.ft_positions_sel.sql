@@ -42,6 +42,8 @@ DECLARE
   v_id_position integer; --#RAS-5
   v_bandera_aux integer; --#RAS-5
   v_hora TIMESTAMP;      --#RAS-5
+  v_lat_ant           float8; --#RAS-5
+  v_lon_ant           float8; --#RAS-5
 BEGIN
 
 	v_nombre_funcion = 'ras.ft_positions_sel';
@@ -402,9 +404,9 @@ BEGIN
 			v_detenido = false;
 			v_total_distancia = 0;
 
-            v_id_position=0; --#RAS-5
-            v_bandera_aux=0; --#RAS-5
-            v_hora=now()::TIMESTAMP; --#RAS-5
+            v_id_position=0;
+            v_bandera_aux=0;
+            v_hora=now()::TIMESTAMP;
 
 			for v_rec in select * from ras_posiciones order by devicetime asc loop
 				v_distance = cast(v_rec.attributes as json)->>'distance';
@@ -420,17 +422,23 @@ BEGIN
 					v_detenido = false;
 				end if;
 
-        --calculo de tiempo de estacionado quitando eventos repetidos
-        if(v_rec.type = 'ignitionOff' and v_bandera_aux=0)then  --#RAS-5
-          v_id_position=v_rec.id;
-          v_bandera_aux=1;
-          v_hora=v_rec.devicetime;
-        else
-          if(v_bandera_aux=1 and (cast(v_rec.attributes as json)->>'event')::integer=0 and (cast(v_rec.attributes as json)->>'ignition')::varchar = 'true' )then
-            update ras_posiciones set tiempo_detenido = to_char ((   extract(epoch from age(v_rec.devicetime::TIMESTAMP, v_hora::TIMESTAMP))    ||' seconds')::interval, 'HH24:MI:SS' ) where id = v_id_position;
-            v_bandera_aux=0;
-          end if;
-        end if;
+                --calculo de tiempo de estacionado quitando eventos repetidos
+                if(v_rec.type = 'ignitionOff' and v_bandera_aux=0)then  --#RAS-5
+                  v_id_position=v_rec.id;
+                  v_bandera_aux=1;
+                  v_hora=v_rec.devicetime;
+                  v_lat_ant=v_rec.latitude;
+                  v_lon_ant=v_rec.longitude;
+                else
+                  if(v_bandera_aux=1 and (cast(v_rec.attributes as json)->>'event')::integer=0 and (cast(v_rec.attributes as json)->>'ignition')::varchar = 'true' and v_lat_ant!=v_rec.latitude )then
+                    update ras_posiciones set tiempo_detenido = to_char ((   extract(epoch from age(v_rec.devicetime::TIMESTAMP, v_hora::TIMESTAMP))    ||' seconds')::interval, 'HH24:MI:SS' ) where id = v_id_position;
+                    v_bandera_aux=0;
+                  else
+                    IF(v_lat_ant=v_rec.latitude) then
+                      update ras_posiciones set send = false where id = v_rec.id;
+                    end if;
+                  end if;
+                end if;
 
 			end loop;
 
@@ -438,18 +446,16 @@ BEGIN
 				update ras_posiciones set distance = v_total_distancia where id = v_rec.id;
 			end loop;
 
-			v_consulta = 'select *
+			v_consulta = '
+            select *
              from ras_posiciones
-
              where send = true
-             --and case when type=''ignitionOff'' then  split_part((split_part(tiempo_detenido,'':'',3)),''.'',1)::INTEGER >30 else 0=0 end
              order by devicetime asc ';
 
 			--Devuelve la respuesta
 			return v_consulta;
 
 		end;
-
 	/*********************************
  	#TRANSACCION:  'PB_POSVEL_SEL'
  	#DESCRIPCION:	Devuelve rango de velocidades en un rango de fechas para los equipos enviados

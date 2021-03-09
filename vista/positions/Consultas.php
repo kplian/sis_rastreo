@@ -535,8 +535,9 @@ Ext.define('Phx.vista.Consultas', {
 		    			    tipoIcono = 'car';
 		    		    }
 		    		    else{
-		    		        if(element.type=="ignitionOff"){
+		    		        if(element.type=="ignitionOff" && element.tiempo_detenido.toString()!="0" && reg.datos[0].latitude != element.latitude){
                                 tipoIcono = 'car_yellow';
+                                //console.log("errores ",element.tiempo_detenido+ " -"+element.latitude+" - "+element.longitude);
                                 //me.car.removeFeature();
                             }else{
 
