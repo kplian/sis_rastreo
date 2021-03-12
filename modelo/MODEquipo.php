@@ -9,6 +9,7 @@
  *  #RAS-3          19/02/2021      JJA         Nuevo reporte de historial de movimientos de vehículos
  * #GDV-33         22/02/2021      EGS         Se agrega kilometraje inicial
  * #GDV-34          22/02/2021      EGS        Se agregan km_inicial y km_actual a los equipos
+   #RAS-6          09/03/2021      JJA         Agregar reporte con tiempo de parqueo
 */
 
 class MODEquipo extends MODbase{
@@ -247,6 +248,33 @@ class MODEquipo extends MODbase{
         $this->captura('volt_bateria','numeric');
         $this->captura('odometro','numeric');
         $this->captura('estado','varchar');
+
+        //Ejecuta la instruccion
+        $this->armarConsulta();
+        $this->ejecutarConsulta();
+        //var_dump($this->consulta); exit;
+        //Devuelve la respuesta
+        return $this->respuesta;
+    }
+    function ReporteEstacionamientoVehiculo(){//#RAS-6
+        $this->procedimiento='ras.ft_equipo_sel';
+        $this->transaccion='RAS_ESTVEH_SEL';
+        $this->tipo_procedimiento='SEL';
+
+        $this->captura('id','int4');
+
+        $this->captura('ubicacion','varchar');
+        $this->captura('latitude','numeric');
+        $this->captura('longitude','numeric');
+        $this->captura('fecha_hora','varchar');
+        $this->captura('velocidad','numeric');
+        $this->captura('placa','varchar');
+        $this->captura('distancia','numeric');
+        $this->captura('volt_bateria','numeric');
+        $this->captura('odometro','numeric');
+        $this->captura('estado','varchar');
+        $this->captura('attributes','varchar');
+        $this->captura('tiempo_detenido','varchar');
 
         //Ejecuta la instruccion
         $this->armarConsulta();

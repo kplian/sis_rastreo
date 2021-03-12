@@ -8,10 +8,11 @@
  *
  *  #RAS-3          19/02/2021      JJA         Nuevo reporte de historial de movimientos de vehículos
  *  #GDV-33         22/02/2021      EGS         Se agrega kilometraje inicial
+ *  #RAS-6          09/03/2021      JJA         Agregar reporte con tiempo de parqueo
  */
 
 require_once(dirname(__FILE__).'/../reportes/RHistorialVehiculoPDF.php');//#RAS-3
-
+require_once(dirname(__FILE__).'/../reportes/RTiempoParqueoVehiculo.php');//#RAS-6
 class ACTEquipo extends ACTbase{
 
     function listarEquipo(){
@@ -81,7 +82,13 @@ class ACTEquipo extends ACTbase{
          $this->objParam->addFiltro(" (eq.id_equipo::integer  = ''".$this->objParam->getParametro('ids')."''::integer ) ");
 
          $this->objFunc = $this->create('MODEquipo');
-         $this->res = $this->objFunc->ReporteHistorialVehiculo($this->objParam);
+
+         if($this->objParam->getParametro('tipo_reporte')=="hismov"){//#RAS-6
+             $this->res = $this->objFunc->ReporteHistorialVehiculo($this->objParam);
+         }else{
+             $this->res = $this->objFunc->ReporteEstacionamientoVehiculo($this->objParam);
+         }
+
 
 
         $nombreArchivo = uniqid(md5(session_id()).'Historial') . '.pdf';
@@ -95,7 +102,11 @@ class ACTEquipo extends ACTbase{
         $this->objParam->addParametro('titulo_archivo',$titulo);
         $this->objParam->addParametro('nombre_archivo',$nombreArchivo);
 
-        $reporte = new RHistorialVehiculoPDF($this->objParam);
+        if($this->objParam->getParametro('tipo_reporte')=="hismov") {//#RAS-6
+            $reporte = new RHistorialVehiculoPDF($this->objParam);
+        }else{
+            $reporte = new RTiempoParqueoVehiculo($this->objParam);
+        }
 
         $reporte->datosHeader($this->res->getDatos(),$this->objParam);
 
