@@ -23,6 +23,7 @@ $body$
    #RAS-1       15/01/2021        JJA            Actualizacion de traccar ultima version
    #RAS-3          19/02/2021      JJA         Nuevo reporte de historial de movimientos de vehículos
   #GDV-33       22/02/2021        EGS           Se recupera kilometraje
+  #RAS-6        10/02/2021        JJA           Reporte de tiempo de parqueo en pdf
 ***************************************************************************/
 
 DECLARE
@@ -37,6 +38,16 @@ DECLARE
     v_filtro            varchar;
     va_id_depto			integer[];
     v_registro          record;
+
+    v_id_position integer; --#RAS-6
+    v_bandera_aux integer; --#RAS-6
+    v_hora TIMESTAMP;     --#RAS-6
+    v_lat_ant           float8; --#RAS-6
+    v_lon_ant           float8; --#RAS-6
+    v_detenido 			boolean; --#RAS-6
+    v_total_distancia	numeric; --#RAS-6
+    v_distance 			text; --#RAS-6
+    v_rec 				record; --#RAS-6
 
 BEGIN
 
@@ -422,6 +433,125 @@ BEGIN
             --raise exception 'error %',v_consulta;
             --Devuelve la respuesta
             return v_consulta;
+
+        end;
+        /*********************************
+     #TRANSACCION:  'RAS_ESTVEH_SEL'
+     #DESCRIPCION:	Consulta de datos
+     #AUTOR:		JUAN
+     #FECHA:		09-03-2021 17:50:17
+    ***********************************/
+
+    elsif(p_transaccion='RAS_ESTVEH_SEL')then --#RAS-6
+
+        begin
+                    create temp table ras_posiciones (
+                        id serial,
+                        ubicacion varchar,
+                        latitude numeric,
+                        longitude numeric,
+                        fecha_hora timestamp,
+                        velocidad numeric,
+                        placa varchar,
+                        distancia numeric,
+                        volt_bateria numeric,
+                        odometro numeric,
+                        estado varchar,
+                        attributes varchar,
+                        tiempo_detenido varchar,
+                        send boolean default false,
+                        type varchar
+                    ) on commit drop;
+
+
+                    v_consulta:='insert into ras_posiciones(
+                        ubicacion,
+                        latitude,
+                        longitude,
+                        fecha_hora,
+                        velocidad,
+                        placa,
+                        distancia,
+                        volt_bateria,
+                        odometro,
+                        estado,
+                        attributes,
+                        tiempo_detenido,
+                        type)
+                            select
+                            p.address,
+                            p.latitude,
+                            p.longitude,
+                            (to_char( p.devicetime, ''DD-MM-YYYY'')||'' ''||to_char( p.devicetime, ''hh:mi:ss''))::timestamp as fecha_hora,
+                            p.speed,
+                            eq.placa,
+                            (cast(p.attributes as json)->>''distance'')::numeric as distancia,
+                            (cast(p.attributes as json)->>''power'')::numeric as volt_bateria,
+                            (cast(p.attributes as json)->>''odometer'')::numeric as odometro,
+                            (case when cast(p.attributes as json)->>''ignition''=''true'' then ''encendido'' else ''apagado'' end)::varchar as estado,
+                            p.attributes,
+                            0::varchar as tiempo_detenido,
+                            ev.type
+                            from public.tc_positions p
+                            join public.tc_devices dev on dev.id=p.deviceid
+                            left join public.tc_events ev on ev.positionid=p.id
+                            join ras.tequipo eq on eq.uniqueid=dev.uniqueid
+                            where  ';
+
+                            v_consulta:=v_consulta||v_parametros.filtro||' order by p.devicetime asc ';
+
+        execute(v_consulta);
+
+        v_detenido = false;
+                    v_total_distancia = 0;
+
+                    v_id_position=0;
+                    v_bandera_aux=0;
+                    v_hora=now()::TIMESTAMP;
+
+        for v_rec in select * from ras_posiciones order by fecha_hora asc loop
+                        v_distance = cast(v_rec.attributes as json)->>'distance';
+        v_total_distancia = v_total_distancia + cast(v_distance as numeric);
+
+                        --calculo de tiempo de estacionado quitando eventos repetidos
+                        if(v_rec.type = 'ignitionOff' and v_bandera_aux=0 and (cast(v_rec.attributes as json)->>'event')::integer !=0 )then
+                          v_id_position=v_rec.id;
+                          v_bandera_aux=1;
+                          v_hora=v_rec.fecha_hora;
+                          v_lat_ant=v_rec.latitude;
+                          v_lon_ant=v_rec.longitude;
+        update ras_posiciones set send = true where id = v_rec.id;
+        else
+                          if(v_bandera_aux=1 and (cast(v_rec.attributes as json)->>'event')::integer=0 and (cast(v_rec.attributes as json)->>'ignition')::varchar = 'true' and v_lat_ant!=v_rec.latitude )then
+        update ras_posiciones set tiempo_detenido = to_char ((   extract(epoch from age(v_rec.fecha_hora::TIMESTAMP, v_hora::TIMESTAMP))    ||' seconds')::interval, 'HH24:MI:SS' ) where id = v_id_position;
+        v_bandera_aux=0;
+        end if;
+        end if;
+
+        end loop;
+
+
+                    v_consulta = '
+                    select
+                        id::integer,
+                        ubicacion::varchar,
+                        latitude::numeric,
+                        longitude::numeric,
+                        fecha_hora::varchar,
+                        velocidad::numeric,
+                        placa::varchar,
+                        distancia::numeric,
+                        volt_bateria::numeric,
+                        odometro::numeric,
+                        estado::varchar,
+                        attributes::varchar,
+                        tiempo_detenido::varchar
+                     from ras_posiciones
+                     where send = true
+                     and tiempo_detenido !=''0''
+                     order by fecha_hora asc ';
+
+        return v_consulta;
 
         end;
         /*********************************
