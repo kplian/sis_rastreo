@@ -10,6 +10,7 @@ HISTORIAL DE MODIFICACIONES:
 
 ISSUE            FECHA:          AUTOR       DESCRIPCION
 #RAS-2  ENDETR    18-02-2021       JJA            Historial de movimiento de vehiculos
+#RAS-6  ENDETR    09-03-2021       JJA            Agregar reporte con tiempo de parqueo
  */
 header("content-type: text/javascript; charset=UTF-8");
 ?>
@@ -56,7 +57,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 config:{
                     name:'ids',
                     fieldLabel:'Vehículos',
-                    allowBlank:true,
+                    allowBlank:false,
                     emptyText:'Vehículos..',
                     store: new Ext.data.JsonStore({
                         url: '../../sis_rastreo/control/Equipo/listarEquipoRapido',
@@ -96,7 +97,34 @@ header("content-type: text/javascript; charset=UTF-8");
                 },
                 grid:true,
                 form:true
-            }
+            },
+            { //#RAS-6
+                config:{
+                    name:'tipo_reporte',
+                    fieldLabel:'Tipo reporte',
+                    allowBlank:false,
+                    emptyText:'...',
+                    typeAhead: true,
+                    triggerAction: 'all',
+                    lazyRender:true,
+                    mode: 'local',
+                    width: 250,
+                    valueField: 'tipo_reporte',
+                    store:new Ext.data.ArrayStore({
+                        fields: ['variable', 'valor'],
+                        data : [
+                            ['hismov','Movimiento de vehículo'],
+                            ['tiemparq','Tiempo de parqueo'],
+                        ]
+                    }),
+                    valueField: 'variable',
+                    displayField: 'valor',
+
+                    enableMultiSelect: false,
+                },
+                type: 'ComboBox',
+                form:true
+            },
 
         ],
 
