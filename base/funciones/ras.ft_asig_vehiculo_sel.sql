@@ -50,7 +50,7 @@ BEGIN
                         asigvehi.id_sol_vehiculo,
                         asigvehi.id_equipo,
                         asigvehi.observaciones,
-                        asigvehi.id_responsable,
+                        asigvehi.id_sol_vehiculo_responsable::varchar,
                         asigvehi.estado_reg,
                         asigvehi.id_usuario_ai,
                         asigvehi.fecha_reg,
@@ -84,7 +84,15 @@ BEGIN
                         else
                         tipe.nombre
                         end as desc_tipo_equipo,
-                        per.nombre_completo1::varchar as desc_persona,
+                      (SELECT  array_to_string(array_agg(pe.nombre_completo1), ''<br>''::
+                            text)::character varying
+                         from ras.tresponsable rs
+                         left join segu.vpersona pe on pe.id_persona = rs.id_persona
+                         left join ras.tsol_vehiculo_responsable r on r.id_responsable = rs.id_responsable
+                         where r.id_sol_vehiculo_responsable  in ( SELECT element::integer
+                                                        FROM UNNEST( string_to_array(asigvehi.id_sol_vehiculo_responsable,'',''))
+                                                        as element)
+                         ) as desc_persona,
                         asigvehi.km_inicio,
                         asigvehi.km_final,
                         asigvehi.recorrido,
@@ -96,7 +104,12 @@ BEGIN
                         marc.nombre as marca,
                         equipa.modelo,
                         equipa.id_proveedor,
-                        equipa.id_tipo_equipo,
+                         case
+                        when solv.alquiler = ''si'' then
+                        equipa.id_tipo_equipo
+                        else
+                        equip.id_tipo_equipo
+                        end as id_tipo_equipo,
                         asigvehi.incidencia,
                         case
                         when solv.alquiler = ''si'' then

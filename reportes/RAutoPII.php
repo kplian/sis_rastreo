@@ -19,7 +19,7 @@ class RAutoPII extends  ReportePDF {
         $this->datos_nomina_persona = $detalle->getParametro('datos_nomina_persona');
         $this->datos_asig_vehiculo = $detalle->getParametro('datos_asig_vehiculo');
         //var_dump('datos_sol_vehiculo',$this->datos_sol_vehiculo);
-        $this->SetHeaderMargin(15); //margen top header
+        $this->SetHeaderMargin(10); //margen top header
         $this->SetMargins(15, 40, 15);
 
     }

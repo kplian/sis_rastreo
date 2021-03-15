@@ -35,7 +35,8 @@ Phx.vista.AsigVehiculoVoBo={
         this.getBoton('btnViaje').enable();
         this.getBoton('btnIncidencia').enable();//#.
         if( this.estado == 'vobojefeserv' && this.nombreVistaPadre == 'SolVehiculoVoBo' ){ //GDV-29
-            this.getBoton('edit').enable();
+            //this.getBoton('edit').enable();
+            this.getBoton('edit').disable();
 
         }else{
             this.getBoton('edit').disable();
@@ -49,7 +50,9 @@ Phx.vista.AsigVehiculoVoBo={
             this.getBoton('btnViaje').disable();
             this.getBoton('btnIncidencia').disable();//#.
             if( this.estado == 'vobojefeserv' && this.nombreVistaPadre == 'SolVehiculoVoBo'){ //GDV-29
-                this.getBoton('new').enable();
+                //this.getBoton('new').enable();
+                this.getBoton('new').disable();
+
             }else{
                 this.getBoton('new').disable();
             }

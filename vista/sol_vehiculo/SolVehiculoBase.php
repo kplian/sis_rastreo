@@ -10,6 +10,7 @@ HISTORIAL DE MODIFICACIONES:
 #ISSUE                FECHA                AUTOR                DESCRIPCION
  #0                02-07-2020 22:13:48    egutierrez            Creacion    
  #GDV-29              29/12/2020            EGS                 Añadiendo campo deexiste conductores
+ #GDV-37               11/03/2021           EGS                 Se agrega telefono de contacto
 
 *******************************************************************************************/
 
@@ -37,6 +38,26 @@ Phx.vista.SolVehiculoBase=Ext.extend(Phx.gridInterfaz,{
                 handler: this.loadCheckDocumentosWf,
                 tooltip: '<b>Documentos </b><br/>Permite ver los documentos asociados al NRO de trámite.'
             });
+        this.addButton('btnSolAutorizacion', {
+            text : 'Sol. Autorizacion ',
+            iconCls : 'bprint',
+            disabled : false,
+            handler : this.openSolAuto,
+            tooltip : '<b>Autorizacion</b>'
+        });
+    },
+    openSolAuto: function(){
+        var data = this.getSelectedData();
+        var win = Phx.CP.loadWindows(
+            '../../../sis_rastreo/vista/sol_vehiculo/FormSolAuto.php',
+            'Autorizacion', {
+                width: '50%',
+                height: '50%'
+            },
+            {maestro:data},
+            this.idContenedor,
+            'FormSolAuto'
+        );
     },
     iniciarEventos:function(){
 
@@ -151,6 +172,20 @@ Phx.vista.SolVehiculoBase=Ext.extend(Phx.gridInterfaz,{
             grid:true,
             form:true,
             bottom_filter:true
+        },
+        {//#GDV-37
+            config:{
+                name: 'telefono_contacto',
+                fieldLabel: 'Telfono de Contacto',
+                allowBlank: false,
+                anchor: '80%',
+                gwidth: 100,
+                maxLength:9
+            },
+            type:'Field',
+            id_grupo:1,
+            grid:false,
+            form:true
         },
         {
             config:{
@@ -471,7 +506,7 @@ Phx.vista.SolVehiculoBase=Ext.extend(Phx.gridInterfaz,{
             config:{
                 name: 'monto',
                 fieldLabel: 'Monto',
-                allowBlank: true,
+                allowBlank: false,
                 anchor: '80%',
                 gwidth: 100,
 
@@ -484,7 +519,7 @@ Phx.vista.SolVehiculoBase=Ext.extend(Phx.gridInterfaz,{
         {//#GDV-29
             config:{
                 name:'existe_conductor',
-                fieldLabel:'Conductor ?',
+                fieldLabel:'Asignación de Conductor ?',
                 allowBlank:false,
                 emptyText:'...',
                 typeAhead: true,
@@ -508,6 +543,55 @@ Phx.vista.SolVehiculoBase=Ext.extend(Phx.gridInterfaz,{
             id_grupo:1,
             grid:true,
             form:true
+        },
+        {//#GDV-37
+            config: {
+                name: 'id_responsable',
+                fieldLabel: 'Conductor Responsable',
+                allowBlank: true,
+                emptyText: 'Elija una opción...',
+                store: new Ext.data.JsonStore({
+                    url: '../../sis_rastreo/control/Responsable/listarResponsable',
+                    id: 'id_responsable',
+                    root: 'datos',
+                    sortInfo: {
+                        field: 'nombre',
+                        direction: 'ASC'
+                    },
+                    totalProperty: 'total',
+                    fields: ['id_responsable', 'desc_persona', 'codigo'],
+                    remoteSort: true,
+                    baseParams: {par_filtro: 'conduc.id_responsable#per.nombre_completo1#conduc.codigo', tipo_responsable:'personal_autorizado'}
+                }),
+                valueField: 'id_responsable',
+                displayField: 'desc_persona',
+                gdisplayField: 'desc_persona',
+                hiddenName: 'id_responsable',
+                forceSelection: true,
+                typeAhead: false,
+                triggerAction: 'all',
+                lazyRender: true,
+                mode: 'remote',
+                pageSize: 15,
+                queryDelay: 1000,
+                anchor: '80%',
+                gwidth: 150,
+                minChars: 2,
+                renderer : function(value, p, record) {
+                    return String.format('{0}', record.data['desc_reponsable']);
+                },
+                turl:'../../../sis_rastreo/vista/responsable/Responsable.php',
+                ttitle:'Responsable',
+                tconfig:{width:600,height:600},
+                tdata:{},
+                tcls:'Responsable',
+                pid:this.idContenedor,
+            },
+            type: 'TrigguerCombo',
+            id_grupo: 0,
+            filters: {pfiltro: 'movtip.desc_persona',type: 'string'},
+            grid: true,
+            form: true
         },
         {
             config:{
@@ -642,7 +726,11 @@ Phx.vista.SolVehiculoBase=Ext.extend(Phx.gridInterfaz,{
         {name:'id_centro_costo', type: 'numeric'},
         {name:'desc_centro_costo', type: 'string'},
         {name:'existe_conductor', type: 'string'},//#GDV-29
-        
+        {name:'telefono_contacto', type: 'string'},//#GDV-37
+        {name:'id_responsable', type: 'numeric'},//#GDV-37
+        {name:'desc_reponsable', type: 'string'},//#GDV-37
+
+
     ],
     sortInfo:{
         field: 'id_sol_vehiculo',

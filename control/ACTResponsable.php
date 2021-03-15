@@ -12,6 +12,10 @@ class ACTResponsable extends ACTbase{
 	function listarResponsable(){
 		$this->objParam->defecto('ordenacion','id_responsable');
 
+        if($this->objParam->getParametro('tipo_responsable')!=''){
+            $this->objParam->addFiltro("conduc.tipo_responsable = ''".$this->objParam->getParametro('tipo_responsable')."''");
+        }
+
 		$this->objParam->defecto('dir_ordenacion','asc');
 		if($this->objParam->getParametro('tipoReporte')=='excel_grid' || $this->objParam->getParametro('tipoReporte')=='pdf_grid'){
 			$this->objReporte = new Reporte($this->objParam,$this);

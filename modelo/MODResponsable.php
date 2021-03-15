@@ -33,6 +33,7 @@ class MODResponsable extends MODbase{
 		$this->captura('usr_mod','varchar');
 		$this->captura('desc_persona','text');
         $this->captura('codigo','varchar');//#GDV-35
+        $this->captura('tipo_responsable','varchar');//#GDV-37
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -52,6 +53,7 @@ class MODResponsable extends MODbase{
 		$this->setParametro('id_persona','id_persona','int4');
 		$this->setParametro('estado_reg','estado_reg','varchar');
 		$this->setParametro('codigo','codigo','varchar');
+        $this->setParametro('tipo_responsable','tipo_responsable','varchar');//#GDV-37
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -72,8 +74,9 @@ class MODResponsable extends MODbase{
 		$this->setParametro('id_persona','id_persona','int4');
 		$this->setParametro('estado_reg','estado_reg','varchar');
 		$this->setParametro('codigo','codigo','varchar');
+        $this->setParametro('tipo_responsable','tipo_responsable','varchar');//#GDV-37
 
-		//Ejecuta la instruccion
+        //Ejecuta la instruccion
 		$this->armarConsulta();
 		$this->ejecutarConsulta();
 

@@ -722,5 +722,8 @@ FROM ras.tequipo eq
 select pxp.f_insert_testructura_gui ('VHK', 'RAS.7');
 /***********************************F-DEP-EGS-RAS-GDV-34-24/02/2021*****************************************/
 
-
-
+/***********************************I-DEP-EGS-RAS-GDV-37-14/03/2021****************************************/
+select wf.f_import_ttipo_documento_estado ('insert','ASIGVEHI','SOLVEH','borrador','SOLVEH','crear','superior','');
+select wf.f_import_ttipo_documento_estado ('insert','REPVIAJ','SOLVEH','borrador','SOLVEH','crear','superior','');
+select wf.f_import_ttipo_documento_estado ('insert','SOLVEHI','SOLVEH','borrador','SOLVEH','crear','superior','');
+/***********************************F-DEP-EGS-RAS-GDV-37-14/03/2021****************************************/

@@ -1,12 +1,12 @@
 --------------- SQL ---------------
 
 CREATE OR REPLACE FUNCTION ras.ft_sol_vehiculo_ime (
-    p_administrador integer,
-    p_id_usuario integer,
-    p_tabla varchar,
-    p_transaccion varchar
+  p_administrador integer,
+  p_id_usuario integer,
+  p_tabla varchar,
+  p_transaccion varchar
 )
-    RETURNS varchar AS
+RETURNS varchar AS
 $body$
 /**************************************************************************
  SISTEMA:        Gestion Vehicular
@@ -24,7 +24,7 @@ $body$
 
 DECLARE
 
-    v_nro_requerimiento        INTEGER;
+v_nro_requerimiento        INTEGER;
     v_parametros               RECORD;
     v_id_requerimiento         INTEGER;
     v_resp                     VARCHAR;
@@ -75,124 +75,153 @@ BEGIN
 
     IF (p_transaccion='RAS_SOLVEHI_INS') THEN
 
-        BEGIN
+BEGIN
             -- codigo de proceso WF de presolicitudes de compra
             v_codigo_tipo_proceso = 'SOLVEH';
             --Recoleccion de datos para el proceso WF #4
             --obtener id del proceso macro
 
-            select
-                pm.id_proceso_macro
-            into
-                v_id_proceso_macro
-            from wf.tproceso_macro pm
-                     left join wf.ttipo_proceso tp on tp.id_proceso_macro  = pm.id_proceso_macro
-            where tp.codigo = v_codigo_tipo_proceso;
+select
+    pm.id_proceso_macro
+into
+    v_id_proceso_macro
+from wf.tproceso_macro pm
+         left join wf.ttipo_proceso tp on tp.id_proceso_macro  = pm.id_proceso_macro
+where tp.codigo = v_codigo_tipo_proceso;
 
-            --RAISE EXCEPTION 'v_id_proceso_macro %',v_id_proceso_macro;
-            If v_id_proceso_macro is NULL THEN
+--RAISE EXCEPTION 'v_id_proceso_macro %',v_id_proceso_macro;
+If v_id_proceso_macro is NULL THEN
                 raise exception 'El proceso macro  de codigo % no esta configurado en el sistema WF',v_codigo_tipo_proceso;
-            END IF;
+END IF;
 
             --Obtencion de la gestion #4
             v_fecha= now()::date;
-            select
-                per.id_gestion
-            into
-                v_id_gestion
-            from param.tperiodo per
-            where per.fecha_ini <=v_fecha and per.fecha_fin >= v_fecha
-            limit 1 offset 0;
+select
+    per.id_gestion
+into
+    v_id_gestion
+from param.tperiodo per
+where per.fecha_ini <=v_fecha and per.fecha_fin >= v_fecha
+    limit 1 offset 0;
 
-            -- inciar el tramite en el sistema de WF   #4
-            SELECT
-                ps_num_tramite ,
-                ps_id_proceso_wf ,
-                ps_id_estado_wf ,
-                ps_codigo_estado
-            into
-                v_num_tramite,
-                v_id_proceso_wf,
-                v_id_estado_wf,
-                v_codigo_estado
+-- inciar el tramite en el sistema de WF   #4
+SELECT
+    ps_num_tramite ,
+    ps_id_proceso_wf ,
+    ps_id_estado_wf ,
+    ps_codigo_estado
+into
+    v_num_tramite,
+    v_id_proceso_wf,
+    v_id_estado_wf,
+    v_codigo_estado
 
-            FROM wf.f_inicia_tramite(
+FROM wf.f_inicia_tramite(
+        p_id_usuario,
+        v_parametros._id_usuario_ai,
+        v_parametros._nombre_usuario_ai,
+        v_id_gestion,
+        v_codigo_tipo_proceso,
+        v_parametros.id_funcionario,
+        null,
+        'Inicio de Solicitud de vehiculo',
+        '' );
+--Sentencia de la insercion
+INSERT INTO ras.tsol_vehiculo(
+    motivo,
+    alquiler,
+    ceco_clco,
+    id_proceso_wf,
+    hora_salida,
+    fecha_salida,
+    nro_tramite,
+    id_estado_wf,
+    hora_retorno,
+    id_funcionario_jefe_depto,
+    estado_reg,
+    destino,
+    fecha_sol,
+    id_tipo_equipo,
+    fecha_retorno,
+    id_funcionario,
+    observacion,
+    estado,
+    id_usuario_ai,
+    id_usuario_reg,
+    fecha_reg,
+    usuario_ai,
+    id_usuario_mod,
+    fecha_mod,
+    monto,
+    id_centro_costo,
+    existe_conductor, --#GDV-29
+    telefono_contacto --#GDV-37
+) VALUES (
+             v_parametros.motivo,
+             v_parametros.alquiler,
+             v_parametros.ceco_clco,
+             v_id_proceso_wf,
+             v_parametros.hora_salida,
+             v_parametros.fecha_salida,
+             v_num_tramite,
+             v_id_estado_wf,
+             v_parametros.hora_retorno,
+             v_parametros.id_funcionario_jefe_depto,
+             'activo',
+             v_parametros.destino,
+             v_parametros.fecha_sol,
+             v_parametros.id_tipo_equipo,
+             v_parametros.fecha_retorno,
+             v_parametros.id_funcionario,
+             v_parametros.observacion,
+             v_codigo_estado,
+             v_parametros._id_usuario_ai,
+             p_id_usuario,
+             now(),
+             v_parametros._nombre_usuario_ai,
+             null,
+             null,
+             v_parametros.monto,
+             v_parametros.id_centro_costo,
+             v_parametros.existe_conductor,  --#GDV-29
+             v_parametros.telefono_contacto  --#GDV-37
+         ) RETURNING id_sol_vehiculo into v_id_sol_vehiculo;
+
+IF v_parametros.existe_conductor = 'no' THEN
+
+                   INSERT INTO
+                    ras.tsol_vehiculo_responsable
+                  (
+                    id_usuario_reg,
+                    id_sol_vehiculo,
+                    id_responsable,
+                    fecha_inicio,
+                    fecha_fin,
+                    solicitud
+                  )
+                  VALUES (
                     p_id_usuario,
-                    v_parametros._id_usuario_ai,
-                    v_parametros._nombre_usuario_ai,
-                    v_id_gestion,
-                    v_codigo_tipo_proceso,
-                    v_parametros.id_funcionario,
-                    null,
-                    'Inicio de Solicitud de vehiculo',
-                    '' );
-            --Sentencia de la insercion
-            INSERT INTO ras.tsol_vehiculo(
-                motivo,
-                alquiler,
-                ceco_clco,
-                id_proceso_wf,
-                hora_salida,
-                fecha_salida,
-                nro_tramite,
-                id_estado_wf,
-                hora_retorno,
-                id_funcionario_jefe_depto,
-                estado_reg,
-                destino,
-                fecha_sol,
-                id_tipo_equipo,
-                fecha_retorno,
-                id_funcionario,
-                observacion,
-                estado,
-                id_usuario_ai,
-                id_usuario_reg,
-                fecha_reg,
-                usuario_ai,
-                id_usuario_mod,
-                fecha_mod,
-                monto,
-                id_centro_costo,
-                existe_conductor --#GDV-29
-            ) VALUES (
-                         v_parametros.motivo,
-                         v_parametros.alquiler,
-                         v_parametros.ceco_clco,
-                         v_id_proceso_wf,
-                         v_parametros.hora_salida,
-                         v_parametros.fecha_salida,
-                         v_num_tramite,
-                         v_id_estado_wf,
-                         v_parametros.hora_retorno,
-                         v_parametros.id_funcionario_jefe_depto,
-                         'activo',
-                         v_parametros.destino,
-                         v_parametros.fecha_sol,
-                         v_parametros.id_tipo_equipo,
-                         v_parametros.fecha_retorno,
-                         v_parametros.id_funcionario,
-                         v_parametros.observacion,
-                         v_codigo_estado,
-                         v_parametros._id_usuario_ai,
-                         p_id_usuario,
-                         now(),
-                         v_parametros._nombre_usuario_ai,
-                         null,
-                         null,
-                         v_parametros.monto,
-                         v_parametros.id_centro_costo,
-                         v_parametros.existe_conductor  --#GDV-29
-                     ) RETURNING id_sol_vehiculo into v_id_sol_vehiculo;
+                    v_id_sol_vehiculo,
+                    v_parametros.id_responsable,
+                    v_parametros.fecha_salida,
+                    v_parametros.fecha_retorno,
+                    true
+                  );
+
+
+
+END IF;
+
+
 
             --Definicion de la respuesta
             v_resp = pxp.f_agrega_clave(v_resp,'mensaje','SOLVEHI almacenado(a) con exito (id_sol_vehiculo'||v_id_sol_vehiculo||')');
             v_resp = pxp.f_agrega_clave(v_resp,'id_sol_vehiculo',v_id_sol_vehiculo::varchar);
 
             --Devuelve la respuesta
-            RETURN v_resp;
+RETURN v_resp;
 
-        END;
+END;
 
         /*********************************
          #TRANSACCION:  'RAS_SOLVEHI_MOD'
@@ -203,39 +232,85 @@ BEGIN
 
     ELSIF (p_transaccion='RAS_SOLVEHI_MOD') THEN
 
-        BEGIN
+BEGIN
             --Sentencia de la modificacion
-            UPDATE ras.tsol_vehiculo SET
-                                         motivo = v_parametros.motivo,
-                                         alquiler = v_parametros.alquiler,
-                                         ceco_clco = v_parametros.ceco_clco,
-                                         hora_salida = v_parametros.hora_salida,
-                                         fecha_salida = v_parametros.fecha_salida,
-                                         hora_retorno = v_parametros.hora_retorno,
-                                         id_funcionario_jefe_depto = v_parametros.id_funcionario_jefe_depto,
-                                         destino = v_parametros.destino,
-                                         fecha_sol = v_parametros.fecha_sol,
-                                         id_tipo_equipo = v_parametros.id_tipo_equipo,
-                                         fecha_retorno = v_parametros.fecha_retorno,
-                                         id_funcionario = v_parametros.id_funcionario,
-                                         observacion = v_parametros.observacion,
-                                         id_usuario_mod = p_id_usuario,
-                                         fecha_mod = now(),
-                                         id_usuario_ai = v_parametros._id_usuario_ai,
-                                         usuario_ai = v_parametros._nombre_usuario_ai,
-                                         monto = v_parametros.monto,
-                                         id_centro_costo = v_parametros.id_centro_costo,
-                                         existe_conductor = v_parametros.existe_conductor --#GDV-29
-            WHERE id_sol_vehiculo=v_parametros.id_sol_vehiculo;
+UPDATE ras.tsol_vehiculo SET
+                             motivo = v_parametros.motivo,
+                             alquiler = v_parametros.alquiler,
+                             ceco_clco = v_parametros.ceco_clco,
+                             hora_salida = v_parametros.hora_salida,
+                             fecha_salida = v_parametros.fecha_salida,
+                             hora_retorno = v_parametros.hora_retorno,
+                             id_funcionario_jefe_depto = v_parametros.id_funcionario_jefe_depto,
+                             destino = v_parametros.destino,
+                             fecha_sol = v_parametros.fecha_sol,
+                             id_tipo_equipo = v_parametros.id_tipo_equipo,
+                             fecha_retorno = v_parametros.fecha_retorno,
+                             id_funcionario = v_parametros.id_funcionario,
+                             observacion = v_parametros.observacion,
+                             id_usuario_mod = p_id_usuario,
+                             fecha_mod = now(),
+                             id_usuario_ai = v_parametros._id_usuario_ai,
+    usuario_ai = v_parametros._nombre_usuario_ai,
+    monto = v_parametros.monto,
+    id_centro_costo = v_parametros.id_centro_costo,
+    existe_conductor = v_parametros.existe_conductor, --#GDV-29
+    telefono_contacto = v_parametros.telefono_contacto --#GDV-37
+WHERE id_sol_vehiculo=v_parametros.id_sol_vehiculo;
+
+
+IF v_parametros.existe_conductor = 'no' THEN
+
+
+                IF (select 1 from ras.tsol_vehiculo_responsable
+                    where id_sol_vehiculo = v_parametros.id_sol_vehiculo AND
+                      solicitud = true) THEN
+
+UPDATE
+    ras.tsol_vehiculo_responsable
+SET
+    id_usuario_mod = p_id_usuario,
+    id_responsable = v_parametros.id_responsable,
+    fecha_inicio = v_parametros.fecha_salida,
+    fecha_fin = v_parametros.fecha_retorno
+WHERE
+        id_sol_vehiculo = v_parametros.id_sol_vehiculo AND
+        solicitud = true;
+ELSE
+                       INSERT INTO
+                          ras.tsol_vehiculo_responsable
+                        (
+                          id_usuario_reg,
+                          id_sol_vehiculo,
+                          id_responsable,
+                          fecha_inicio,
+                          fecha_fin,
+                          solicitud
+                        )
+                        VALUES (
+                          p_id_usuario,
+                          v_parametros.id_sol_vehiculo,
+                          v_parametros.id_responsable,
+                          v_parametros.fecha_salida,
+                          v_parametros.fecha_retorno,
+                          true
+                        );
+
+END IF;
+             ELSEIF v_parametros.existe_conductor = 'si' THEN
+delete from ras.tsol_vehiculo_responsable
+where id_sol_vehiculo = v_parametros.id_sol_vehiculo AND solicitud = true;
+END IF;
+
 
             --Definicion de la respuesta
             v_resp = pxp.f_agrega_clave(v_resp,'mensaje','SOLVEHI modificado(a)');
             v_resp = pxp.f_agrega_clave(v_resp,'id_sol_vehiculo',v_parametros.id_sol_vehiculo::varchar);
 
             --Devuelve la respuesta
-            RETURN v_resp;
+RETURN v_resp;
 
-        END;
+END;
 
         /*********************************
          #TRANSACCION:  'RAS_SOLVEHI_ELI'
@@ -246,19 +321,19 @@ BEGIN
 
     ELSIF (p_transaccion='RAS_SOLVEHI_ELI') THEN
 
-        BEGIN
+BEGIN
             --Sentencia de la eliminacion
-            DELETE FROM ras.tsol_vehiculo
-            WHERE id_sol_vehiculo=v_parametros.id_sol_vehiculo;
+DELETE FROM ras.tsol_vehiculo
+WHERE id_sol_vehiculo=v_parametros.id_sol_vehiculo;
 
-            --Definicion de la respuesta
-            v_resp = pxp.f_agrega_clave(v_resp,'mensaje','SOLVEHI eliminado(a)');
+--Definicion de la respuesta
+v_resp = pxp.f_agrega_clave(v_resp,'mensaje','SOLVEHI eliminado(a)');
             v_resp = pxp.f_agrega_clave(v_resp,'id_sol_vehiculo',v_parametros.id_sol_vehiculo::varchar);
 
             --Devuelve la respuesta
-            RETURN v_resp;
+RETURN v_resp;
 
-        END;
+END;
         /*********************************
     #TRANSACCION:      'RAS_SIGESOLVEH_INS'
     #DESCRIPCION:      Controla el cambio al siguiente estado
@@ -270,61 +345,61 @@ BEGIN
 
     elseif(p_transaccion='RAS_SIGESOLVEH_INS')then
 
-        begin
+begin
             --Obtenemos datos basico
-            select
-                ew.id_proceso_wf,
-                c.id_estado_wf,
-                c.estado
-            into
-                v_id_proceso_wf,
-                v_id_estado_wf,
-                v_codigo_estado
-            from ras.tsol_vehiculo c
-                     inner join wf.testado_wf ew on ew.id_estado_wf = c.id_estado_wf
-            where c.id_sol_vehiculo = v_parametros.id_sol_vehiculo;
+select
+    ew.id_proceso_wf,
+    c.id_estado_wf,
+    c.estado
+into
+    v_id_proceso_wf,
+    v_id_estado_wf,
+    v_codigo_estado
+from ras.tsol_vehiculo c
+         inner join wf.testado_wf ew on ew.id_estado_wf = c.id_estado_wf
+where c.id_sol_vehiculo = v_parametros.id_sol_vehiculo;
 
-            --recuperamos la nomina de personas
-            IF not EXISTS(
+--recuperamos la nomina de personas
+IF not EXISTS(
                     SELECT
                         1
                     FROM ras.tnomina_persona np
                     WHERE np.id_sol_vehiculo = v_parametros.id_sol_vehiculo ) THEN
                 RAISE EXCEPTION 'Debe existir por lo menos un registro en nomina de personas';
-            END IF;
+END IF;
 
             --Recupera datos del estado
-            select
-                ew.id_tipo_estado,
-                te.codigo
-            into
-                v_id_tipo_estado,
-                v_codigo_estados
-            from wf.testado_wf ew
-                     inner join wf.ttipo_estado te on te.id_tipo_estado = ew.id_tipo_estado
-            where ew.id_estado_wf = v_parametros.id_estado_wf_act;
+select
+    ew.id_tipo_estado,
+    te.codigo
+into
+    v_id_tipo_estado,
+    v_codigo_estados
+from wf.testado_wf ew
+         inner join wf.ttipo_estado te on te.id_tipo_estado = ew.id_tipo_estado
+where ew.id_estado_wf = v_parametros.id_estado_wf_act;
 
-            -- obtener datos tipo estado
-            select
-                te.codigo
-            into
-                v_codigo_estado_siguiente
-            from wf.ttipo_estado te
-            where te.id_tipo_estado = v_parametros.id_tipo_estado;
+-- obtener datos tipo estado
+select
+    te.codigo
+into
+    v_codigo_estado_siguiente
+from wf.ttipo_estado te
+where te.id_tipo_estado = v_parametros.id_tipo_estado;
 
-            if pxp.f_existe_parametro(p_tabla,'id_depto_wf') then
+if pxp.f_existe_parametro(p_tabla,'id_depto_wf') then
                 v_id_depto = v_parametros.id_depto_wf;
-            end if;
+end if;
 
             if pxp.f_existe_parametro(p_tabla,'obs') then
                 v_obs=v_parametros.obs;
-            else
+else
                 v_obs='---';
-            end if;
+end if;
 
             --Acciones por estado siguiente que podrian realizarse
             if v_codigo_estado_siguiente in ('') then
-            end if;
+end if;
 
             ---------------------------------------
             -- REGISTRA EL SIGUIENTE ESTADO DEL WF
@@ -342,7 +417,7 @@ BEGIN
                 v_parametros_ad = '{filtro_directo:{campo:"lice.id_proceso_wf",valor:"'||v_id_proceso_wf::varchar||'"}}';
                 v_tipo_noti = 'notificacion';
                 v_titulo  = 'VoBo';
-            end if;
+end if;
             v_id_estado_actual = wf.f_registra_estado_wf(
                     v_parametros.id_tipo_estado,
                     v_parametros.id_funcionario_wf,
@@ -364,37 +439,37 @@ BEGIN
             --------------------------------------
             -- Registra los procesos disparados
             --------------------------------------
-            for v_registros_proc in ( select * from json_populate_recordset(null::wf.proceso_disparado_wf, v_parametros.json_procesos::json)) loop
+for v_registros_proc in ( select * from json_populate_recordset(null::wf.proceso_disparado_wf, v_parametros.json_procesos::json)) loop
 
                     --Obtencion del codigo tipo proceso
-                    select
-                        tp.codigo
-                    into
-                        v_codigo_tipo_pro
-                    from wf.ttipo_proceso tp
-                    where tp.id_tipo_proceso =  v_registros_proc.id_tipo_proceso_pro;
+select
+    tp.codigo
+into
+    v_codigo_tipo_pro
+from wf.ttipo_proceso tp
+where tp.id_tipo_proceso =  v_registros_proc.id_tipo_proceso_pro;
 
-                    --Disparar creacion de procesos seleccionados
-                    select
-                        ps_id_proceso_wf,
-                        ps_id_estado_wf,
-                        ps_codigo_estado
-                    into
-                        v_id_proceso_wf,
-                        v_id_estado_wf,
-                        v_codigo_estado
-                    from wf.f_registra_proceso_disparado_wf(
-                            p_id_usuario,
-                            v_parametros._id_usuario_ai,
-                            v_parametros._nombre_usuario_ai,
-                            v_id_estado_actual,
-                            v_registros_proc.id_funcionario_wf_pro,
-                            v_registros_proc.id_depto_wf_pro,
-                            v_registros_proc.obs_pro,
-                            v_codigo_tipo_pro,
-                            v_codigo_tipo_pro);
+--Disparar creacion de procesos seleccionados
+select
+    ps_id_proceso_wf,
+    ps_id_estado_wf,
+    ps_codigo_estado
+into
+    v_id_proceso_wf,
+    v_id_estado_wf,
+    v_codigo_estado
+from wf.f_registra_proceso_disparado_wf(
+        p_id_usuario,
+        v_parametros._id_usuario_ai,
+        v_parametros._nombre_usuario_ai,
+        v_id_estado_actual,
+        v_registros_proc.id_funcionario_wf_pro,
+        v_registros_proc.id_depto_wf_pro,
+        v_registros_proc.obs_pro,
+        v_codigo_tipo_pro,
+        v_codigo_tipo_pro);
 
-                end loop;
+end loop;
 
             if ras.f_fun_inicio_sol_vehiculo_wf(
                     v_parametros.id_sol_vehiculo,
@@ -407,13 +482,13 @@ BEGIN
                     v_codigo_estado
                 ) then
 
-            end if;
+end if;
             -- si hay mas de un estado disponible  preguntamos al usuario
             v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Se realizo el cambio de estado del pago simple id='||v_parametros.id_sol_vehiculo);
             v_resp = pxp.f_agrega_clave(v_resp,'operacion','cambio_exitoso');
             -- Devuelve la respuesta
-            return v_resp;
-        end;
+return v_resp;
+end;
 
         /*********************************
         #TRANSACCION:      'RAS_ANSOLVEH_IME'
@@ -425,38 +500,38 @@ BEGIN
 
     elseif(p_transaccion='RAS_ANSOLVEH_IME')then
 
-        begin
+begin
             --Obtenemos datos basicos
-            select
-                c.id_sol_vehiculo,
-                ew.id_proceso_wf,
-                c.id_estado_wf,
-                c.estado
-            into
-                v_registros_proc
-            from ras.tsol_vehiculo c
-                     inner join wf.testado_wf ew on ew.id_estado_wf = c.id_estado_wf
-            where c.id_sol_vehiculo = v_parametros.id_sol_vehiculo;
+select
+    c.id_sol_vehiculo,
+    ew.id_proceso_wf,
+    c.id_estado_wf,
+    c.estado
+into
+    v_registros_proc
+from ras.tsol_vehiculo c
+         inner join wf.testado_wf ew on ew.id_estado_wf = c.id_estado_wf
+where c.id_sol_vehiculo = v_parametros.id_sol_vehiculo;
 
-            v_id_proceso_wf = v_registros_proc.id_proceso_wf;
-            select
-                ps_id_tipo_estado,
-                ps_id_funcionario,
-                ps_id_usuario_reg,
-                ps_id_depto,
-                ps_codigo_estado,
-                ps_id_estado_wf_ant
-            into
-                v_id_tipo_estado,
-                v_id_funcionario,
-                v_id_usuario_reg,
-                v_id_depto,
-                v_codigo_estado,
-                v_id_estado_wf_ant
-            from wf.f_obtener_estado_ant_log_wf(v_parametros.id_estado_wf);
+v_id_proceso_wf = v_registros_proc.id_proceso_wf;
+select
+    ps_id_tipo_estado,
+    ps_id_funcionario,
+    ps_id_usuario_reg,
+    ps_id_depto,
+    ps_codigo_estado,
+    ps_id_estado_wf_ant
+into
+    v_id_tipo_estado,
+    v_id_funcionario,
+    v_id_usuario_reg,
+    v_id_depto,
+    v_codigo_estado,
+    v_id_estado_wf_ant
+from wf.f_obtener_estado_ant_log_wf(v_parametros.id_estado_wf);
 
-            --Configurar acceso directo para la alarma
-            v_acceso_directo = '';
+--Configurar acceso directo para la alarma
+v_acceso_directo = '';
             v_clase = '';
             v_parametros_ad = '';
             v_tipo_noti = 'notificacion';
@@ -469,7 +544,7 @@ BEGIN
                 v_parametros_ad = '{filtro_directo:{campo:"lice.id_proceso_wf",valor:"'||v_id_proceso_wf::varchar||'"}}';
                 v_tipo_noti = 'notificacion';
                 v_titulo  = 'Visto Bueno';
-            end if;
+end if;
 
 
             --Registra nuevo estado
@@ -500,22 +575,49 @@ BEGIN
 
                 raise exception 'Error al retroceder estado';
 
-            end if;
+end if;
 
             v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Se realizo el cambio de estado de la solicitud de Licencia)');
             v_resp = pxp.f_agrega_clave(v_resp,'operacion','cambio_exitoso');
 
             --Devuelve la respuesta
-            return v_resp;
+return v_resp;
 
 
-        end;
+end;
+        /*********************************
+        #TRANSACCION:  'RAS_EDITFORAL_MOD'
+        #DESCRIPCION:    Modificacion de registros
+        #AUTOR:        egutierrez
+        #FECHA:        14/03/2021
+        #ISSUSE:		#GDV-37
+       ***********************************/
 
-    ELSE
+    ELSIF (p_transaccion='RAS_EDITFORAL_MOD') THEN
+
+BEGIN
+        	--RAISE EXCEPTION '%',v_parametros.monto;
+            --Sentencia de la modificacion
+UPDATE ras.tsol_vehiculo SET
+                             alquiler = v_parametros.alquiler,
+                             monto = v_parametros.monto
+
+WHERE id_sol_vehiculo=v_parametros.id_sol_vehiculo;
+
+--Definicion de la respuesta
+v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Asignacion de Vehiculos modificado(a)');
+            v_resp = pxp.f_agrega_clave(v_resp,'id_sol_vehiculo',v_parametros.id_sol_vehiculo::varchar);
+
+            --Devuelve la respuesta
+RETURN v_resp;
+
+END;
+
+ELSE
 
         RAISE EXCEPTION 'Transaccion inexistente: %',p_transaccion;
 
-    END IF;
+END IF;
 
 EXCEPTION
 
@@ -528,9 +630,9 @@ EXCEPTION
 
 END;
 $body$
-    LANGUAGE 'plpgsql'
-    VOLATILE
-    CALLED ON NULL INPUT
-    SECURITY INVOKER
-    PARALLEL UNSAFE
-    COST 100;
+LANGUAGE 'plpgsql'
+VOLATILE
+CALLED ON NULL INPUT
+SECURITY INVOKER
+PARALLEL UNSAFE
+COST 100;
