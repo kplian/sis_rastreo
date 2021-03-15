@@ -288,7 +288,10 @@ Phx.vista.SolVehiculoResponsable=Ext.extend(Phx.gridInterfaz,{
         //llamamos primero a la funcion new de la clase padre por que reseta el valor los componentes
         Phx.vista.SolVehiculoResponsable.superclass.onButtonNew.call(this);
         this.Cmp.id_responsable.enable();
-        this.Cmp.id_responsable.store.baseParams.tipo_responsable = 'conductor'
+        this.Cmp.id_responsable.store.baseParams.tipo_responsable = 'conductor';
+        this.Cmp.id_responsable.on('expand', function (Combo) {
+            this.Cmp.id_responsable.store.reload(true);
+        }, this);
     },
     onButtonEdit:function(){
         //llamamos primero a la funcion new de la clase padre por que reseta el valor los componentesSS
