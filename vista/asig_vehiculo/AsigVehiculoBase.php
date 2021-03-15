@@ -22,6 +22,7 @@ Phx.vista.AsigVehiculoBase=Ext.extend(Phx.gridInterfaz,{
     id_tipo_equipo:'',
     estado:'',//GDV-29
     nombreVistaPadre:'',
+    id_sol_vehiculo:'', //#GDV-37
     constructor:function(config){
         this.maestro=config.maestro;
 
@@ -180,27 +181,28 @@ Phx.vista.AsigVehiculoBase=Ext.extend(Phx.gridInterfaz,{
 
         {
             config: {
-                name: 'id_responsable',
+                name: 'id_sol_vehiculo_responsable',
                 fieldLabel: 'Conductor',
                 allowBlank: true,
                 emptyText: 'Elija una opción...',
                 store: new Ext.data.JsonStore({
-                    url: '../../sis_rastreo/control/Responsable/listarResponsable',
-                    id: 'id_responsable',
+                    url: '../../sis_rastreo/control/SolVehiculoResponsable/listarSolVehiculoResponsable',
+                    id: 'id_sol_vehiculo_responsable',
                     root: 'datos',
                     sortInfo: {
                         field: 'nombre',
                         direction: 'ASC'
                     },
                     totalProperty: 'total',
-                    fields: ['id_responsable', 'desc_persona', 'codigo'],
+                    fields: ['id_sol_vehiculo_responsable', 'desc_responsable', 'codigo'],
                     remoteSort: true,
-                    baseParams: {par_filtro: 'per.nombre_completo1#conduc.codigo'}
+                    baseParams: {par_filtro: 'solvere.id_sol_vehiculo_responsable#per.nombre_completo1'}
                 }),
-                valueField: 'id_responsable',
-                displayField: 'desc_persona',
-                gdisplayField: 'desc_persona',
-                hiddenName: 'id_responsable',
+                tpl:'<tpl for="."><div class="x-combo-list-item" ><div class="awesomecombo-item {checked}"><p><b></b>{desc_responsable}</p></div>\</div></tpl>',
+                valueField: 'id_sol_vehiculo_responsable',
+                displayField: 'desc_responsable',
+                gdisplayField: 'desc_responsable',
+                hiddenName: 'id_sol_vehiculo_responsable',
                 forceSelection: true,
                 typeAhead: false,
                 triggerAction: 'all',
@@ -211,17 +213,12 @@ Phx.vista.AsigVehiculoBase=Ext.extend(Phx.gridInterfaz,{
                 anchor: '80%',
                 gwidth: 150,
                 minChars: 2,
+                enableMultiSelect:true,
                 renderer : function(value, p, record) {
                     return String.format('{0}', record.data['desc_persona']);
-                },
-                turl:'../../../sis_rastreo/vista/responsable/Responsable.php',
-                ttitle:'Responsable',
-                tconfig:{width:600,height:600},
-                tdata:{},
-                tcls:'Responsable',
-                pid:this.idContenedor,
+                }
             },
-            type: 'TrigguerCombo',
+            type: 'AwesomeCombo',
             id_grupo: 0,
             filters: {pfiltro: 'movtip.desc_persona',type: 'string'},
             grid: true,
@@ -337,7 +334,9 @@ Phx.vista.AsigVehiculoBase=Ext.extend(Phx.gridInterfaz,{
 
                 tinit:false,
                 width: '80%',
-                valueField: 'id_proveedor'
+                valueField: 'id_proveedor',
+                baseParams:{par_filtro:'id_proveedor#desc_proveedor#codigo#nit#rotulo_comercial',start:0,limit:99999}
+
             },
             type:'ComboRec',//ComboRec
             id_grupo: 0,
@@ -464,7 +463,7 @@ Phx.vista.AsigVehiculoBase=Ext.extend(Phx.gridInterfaz,{
         {name:'id_sol_vehiculo', type: 'numeric'},
 		{name:'id_equipo', type: 'numeric'},
 		{name:'observaciones', type: 'string'},
-		{name:'id_responsable', type: 'numeric'},
+		{name:'id_sol_vehiculo_responsable', type: 'string'},
 		{name:'estado_reg', type: 'string'},
 		{name:'id_usuario_ai', type: 'numeric'},
 		{name:'fecha_reg', type: 'date',dateFormat:'Y-m-d H:i:s.u'},
@@ -492,6 +491,7 @@ Phx.vista.AsigVehiculoBase=Ext.extend(Phx.gridInterfaz,{
         {name:'id_tipo_equipo', type: 'numeric'},
         {name:'id_marca', type: 'string'},
         {name:'incidencia', type: 'string'},
+        {name:'id_proveedor', type: 'numeric'},
         
     ],
     sortInfo:{
@@ -502,6 +502,7 @@ Phx.vista.AsigVehiculoBase=Ext.extend(Phx.gridInterfaz,{
     bsave:false,
     onReloadPage: function(m) {
         this.maestro = m;
+        console.log('this.maestro',this.maestro);
         this.obtenerNombreVistaPadre();
 
         this.Atributos[this.getIndAtributo('id_sol_vehiculo')].valorInicial = this.maestro.id_sol_vehiculo;
@@ -510,6 +511,7 @@ Phx.vista.AsigVehiculoBase=Ext.extend(Phx.gridInterfaz,{
         this.estado = this.maestro.estado;//GDV-29
         this.existe_conductor = this.maestro.existe_conductor;
         this.id_tipo_equipo = this.maestro.id_tipo_equipo;
+        this.id_sol_vehiculo = this.maestro.id_sol_vehiculo; //#GDV-37
         //es para saber la fecha de salida de la solicitud
         this.Cmp.id_equipo.store.baseParams.id_sol_vehiculo = this.maestro.id_sol_vehiculo;
         this.store.baseParams = {
@@ -560,7 +562,9 @@ Phx.vista.AsigVehiculoBase=Ext.extend(Phx.gridInterfaz,{
     onButtonNew:function(){
         //llamamos primero a la funcion new de la clase padre por que reseta el valor los componentes
         Phx.vista.AsigVehiculoBase.superclass.onButtonNew.call(this);
-        console.log('alquiler',this.alquiler);
+
+        this.Cmp.id_sol_vehiculo_responsable.store.baseParams.id_sol_vehiculo =  this.id_sol_vehiculo; //#GDV-37
+        console.log('alquiler',this.id_sol_vehiculo);
         //seteamos un valor fijo que vienen de la vista maestro para id_gui
         if (this.alquiler == 'si') {
             this.mostrarComponente(this.Cmp.placa);
@@ -585,11 +589,11 @@ Phx.vista.AsigVehiculoBase=Ext.extend(Phx.gridInterfaz,{
             this.mostrarComponente(this.Cmp.id_equipo);
 
         }
-        if (this.existe_conductor == 'si') {
-            this.mostrarComponente(this.Cmp.id_responsable);
-        }else{
-            this.ocultarComponente(this.Cmp.id_responsable);
-        }
+        // if (this.existe_conductor == 'si') {
+        //     this.mostrarComponente(this.Cmp.id_sol_vehiculo_responsable);
+        // }else{
+        //     this.ocultarComponente(this.Cmp.id_sol_vehiculo_responsable);
+        // }
 
         this.Cmp.id_tipo_equipo.store.baseParams.query = this.id_tipo_equipo;
         this.Cmp.id_tipo_equipo.store.load({params:{start:0,limit:this.tam_pag},
@@ -644,6 +648,7 @@ Phx.vista.AsigVehiculoBase=Ext.extend(Phx.gridInterfaz,{
 
 
 
+
     },
     onButtonEdit:function(){
         var data = this.getSelectedData();
@@ -672,16 +677,7 @@ Phx.vista.AsigVehiculoBase=Ext.extend(Phx.gridInterfaz,{
                     }
                 }, scope : this
             });
-            this.Cmp.id_proveedor.store.baseParams.query = data.id_proveedor;
-            this.Cmp.id_proveedor.store.load({params:{start:0,limit:this.tam_pag},
-                callback : function (r) {
-                    if (r.length > 0 ) {
-                        this.Cmp.id_proveedor.setValue(r[0].data.id_proveedor);
-                    }else{
-                        this.Cmp.id_proveedor.reset();
-                    }
-                }, scope : this
-            });
+
             this.Cmp.id_marca.store.baseParams.query = data.id_marca;
             this.Cmp.id_marca.store.load({params:{start:0,limit:this.tam_pag},
                 callback : function (r) {
@@ -689,6 +685,16 @@ Phx.vista.AsigVehiculoBase=Ext.extend(Phx.gridInterfaz,{
                         this.Cmp.id_marca.setValue(r[0].data.id_marca);
                     }else{
                         this.Cmp.id_marca.reset();
+                    }
+                }, scope : this
+            });
+            this.Cmp.id_proveedor.store.baseParams.query = data.id_proveedor;
+            this.Cmp.id_proveedor.store.load({params:{start:0,limit:this.tam_pag},
+                callback : function (r) {
+                    if (r.length > 0 ) {
+                        this.Cmp.id_proveedor.setValue(data.id_proveedor);
+                    }else{
+                        this.Cmp.id_proveedor.reset();
                     }
                 }, scope : this
             });
@@ -727,11 +733,11 @@ Phx.vista.AsigVehiculoBase=Ext.extend(Phx.gridInterfaz,{
             this.Cmp.id_tipo_equipo.store.load();
         }, this);
 
-        if (this.existe_conductor == 'si') {
-            this.mostrarComponente(this.Cmp.id_responsable);
-        }else{
-            this.ocultarComponente(this.Cmp.id_responsable);
-        }
+        // if (this.existe_conductor == 'si') {
+        //     this.mostrarComponente(this.Cmp.id_sol_vehiculo_responsable); //#GDV-37
+        // }else{
+        //     this.ocultarComponente(this.Cmp.id_sol_vehiculo_responsable); //#GDV-37
+        // }
 
         this.Cmp.id_tipo_equipo.on('select',function(combo,record,index){//GDV-32
             console.log('record',record.data.id_tipo_equipo);
@@ -758,6 +764,8 @@ Phx.vista.AsigVehiculoBase=Ext.extend(Phx.gridInterfaz,{
             this.mostrarComponente(this.Cmp.id_equipo);
             this.mostrarComponente(this.Cmp.observaciones);
         }
+
+        this.Cmp.id_sol_vehiculo_responsable.store.baseParams.id_sol_vehiculo =  this.id_sol_vehiculo; //#GDV-37
 
 
 

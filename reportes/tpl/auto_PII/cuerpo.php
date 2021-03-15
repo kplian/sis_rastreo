@@ -1,4 +1,4 @@
-<p>Parte II. Llenado por el Responsable de Transportes</p><?php
+<p>Parte II. Llenado por División de Servicios</p><?php
 $i = 1;
 foreach ($this->datos_asig_vehiculo as $datos) {?><font size="10"><table  width="100%" cellpadding="5px"  border="1" >
         <tr >
@@ -27,6 +27,17 @@ foreach ($this->datos_asig_vehiculo as $datos) {?><font size="10"><table  width=
             <td width="25%"  >Observaciones:
             </td>
             <td width="75%"  ><?php echo  $datos['observaciones'];    ?>
+            </td>
+        </tr>
+        <tr >
+            <td width="25%"  >Vehiculo Propio/Alquilado:
+            </td>
+            <td width="75%"  ><?php if ($this->datos_sol_vehiculo[0]['alquiler'] == 'si'){
+                    echo 'Alquilado';
+                }else{
+                    echo 'Propio';
+                }
+                ?>
             </td>
         </tr>
 

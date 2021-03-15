@@ -215,6 +215,13 @@ class ACTSolVehiculo extends ACTbase{
 
 
     }
+    function EditFormAlquilado(){//#GDV-37
+        $this->objFunc=$this->create('MODSolVehiculo');
+
+        $this->res=$this->objFunc->EditFormAlquilado($this->objParam);
+
+        $this->res->imprimirRespuesta($this->res->generarJson());
+    }
 }
 
 ?>

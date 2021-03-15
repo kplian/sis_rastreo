@@ -1,12 +1,12 @@
 --------------- SQL ---------------
 
 CREATE OR REPLACE FUNCTION ras.ft_sol_vehiculo_sel (
-    p_administrador integer,
-    p_id_usuario integer,
-    p_tabla varchar,
-    p_transaccion varchar
+  p_administrador integer,
+  p_id_usuario integer,
+  p_tabla varchar,
+  p_transaccion varchar
 )
-    RETURNS varchar AS
+RETURNS varchar AS
 $body$
 /**************************************************************************
  SISTEMA:        Gestion Vehicular
@@ -21,11 +21,12 @@ $body$
  #0                02-07-2020 22:13:48    egutierrez             Creacion
 #GDV-29                 13/01/2021          EGS                  Se agrega si exite conductor o no
 #GDV-36                 02/03/2021          EGS                   Se agrega tab para filtro de estado
+#GDV-37                 11/03/2021          EGS                  Se agrega el telefono_contacto
  ***************************************************************************/
 
 DECLARE
 
-    v_consulta            VARCHAR;
+v_consulta            VARCHAR;
     v_parametros          RECORD;
     v_nombre_funcion      TEXT;
     v_resp                VARCHAR;
@@ -49,7 +50,7 @@ BEGIN
 
     IF (p_transaccion='RAS_SOLVEHI_SEL') THEN
 
-        BEGIN
+BEGIN
             v_with ='';
             v_join = '';
             v_col = '';
@@ -59,9 +60,9 @@ BEGIN
                 IF  pxp.f_existe_parametro(p_tabla,'estado') THEN
 
                     v_estado = v_parametros.estado;
-                ELSE
+ELSE
                     v_estado = '';
-                END IF;
+END IF;
 
 
                 --raise exception 'v_parametros.nombreVista %',v_parametros.nombreVista;
@@ -73,14 +74,14 @@ BEGIN
                     --Si no soy administrador y estoy en pendiente no veo nada
                 ElSIF v_parametros.nombreVista = 'SolVehiculoVoBo' or (v_parametros.nombreVista = 'SolVehiculoAsig' and v_estado = 'asigvehiculo') THEN --#GDV-36
                     v_filtro = '(ew.id_funcionario = '||v_parametros.id_funcionario_usu::varchar||' ) and ';
-                ELSE
+ELSE
                     v_filtro = ' ';
-                END IF;
+END IF;
 
 
-            ELSE
+ELSE
                 v_filtro = ' ';
-            END IF;
+END IF;
 
             IF pxp.f_existe_parametro(p_tabla,'tipo_reporte') THEN
                 IF v_parametros.tipo_reporte = 'auto_PI' or v_parametros.tipo_reporte = 'auto_PII' THEN
@@ -141,8 +142,8 @@ BEGIN
                       left join fun_jefe_ser fjs on fjs.id_proceso_wf = solvehi.id_proceso_wf
               ';
 
-                END IF;
-            END IF;
+END IF;
+END IF;
             --Sentencia de la consulta
             v_consulta:='
                 '||v_with||'
@@ -179,7 +180,18 @@ BEGIN
                         solvehi.monto,
                         solvehi.id_centro_costo,
                         cec.codigo_cc::varchar as desc_centro_costo,
-                        solvehi.existe_conductor
+                        solvehi.existe_conductor,
+                        solvehi.telefono_contacto,  --#GDV-37
+                        (select sr.id_responsable from ras.tsol_vehiculo_responsable sr
+                        where sr.id_sol_vehiculo = solvehi.id_sol_vehiculo AND
+                        solicitud = true limit 1) as id_responsable ,
+                        (SELECT
+                        p.nombre_completo1::varchar
+                        FROM ras.tresponsable r
+                        left join segu.vpersona p on p.id_persona = r.id_persona
+                        WHERE r.id_responsable = (select sr.id_responsable from ras.tsol_vehiculo_responsable sr
+                        where sr.id_sol_vehiculo = solvehi.id_sol_vehiculo AND
+                        solicitud = true limit 1)) as desc_reponsable
                         '||v_col||'
                         FROM ras.tsol_vehiculo solvehi
                         JOIN segu.tusuario usu1 ON usu1.id_usuario = solvehi.id_usuario_reg
@@ -197,9 +209,9 @@ BEGIN
             v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
 
             --Devuelve la respuesta
-            RETURN v_consulta;
+RETURN v_consulta;
 
-        END;
+END;
 
         /*********************************
          #TRANSACCION:  'RAS_SOLVEHI_CONT'
@@ -210,7 +222,7 @@ BEGIN
 
     ELSIF (p_transaccion='RAS_SOLVEHI_CONT') THEN
 
-        BEGIN
+BEGIN
             v_with ='';
             v_join = '';
             IF p_administrador !=1 then
@@ -225,12 +237,12 @@ BEGIN
                 ElSIF v_parametros.nombreVista = 'SolVehiculoVoBo' THEN
                     v_filtro = '(ew.id_funcionario = '||v_parametros.id_funcionario_usu::varchar||' ) and ';
 
-                ELSE
+ELSE
                     v_filtro = ' ';
-                END IF;
-            ELSE
+END IF;
+ELSE
                 v_filtro = ' ';
-            END IF;
+END IF;
 
             IF pxp.f_existe_parametro(p_tabla,'tipo_reporte') THEN
                 IF v_parametros.tipo_reporte = 'auto_PI' or v_parametros.tipo_reporte = 'auto_PII' THEN
@@ -286,8 +298,8 @@ BEGIN
                         left join fun_jefe_ser fjs on fjs.id_proceso_wf = solvehi.id_proceso_wf
                 ';
 
-                END IF;
-            END IF;
+END IF;
+END IF;
 
             --Sentencia de la consulta de conteo de registros
             v_consulta:='
@@ -307,9 +319,9 @@ BEGIN
             v_consulta:=v_consulta||v_parametros.filtro;
 
             --Devuelve la respuesta
-            RETURN v_consulta;
+RETURN v_consulta;
 
-        END;
+END;
         /*********************************
  #TRANSACCION:  'RAS_SOLVEHIKIL_SEL'
  #DESCRIPCION:    Conteo de registros
@@ -319,7 +331,7 @@ BEGIN
 
     ELSIF (p_transaccion='RAS_SOLVEHIKIL_SEL') THEN
 
-        BEGIN
+BEGIN
             v_consulta = 'SELECT
                       solv.id_sol_vehiculo,
                       solv.nro_tramite,
@@ -337,8 +349,8 @@ BEGIN
             v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
 
             --Devuelve la respuesta
-            RETURN v_consulta;
-        END;
+RETURN v_consulta;
+END;
         /*********************************
            #TRANSACCION:  'RAS_SSOLVEHIKIL_CONT'
            #DESCRIPCION:    Conteo de registros
@@ -346,7 +358,7 @@ BEGIN
            #FECHA:        02-07-2020 22:13:48
           ***********************************/
     ELSEIF (p_transaccion='RAS_SOLVEHIKIL_CONT') THEN
-        BEGIN
+BEGIN
             v_consulta = '
               SELECT
                   count(solv.id_sol_vehiculo)
@@ -358,14 +370,14 @@ BEGIN
             --Definicion de la respuesta
             v_consulta:=v_consulta||v_parametros.filtro;
 
-            RETURN v_consulta;
-        END;
+RETURN v_consulta;
+END;
 
-    ELSE
+ELSE
 
         RAISE EXCEPTION 'Transaccion inexistente';
 
-    END IF;
+END IF;
 
 EXCEPTION
 
@@ -377,9 +389,9 @@ EXCEPTION
         RAISE EXCEPTION '%',v_resp;
 END;
 $body$
-    LANGUAGE 'plpgsql'
-    VOLATILE
-    CALLED ON NULL INPUT
-    SECURITY INVOKER
-    PARALLEL UNSAFE
-    COST 100;
+LANGUAGE 'plpgsql'
+VOLATILE
+CALLED ON NULL INPUT
+SECURITY INVOKER
+PARALLEL UNSAFE
+COST 100;

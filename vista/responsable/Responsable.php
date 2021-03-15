@@ -38,8 +38,8 @@ Phx.vista.Responsable=Ext.extend(Phx.gridInterfaz,{
 				name: 'codigo',//#GDV-35
 				fieldLabel: 'Código',
 				allowBlank: true,
-				anchor: '80%',
-				gwidth: 100,
+				anchor: '100%',
+				gwidth: 250,
 				maxLength:20
 			},
 			type:'TextField',
@@ -68,7 +68,7 @@ Phx.vista.Responsable=Ext.extend(Phx.gridInterfaz,{
                     fields: ['id_persona','nombre_completo1','ci'],
                     // turn on remote sorting
                     remoteSort: true,
-                    baseParams:{par_filtro:'p.nombre_completo1#p.ci'}
+                    baseParams:{par_filtro:'p.id_persona#p.nombre_completo1#p.ci'}
                 }),
                 valueField: 'id_persona',
                 displayField: 'nombre_completo1',
@@ -83,7 +83,7 @@ Phx.vista.Responsable=Ext.extend(Phx.gridInterfaz,{
                 pageSize:10,
                 queryDelay:1000,
                 width:250,
-                gwidth:280,
+                gwidth:250,
                 minChars:2,
                 turl:'../../../sis_rastreo/vista/responsable/PersonaConductor.php',
                 ttitle:'Personas',
@@ -91,6 +91,7 @@ Phx.vista.Responsable=Ext.extend(Phx.gridInterfaz,{
                 tdata:{nombreVista:'Conductores'},
                 tcls:'PersonaConductor',
                 pid:this.idContenedor,
+                anchor: '100%',
 
                 renderer:function (value, p, record){return String.format('{0}', record.data['desc_persona']);}
             },
@@ -104,6 +105,29 @@ Phx.vista.Responsable=Ext.extend(Phx.gridInterfaz,{
 
             grid:true,
             form:true
+        },
+        {
+            config: {
+                name: 'tipo_responsable',
+                fieldLabel: 'Tipo Responsable',
+                anchor: '100%',
+                tinit: false,
+                allowBlank: false,
+                origen: 'CATALOGO',
+                gdisplayField: 'tipo_responsable',
+                hiddenName: 'tipo_responsable',
+                gwidth: 250,
+                baseParams:{
+                    cod_subsistema:'RAS',
+                    catalogo_tipo:'ttipo_responsable'
+                },
+                valueField: 'codigo',
+                hidden: false
+            },
+            type: 'ComboRec',
+            id_grupo: 0,
+            grid: true,
+            form: true
         },
 		{
 			config:{
@@ -232,7 +256,8 @@ Phx.vista.Responsable=Ext.extend(Phx.gridInterfaz,{
 		{name:'id_usuario_mod', type: 'numeric'},
 		{name:'usr_reg', type: 'string'},
 		{name:'usr_mod', type: 'string'},'desc_persona',
-        {name:'cod_funcionario', type: 'string'}
+        {name:'cod_funcionario', type: 'string'},
+        {name:'tipo_responsable', type: 'string'}//#GDV-37
 		
 	],
 	sortInfo:{
@@ -246,7 +271,31 @@ Phx.vista.Responsable=Ext.extend(Phx.gridInterfaz,{
 		title:'Licencias', 
 		height:'50%',	//altura de la ventana hijo
 		cls:'Licencia'
-	}
+	},
+    onButtonEdit:function(){//#GDV-37
+        //llamamos primero a la funcion new de la clase padre por que reseta el valor los componentesSS
+        Phx.vista.Responsable.superclass.onButtonEdit.call(this);
+        var data = this.getSelectedData();
+
+
+        this.Cmp.id_persona.store.baseParams.query = data.id_persona;
+        this.Cmp.id_persona.store.load({params:{start:0,limit:this.tam_pag},
+            callback : function (r) {
+                if (r.length > 0 ) {
+                    this.Cmp.id_persona.setValue(data.id_persona);
+                }else{
+                    this.Cmp.id_persona.reset();
+                }
+            }, scope : this
+        });
+
+        this.Cmp.id_persona.on('select',function(combo,record,index){
+            this.Cmp.id_persona.store.baseParams.id_persona = '';
+            this.Cmp.id_persona.store.baseParams.query = '';
+        },this);
+
+
+    }
 })
 </script>
 		

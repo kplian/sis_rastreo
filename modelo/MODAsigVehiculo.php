@@ -29,7 +29,7 @@ class MODAsigVehiculo extends MODbase{
         $this->captura('id_sol_vehiculo','int4');
 		$this->captura('id_equipo','int4');
 		$this->captura('observaciones','varchar');
-		$this->captura('id_responsable','int4');
+		$this->captura('id_sol_vehiculo_responsable','varchar'); //#GDV-37
 		$this->captura('estado_reg','varchar');
 		$this->captura('id_usuario_ai','int4');
 		$this->captura('fecha_reg','timestamp');
@@ -77,7 +77,7 @@ class MODAsigVehiculo extends MODbase{
 		$this->setParametro('id_equipo','id_equipo','int4');
         $this->setParametro('id_sol_vehiculo','id_sol_vehiculo','int4');
 		$this->setParametro('observaciones','observaciones','varchar');
-		$this->setParametro('id_responsable','id_responsable','int4');
+		$this->setParametro('id_sol_vehiculo_responsable','id_sol_vehiculo_responsable','varchar'); //#GDV-37
 		$this->setParametro('estado_reg','estado_reg','varchar');
         $this->setParametro('placa','placa','varchar');
         //$this->setParametro('marca','marca','varchar');
@@ -105,7 +105,7 @@ class MODAsigVehiculo extends MODbase{
         $this->setParametro('id_sol_vehiculo','id_sol_vehiculo','int4');
 		$this->setParametro('id_equipo','id_equipo','int4');
 		$this->setParametro('observaciones','observaciones','varchar');
-		$this->setParametro('id_responsable','id_responsable','int4');
+		$this->setParametro('id_sol_vehiculo_responsable','id_sol_vehiculo_responsable','varchar'); //#GDV-37
 		$this->setParametro('estado_reg','estado_reg','varchar');
         $this->setParametro('placa','placa','varchar');
         //$this->setParametro('marca','marca','varchar');

@@ -1,12 +1,12 @@
 --------------- SQL ---------------
 
 CREATE OR REPLACE FUNCTION ras.ft_asig_vehiculo_sel (
-    p_administrador integer,
-    p_id_usuario integer,
-    p_tabla varchar,
-    p_transaccion varchar
+  p_administrador integer,
+  p_id_usuario integer,
+  p_tabla varchar,
+  p_transaccion varchar
 )
-    RETURNS varchar AS
+RETURNS varchar AS
 $body$
 /**************************************************************************
  SISTEMA:        Gestion Vehicular
@@ -24,7 +24,7 @@ $body$
 
 DECLARE
 
-    v_consulta            VARCHAR;
+v_consulta            VARCHAR;
     v_parametros          RECORD;
     v_nombre_funcion      TEXT;
     v_resp                VARCHAR;
@@ -43,14 +43,14 @@ BEGIN
 
     IF (p_transaccion='RAS_ASIGVEHI_SEL') THEN
 
-        BEGIN
+BEGIN
             --Sentencia de la consulta
             v_consulta:='SELECT
                         asigvehi.id_asig_vehiculo,
                         asigvehi.id_sol_vehiculo,
                         asigvehi.id_equipo,
                         asigvehi.observaciones,
-                        asigvehi.id_responsable,
+                        asigvehi.id_sol_vehiculo_responsable::varchar,
                         asigvehi.estado_reg,
                         asigvehi.id_usuario_ai,
                         asigvehi.fecha_reg,
@@ -84,7 +84,15 @@ BEGIN
                         else
                         tipe.nombre
                         end as desc_tipo_equipo,
-                        per.nombre_completo1::varchar as desc_persona,
+                      (SELECT  array_to_string(array_agg(pe.nombre_completo1), ''<br>''::
+                            text)::character varying
+                         from ras.tresponsable rs
+                         left join segu.vpersona pe on pe.id_persona = rs.id_persona
+                         left join ras.tsol_vehiculo_responsable r on r.id_responsable = rs.id_responsable
+                         where r.id_sol_vehiculo_responsable  in ( SELECT element::integer
+                                                        FROM UNNEST( string_to_array(asigvehi.id_sol_vehiculo_responsable,'',''))
+                                                        as element)
+                         ) as desc_persona,
                         asigvehi.km_inicio,
                         asigvehi.km_final,
                         asigvehi.recorrido,
@@ -124,9 +132,9 @@ BEGIN
             v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
 
             --Devuelve la respuesta
-            RETURN v_consulta;
+RETURN v_consulta;
 
-        END;
+END;
 
         /*********************************
          #TRANSACCION:  'RAS_ASIGVEHI_CONT'
@@ -137,7 +145,7 @@ BEGIN
 
     ELSIF (p_transaccion='RAS_ASIGVEHI_CONT') THEN
 
-        BEGIN
+BEGIN
             --Sentencia de la consulta de conteo de registros
             v_consulta:='SELECT COUNT(asigvehi.id_asig_vehiculo)
                          FROM ras.tasig_vehiculo asigvehi
@@ -153,15 +161,15 @@ BEGIN
             v_consulta:=v_consulta||v_parametros.filtro;
 
             --Devuelve la respuesta
-            RETURN v_consulta;
+RETURN v_consulta;
 
-        END;
+END;
 
-    ELSE
+ELSE
 
         RAISE EXCEPTION 'Transaccion inexistente';
 
-    END IF;
+END IF;
 
 EXCEPTION
 
@@ -173,9 +181,9 @@ EXCEPTION
         RAISE EXCEPTION '%',v_resp;
 END;
 $body$
-    LANGUAGE 'plpgsql'
-    VOLATILE
-    CALLED ON NULL INPUT
-    SECURITY INVOKER
-    PARALLEL UNSAFE
-    COST 100;
+LANGUAGE 'plpgsql'
+VOLATILE
+CALLED ON NULL INPUT
+SECURITY INVOKER
+PARALLEL UNSAFE
+COST 100;
