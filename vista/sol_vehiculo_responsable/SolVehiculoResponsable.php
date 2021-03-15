@@ -290,8 +290,15 @@ Phx.vista.SolVehiculoResponsable=Ext.extend(Phx.gridInterfaz,{
         this.Cmp.id_responsable.enable();
         this.Cmp.id_responsable.store.baseParams.tipo_responsable = 'conductor';
         this.Cmp.id_responsable.on('expand', function (Combo) {
-            this.Cmp.id_responsable.store.reload(true);
-        }, this);
+            this.Cmp.id_responsable.store.load({params:{start:0,limit:this.tam_pag},
+                callback : function (r) {
+                    if (r.length > 0 ) {
+                        this.Cmp.id_responsable.setValue(r[0].data.id_responsable);
+                    }else{
+                        this.Cmp.id_responsable.reset();
+                    }
+                }, scope : this
+            });        }, this);
     },
     onButtonEdit:function(){
         //llamamos primero a la funcion new de la clase padre por que reseta el valor los componentesSS

@@ -1,12 +1,12 @@
 --------------- SQL ---------------
 
 CREATE OR REPLACE FUNCTION ras.ft_asig_vehiculo_sel (
-  p_administrador integer,
-  p_id_usuario integer,
-  p_tabla varchar,
-  p_transaccion varchar
+    p_administrador integer,
+    p_id_usuario integer,
+    p_tabla varchar,
+    p_transaccion varchar
 )
-RETURNS varchar AS
+    RETURNS varchar AS
 $body$
 /**************************************************************************
  SISTEMA:        Gestion Vehicular
@@ -24,7 +24,7 @@ $body$
 
 DECLARE
 
-v_consulta            VARCHAR;
+    v_consulta            VARCHAR;
     v_parametros          RECORD;
     v_nombre_funcion      TEXT;
     v_resp                VARCHAR;
@@ -43,7 +43,7 @@ BEGIN
 
     IF (p_transaccion='RAS_ASIGVEHI_SEL') THEN
 
-BEGIN
+        BEGIN
             --Sentencia de la consulta
             v_consulta:='SELECT
                         asigvehi.id_asig_vehiculo,
@@ -104,7 +104,12 @@ BEGIN
                         marc.nombre as marca,
                         equipa.modelo,
                         equipa.id_proveedor,
-                        equipa.id_tipo_equipo,
+                         case
+                        when solv.alquiler = ''si'' then
+                        equipa.id_tipo_equipo
+                        else
+                        equip.id_tipo_equipo
+                        end as id_tipo_equipo,
                         asigvehi.incidencia,
                         case
                         when solv.alquiler = ''si'' then
@@ -132,9 +137,9 @@ BEGIN
             v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
 
             --Devuelve la respuesta
-RETURN v_consulta;
+            RETURN v_consulta;
 
-END;
+        END;
 
         /*********************************
          #TRANSACCION:  'RAS_ASIGVEHI_CONT'
@@ -145,7 +150,7 @@ END;
 
     ELSIF (p_transaccion='RAS_ASIGVEHI_CONT') THEN
 
-BEGIN
+        BEGIN
             --Sentencia de la consulta de conteo de registros
             v_consulta:='SELECT COUNT(asigvehi.id_asig_vehiculo)
                          FROM ras.tasig_vehiculo asigvehi
@@ -161,15 +166,15 @@ BEGIN
             v_consulta:=v_consulta||v_parametros.filtro;
 
             --Devuelve la respuesta
-RETURN v_consulta;
+            RETURN v_consulta;
 
-END;
+        END;
 
-ELSE
+    ELSE
 
         RAISE EXCEPTION 'Transaccion inexistente';
 
-END IF;
+    END IF;
 
 EXCEPTION
 
@@ -181,9 +186,9 @@ EXCEPTION
         RAISE EXCEPTION '%',v_resp;
 END;
 $body$
-LANGUAGE 'plpgsql'
-VOLATILE
-CALLED ON NULL INPUT
-SECURITY INVOKER
-PARALLEL UNSAFE
-COST 100;
+    LANGUAGE 'plpgsql'
+    VOLATILE
+    CALLED ON NULL INPUT
+    SECURITY INVOKER
+    PARALLEL UNSAFE
+    COST 100;

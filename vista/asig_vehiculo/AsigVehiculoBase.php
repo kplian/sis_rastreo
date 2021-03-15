@@ -716,7 +716,7 @@ Phx.vista.AsigVehiculoBase=Ext.extend(Phx.gridInterfaz,{
             this.Cmp.id_tipo_equipo.store.load({params:{start:0,limit:this.tam_pag},
                 callback : function (r) {
                     if (r.length > 0 ) {
-                        this.Cmp.id_tipo_equipo.setValue(r[0].data.id_tipo_equipo);
+                        this.Cmp.id_tipo_equipo.setValue(data.id_tipo_equipo);
                     }else{
                         this.Cmp.id_tipo_equipo.reset();
                     }
