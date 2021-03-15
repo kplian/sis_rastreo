@@ -1,12 +1,12 @@
 --------------- SQL ---------------
 
 CREATE OR REPLACE FUNCTION ras.ft_asig_vehiculo_ime (
-    p_administrador integer,
-    p_id_usuario integer,
-    p_tabla varchar,
-    p_transaccion varchar
+  p_administrador integer,
+  p_id_usuario integer,
+  p_tabla varchar,
+  p_transaccion varchar
 )
-    RETURNS varchar AS
+RETURNS varchar AS
 $body$
 /**************************************************************************
  SISTEMA:        Gestion Vehicular
@@ -24,7 +24,7 @@ $body$
 
 DECLARE
 
-    v_nro_requerimiento        INTEGER;
+v_nro_requerimiento        INTEGER;
     v_parametros               RECORD;
     v_id_requerimiento         INTEGER;
     v_resp                     VARCHAR;
@@ -50,27 +50,27 @@ BEGIN
 
     IF (p_transaccion='RAS_ASIGVEHI_INS') THEN
 
-        BEGIN
-            SELECT
-                solv.alquiler,
-                solv.fecha_salida,
-                solv.fecha_retorno
-            INTO
-                v_registro
-            FROM ras.tsol_vehiculo solv
-            WHERE solv.id_sol_vehiculo = v_parametros.id_sol_vehiculo;
+BEGIN
+SELECT
+    solv.alquiler,
+    solv.fecha_salida,
+    solv.fecha_retorno
+INTO
+    v_registro
+FROM ras.tsol_vehiculo solv
+WHERE solv.id_sol_vehiculo = v_parametros.id_sol_vehiculo;
 
-            IF pxp.f_is_positive_integer(v_parametros.id_marca) THEN
+IF pxp.f_is_positive_integer(v_parametros.id_marca) THEN
                 v_id_marca = v_parametros.id_marca::integer;
-            ELSE
-                SELECT
-                    m.id_marca
-                into
-                    v_id_marca
-                FROM ras.tmarca m
-                WHERE upper(replace(m.nombre,'',' ')) = upper(replace(v_parametros.id_marca,'',' '));
+ELSE
+SELECT
+    m.id_marca
+into
+    v_id_marca
+FROM ras.tmarca m
+WHERE upper(replace(m.nombre,'',' ')) = upper(replace(v_parametros.id_marca,'',' '));
 
-                IF v_id_marca is null THEN
+IF v_id_marca is null THEN
                     INSERT into ras.tmarca (
                         id_usuario_reg,
                         fecha_reg,
@@ -80,42 +80,42 @@ BEGIN
                                now(),
                                v_parametros.id_marca
                            )RETURNING id_marca into v_id_marca ;
-                END IF;
+END IF;
 
 
 
-            END IF;
+END IF;
 
             --Sentencia de la insercion
-            INSERT INTO ras.tasig_vehiculo(
-                id_equipo,
-                observaciones,
-                id_responsable,
-                estado_reg,
-                id_usuario_ai,
-                fecha_reg,
-                usuario_ai,
-                id_usuario_reg,
-                fecha_mod,
-                id_usuario_mod,
-                id_sol_vehiculo
-            ) VALUES (
-                         v_parametros.id_equipo,
-                         v_parametros.observaciones,
-                         v_parametros.id_responsable,
-                         'activo',
-                         v_parametros._id_usuario_ai,
-                         now(),
-                         v_parametros._nombre_usuario_ai,
-                         p_id_usuario,
-                         null,
-                         null,
-                         v_parametros.id_sol_vehiculo
-                     ) RETURNING id_asig_vehiculo into v_id_asig_vehiculo;
+INSERT INTO ras.tasig_vehiculo(
+    id_equipo,
+    observaciones,
+    id_sol_vehiculo_responsable,
+    estado_reg,
+    id_usuario_ai,
+    fecha_reg,
+    usuario_ai,
+    id_usuario_reg,
+    fecha_mod,
+    id_usuario_mod,
+    id_sol_vehiculo
+) VALUES (
+             v_parametros.id_equipo,
+             v_parametros.observaciones,
+             v_parametros.id_sol_vehiculo_responsable,
+             'activo',
+             v_parametros._id_usuario_ai,
+             now(),
+             v_parametros._nombre_usuario_ai,
+             p_id_usuario,
+             null,
+             null,
+             v_parametros.id_sol_vehiculo
+         ) RETURNING id_asig_vehiculo into v_id_asig_vehiculo;
 
 
 
-            FOR v_record IN(
+FOR v_record IN(
                 SELECT
                     ele.id_elemento_seg
                 FROM ras.telemento_seg ele
@@ -149,7 +149,7 @@ BEGIN
                                  v_id_asig_vehiculo
                              );
 
-                END LOOP;
+END LOOP;
 
             IF v_registro.alquiler = 'si' THEN
                 INSERT INTO
@@ -182,7 +182,7 @@ BEGIN
                            v_id_asig_vehiculo,
                            v_id_marca
                        );
-            ELSE
+ELSE
                 INSERT INTO
                     ras.tequipo_estado
                 (
@@ -208,20 +208,20 @@ BEGIN
                            v_registro.fecha_retorno
                        )RETURNING id_equipo_estado into v_id_equipo_estado;
 
-                UPDATE ras.tasig_vehiculo SET
-                    id_equipo_estado = v_id_equipo_estado
-                WHERE id_asig_vehiculo = v_id_asig_vehiculo;
+UPDATE ras.tasig_vehiculo SET
+    id_equipo_estado = v_id_equipo_estado
+WHERE id_asig_vehiculo = v_id_asig_vehiculo;
 
-            END IF;
+END IF;
 
             --Definicion de la respuesta
             v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Asignacion de Vehiculos almacenado(a) con exito (id_asig_vehiculo'||v_id_asig_vehiculo||')');
             v_resp = pxp.f_agrega_clave(v_resp,'id_asig_vehiculo',v_id_asig_vehiculo::varchar);
 
             --Devuelve la respuesta
-            RETURN v_resp;
+RETURN v_resp;
 
-        END;
+END;
 
         /*********************************
          #TRANSACCION:  'RAS_ASIGVEHI_MOD'
@@ -232,28 +232,28 @@ BEGIN
 
     ELSIF (p_transaccion='RAS_ASIGVEHI_MOD') THEN
 
-        BEGIN
-            SELECT
-                solv.alquiler
-            INTO
-                v_registro
-            FROM ras.tsol_vehiculo solv
-            WHERE solv.id_sol_vehiculo = v_parametros.id_sol_vehiculo;
+BEGIN
+SELECT
+    solv.alquiler
+INTO
+    v_registro
+FROM ras.tsol_vehiculo solv
+WHERE solv.id_sol_vehiculo = v_parametros.id_sol_vehiculo;
 
 
-            IF pxp.f_is_positive_integer(v_parametros.id_marca) THEN
+IF pxp.f_is_positive_integer(v_parametros.id_marca) THEN
                 v_id_marca = v_parametros.id_marca::integer;
 
-            ELSE
+ELSE
 
-                SELECT
-                    m.id_marca
-                into
-                    v_id_marca
-                FROM ras.tmarca m
-                WHERE upper(replace(m.nombre,'',' ')) = upper(replace(v_parametros.id_marca,'',' '));
+SELECT
+    m.id_marca
+into
+    v_id_marca
+FROM ras.tmarca m
+WHERE upper(replace(m.nombre,'',' ')) = upper(replace(v_parametros.id_marca,'',' '));
 
-                IF v_id_marca is null THEN
+IF v_id_marca is null THEN
                     INSERT into ras.tmarca (
                         id_usuario_reg,
                         fecha_reg,
@@ -263,63 +263,63 @@ BEGIN
                                now(),
                                v_parametros.id_marca
                            )RETURNING id_marca into v_id_marca ;
-                END IF;
+END IF;
 
 
 
-            END IF;
+END IF;
 
             --Sentencia de la modificacion
-            UPDATE ras.tasig_vehiculo SET
-                                          id_equipo = v_parametros.id_equipo,
-                                          observaciones = v_parametros.observaciones,
-                                          id_responsable = v_parametros.id_responsable,
-                                          fecha_mod = now(),
-                                          id_usuario_mod = p_id_usuario,
-                                          id_usuario_ai = v_parametros._id_usuario_ai,
-                                          usuario_ai = v_parametros._nombre_usuario_ai,
-                                          id_sol_vehiculo = v_parametros.id_sol_vehiculo
-            WHERE id_asig_vehiculo=v_parametros.id_asig_vehiculo;
+UPDATE ras.tasig_vehiculo SET
+                              id_equipo = v_parametros.id_equipo,
+                              observaciones = v_parametros.observaciones,
+                              id_sol_vehiculo_responsable = v_parametros.id_sol_vehiculo_responsable,
+                              fecha_mod = now(),
+                              id_usuario_mod = p_id_usuario,
+                              id_usuario_ai = v_parametros._id_usuario_ai,
+    usuario_ai = v_parametros._nombre_usuario_ai,
+    id_sol_vehiculo = v_parametros.id_sol_vehiculo
+WHERE id_asig_vehiculo=v_parametros.id_asig_vehiculo;
 
-            IF v_registro.alquiler = 'si' THEN
+IF v_registro.alquiler = 'si' THEN
 
                 --RAISE EXCEPTION 'v_parametros.id_marca % %',v_parametros.id_marca,v_id_marca;
 
-                UPDATE
-                    ras.tequipo_alquilado
-                SET
-                    id_usuario_mod = p_id_usuario,
-                    fecha_mod = now(),
-                    id_usuario_ai = v_parametros._id_usuario_ai,
-                    usuario_ai = v_parametros._nombre_usuario_ai,
-                    placa = v_parametros.placa,
-                    --marca = v_parametros.marca,
-                    modelo = v_parametros.modelo,
-                    id_tipo_equipo = v_parametros.id_tipo_equipo,
-                    id_proveedor = v_parametros.id_proveedor,
-                    id_marca = v_id_marca
-                WHERE
-                        id_asig_vehiculo = v_parametros.id_asig_vehiculo;
-            ELSE
-                SELECT
-                    asigv.id_equipo_estado
-                INTO
-                    v_id_equipo_estado
-                FROM ras.tasig_vehiculo asigv
-                WHERE id_asig_vehiculo = v_parametros.id_asig_vehiculo;
+UPDATE
+    ras.tequipo_alquilado
+SET
+    id_usuario_mod = p_id_usuario,
+    fecha_mod = now(),
+    id_usuario_ai = v_parametros._id_usuario_ai,
+    usuario_ai = v_parametros._nombre_usuario_ai,
+    placa = v_parametros.placa,
+    --marca = v_parametros.marca,
+    modelo = v_parametros.modelo,
+    id_tipo_equipo = v_parametros.id_tipo_equipo,
+    id_proveedor = v_parametros.id_proveedor,
+    id_marca = v_id_marca
+WHERE
+    id_asig_vehiculo = v_parametros.id_asig_vehiculo;
+ELSE
+SELECT
+    asigv.id_equipo_estado
+INTO
+    v_id_equipo_estado
+FROM ras.tasig_vehiculo asigv
+WHERE id_asig_vehiculo = v_parametros.id_asig_vehiculo;
 
-                UPDATE ras.tequipo_estado SET
-                    id_equipo = v_parametros.id_equipo
-                WHERE id_equipo_estado = v_id_equipo_estado;
-            END IF;
+UPDATE ras.tequipo_estado SET
+    id_equipo = v_parametros.id_equipo
+WHERE id_equipo_estado = v_id_equipo_estado;
+END IF;
             --Definicion de la respuesta
             v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Asignacion de Vehiculos modificado(a)');
             v_resp = pxp.f_agrega_clave(v_resp,'id_asig_vehiculo',v_parametros.id_asig_vehiculo::varchar);
 
             --Devuelve la respuesta
-            RETURN v_resp;
+RETURN v_resp;
 
-        END;
+END;
 
         /*********************************
          #TRANSACCION:  'RAS_ASIGVEHI_ELI'
@@ -330,19 +330,19 @@ BEGIN
 
     ELSIF (p_transaccion='RAS_ASIGVEHI_ELI') THEN
 
-        BEGIN
+BEGIN
             --Sentencia de la eliminacion
-            DELETE FROM ras.tasig_vehiculo
-            WHERE id_asig_vehiculo=v_parametros.id_asig_vehiculo;
+DELETE FROM ras.tasig_vehiculo
+WHERE id_asig_vehiculo=v_parametros.id_asig_vehiculo;
 
-            --Definicion de la respuesta
-            v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Asignacion de Vehiculos eliminado(a)');
+--Definicion de la respuesta
+v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Asignacion de Vehiculos eliminado(a)');
             v_resp = pxp.f_agrega_clave(v_resp,'id_asig_vehiculo',v_parametros.id_asig_vehiculo::varchar);
 
             --Devuelve la respuesta
-            RETURN v_resp;
+RETURN v_resp;
 
-        END;
+END;
         /*********************************
         #TRANSACCION:  'RAS_EDITFORVI_MOD'
         #DESCRIPCION:    Modificacion de registros
@@ -352,35 +352,35 @@ BEGIN
 
     ELSIF (p_transaccion='RAS_EDITFORVI_MOD') THEN
 
-        BEGIN
+BEGIN
             --Sentencia de la modificacion
-            UPDATE ras.tasig_vehiculo SET
-                                          km_inicio = v_parametros.km_inicio,
-                                          km_final = v_parametros.km_final,
-                                          recorrido = v_parametros.recorrido,
-                                          fecha_mod = now(),
-                                          observacion_viaje = v_parametros.observacion_viaje,
-                                          fecha_retorno_ofi = v_parametros.fecha_retorno_ofi,
-                                          fecha_salida_ofi = v_parametros.fecha_salida_ofi,
-                                          hora_retorno_ofi = v_parametros.hora_retorno_ofi,
-                                          hora_salida_ofi = v_parametros.hora_salida_ofi,
-                                          incidencia = v_parametros.incidencia
-            WHERE id_asig_vehiculo=v_parametros.id_asig_vehiculo;
+UPDATE ras.tasig_vehiculo SET
+                              km_inicio = v_parametros.km_inicio,
+                              km_final = v_parametros.km_final,
+                              recorrido = v_parametros.recorrido,
+                              fecha_mod = now(),
+                              observacion_viaje = v_parametros.observacion_viaje,
+                              fecha_retorno_ofi = v_parametros.fecha_retorno_ofi,
+                              fecha_salida_ofi = v_parametros.fecha_salida_ofi,
+                              hora_retorno_ofi = v_parametros.hora_retorno_ofi,
+                              hora_salida_ofi = v_parametros.hora_salida_ofi,
+                              incidencia = v_parametros.incidencia
+WHERE id_asig_vehiculo=v_parametros.id_asig_vehiculo;
 
-            --Definicion de la respuesta
-            v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Asignacion de Vehiculos modificado(a)');
+--Definicion de la respuesta
+v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Asignacion de Vehiculos modificado(a)');
             v_resp = pxp.f_agrega_clave(v_resp,'id_asig_vehiculo',v_parametros.id_asig_vehiculo::varchar);
 
             --Devuelve la respuesta
-            RETURN v_resp;
+RETURN v_resp;
 
-        END;
+END;
 
-    ELSE
+ELSE
 
         RAISE EXCEPTION 'Transaccion inexistente: %',p_transaccion;
 
-    END IF;
+END IF;
 
 EXCEPTION
 
@@ -393,9 +393,9 @@ EXCEPTION
 
 END;
 $body$
-    LANGUAGE 'plpgsql'
-    VOLATILE
-    CALLED ON NULL INPUT
-    SECURITY INVOKER
-    PARALLEL UNSAFE
-    COST 100;
+LANGUAGE 'plpgsql'
+VOLATILE
+CALLED ON NULL INPUT
+SECURITY INVOKER
+PARALLEL UNSAFE
+COST 100;

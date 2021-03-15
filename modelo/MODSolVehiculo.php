@@ -63,6 +63,9 @@ class MODSolVehiculo extends MODbase{
         $this->captura('id_centro_costo','int4');
         $this->captura('desc_centro_costo','varchar');
         $this->captura('existe_conductor','varchar');//#GDV-29
+        $this->captura('telefono_contacto','varchar');//#GDV-37
+        $this->captura('id_responsable','int4');//#GDV-37
+        $this->captura('desc_reponsable','varchar');//#GDV-37
 
         if($this->objParam->getParametro('tipo_reporte')=='auto_PI' || $this->objParam->getParametro('tipo_reporte')=='auto_PII'){
             $this->captura('desc_jefe_dep','varchar');
@@ -106,6 +109,8 @@ class MODSolVehiculo extends MODbase{
         $this->setParametro('monto','monto','numeric');
         $this->setParametro('id_centro_costo','id_centro_costo','int4');
         $this->setParametro('existe_conductor','existe_conductor','varchar');//#GDV-29
+        $this->setParametro('telefono_contacto','telefono_contacto','varchar');//#GDV-37
+        $this->setParametro('id_responsable','id_responsable','int4');//#GDV-37
 
         //Ejecuta la instruccion
         $this->armarConsulta();
@@ -144,7 +149,8 @@ class MODSolVehiculo extends MODbase{
         $this->setParametro('monto','monto','numeric');
         $this->setParametro('id_centro_costo','id_centro_costo','int4');
         $this->setParametro('existe_conductor','existe_conductor','varchar');//#GDV-29
-
+        $this->setParametro('telefono_contacto','telefono_contacto','varchar');//#GDV-37
+        $this->setParametro('id_responsable','id_responsable','int4');//#GDV-37
 
 
         //Ejecuta la instruccion
@@ -231,6 +237,25 @@ class MODSolVehiculo extends MODbase{
         $this->captura('recorrido','numeric');
         $this->captura('desc_funcionario','varchar');
         $this->captura('destino','varchar');
+
+        //Ejecuta la instruccion
+        $this->armarConsulta();
+        $this->ejecutarConsulta();
+
+        //Devuelve la respuesta
+        return $this->respuesta;
+    }
+    function EditFormAlquilado(){
+        //Definicion de variables para ejecucion del procedimiento
+        $this->procedimiento='ras.ft_sol_vehiculo_ime';
+        $this->transaccion='RAS_EDITFORAL_MOD';
+        $this->tipo_procedimiento='IME';
+
+        //Define los parametros para la funcion
+        $this->setParametro('id_sol_vehiculo','id_sol_vehiculo','int4');
+        $this->setParametro('alquiler','alquiler','varchar');
+        $this->setParametro('monto','monto','numeric');
+
 
         //Ejecuta la instruccion
         $this->armarConsulta();

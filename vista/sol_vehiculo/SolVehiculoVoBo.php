@@ -45,6 +45,13 @@ Phx.vista.SolVehiculoVoBo={
 						handler: this.sigEstado, 
 						tooltip: '<b>Pasar al Siguiente Estado</b>'
 						});
+        this.addButton('btnAlquilado', { //GDV-37
+            text : 'Alquiler',
+            iconCls : 'bexecdb',
+            disabled : true,
+            handler : this.openAlquilado,
+            tooltip : '<b>Datos de Alquilado</b>'
+        });
 	},
 	preparaMenu:function(n){
       var data = this.getSelectedData();
@@ -62,7 +69,12 @@ Phx.vista.SolVehiculoVoBo={
          	this.getBoton('ant_estado').disable();
     		this.getBoton('sig_estado').disable();		
          };
-         
+
+         if(data.estado == 'vobojefeserv' ){
+             this.getBoton('btnAlquilado').enable();
+         }else{
+             this.getBoton('btnAlquilado').disable();
+         }
 
        	
          return tb 
@@ -83,6 +95,11 @@ Phx.vista.SolVehiculoVoBo={
         height: '40%',
         cls: 'NominaPersonaVoBo'
     },{
+        url: '../../../sis_rastreo/vista/sol_vehiculo_responsable/SolVehiculoResponsable.php',
+        title: 'Asignacion de Conductores',
+        height: '40%',
+        cls: 'SolVehiculoResponsable'
+    },{
         url: '../../../sis_rastreo/vista/asig_vehiculo/AsigVehiculoVoBo.php',
         title: 'Vehiculos Asignados',
         height: '50%',
@@ -91,7 +108,21 @@ Phx.vista.SolVehiculoVoBo={
     bdel:false,
     bnew:false,
     bedit:false,
-    bsave:false
+    bsave:false,
+
+    openAlquilado: function(){ //#GDV-37
+        var data = this.getSelectedData();
+        var win = Phx.CP.loadWindows(
+            '../../../sis_rastreo/vista/sol_vehiculo/FormAlquilado.php',
+            'Alquiler', {
+                width: '50%',
+                height: '50%'
+            },
+            {maestro:data},
+            this.idContenedor,
+            'FormAlquilado'
+        );
+    },
 	}
 </script>
 		

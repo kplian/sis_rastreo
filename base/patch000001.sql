@@ -389,3 +389,24 @@ ALTER TABLE ras.tequipo
 COMMENT ON COLUMN ras.tequipo.km_actual
     IS 'Kilometraje actual del vehiculo';
 /***********************************F-SCP-EGS-RAS-4-22/02/2021****************************************/
+/***********************************I-SCP-EGS-RAS-GVD-37-11/03/2021****************************************/
+ALTER TABLE ras.tsol_vehiculo
+    ADD COLUMN telefono_contacto VARCHAR;
+
+ALTER TABLE ras.tresponsable
+    ADD COLUMN tipo_responsable VARCHAR;
+
+CREATE TABLE ras.tsol_vehiculo_responsable (
+       id_sol_vehiculo_responsable SERIAL,
+       id_sol_vehiculo INTEGER,
+       id_responsable INTEGER,
+       fecha_inicio DATE,
+       fecha_fin DATE,
+       solicitud BOOLEAN DEFAULT false NOT NULL,
+       CONSTRAINT tsolvehi_responsable_pkey PRIMARY KEY(id_sol_vehiculo_responsable)
+) INHERITS (pxp.tbase)
+  WITH (oids = false);
+
+ALTER TABLE ras.tasig_vehiculo
+    ADD COLUMN id_sol_vehiculo_responsable VARCHAR;
+/***********************************F-SCP-EGS-RAS-GDV-37-11/03/2021****************************************/

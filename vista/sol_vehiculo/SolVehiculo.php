@@ -45,27 +45,9 @@ Phx.vista.SolVehiculo={
 						handler: this.sigEstado, 
 						tooltip: '<b>Pasar al Siguiente Estado</b>'
 						});
-        this.addButton('btnSolAutorizacion', {
-            text : 'Sol. Autorizacion ',
-            iconCls : 'bprint',
-            disabled : false,
-            handler : this.openSolAuto,
-            tooltip : '<b>Autorizacion</b>'
-        });
+
 	},
-    openSolAuto: function(){
-        var data = this.getSelectedData();
-        var win = Phx.CP.loadWindows(
-            '../../../sis_rastreo/vista/sol_vehiculo/FormSolAuto.php',
-            'Autorizacion', {
-                width: '50%',
-                height: '50%'
-            },
-            {maestro:data},
-            this.idContenedor,
-            'FormSolAuto'
-        );
-    },
+    
 	preparaMenu:function(n){
       var data = this.getSelectedData();
       var tb =this.tbar;
@@ -127,7 +109,21 @@ Phx.vista.SolVehiculo={
                 this.Cmp.monto.disable();
             };
 
-        },this)
+        },this);
+        this.ocultarComponente(this.Cmp.alquiler);//#GDV-37
+        this.ocultarComponente(this.Cmp.monto);//#GDV-37
+        this.Cmp.alquiler.AllowBlank = true; //#GDV-37
+        this.Cmp.monto.AllowBlank = true;//#GDV-37
+
+        this.ocultarComponente(this.Cmp.id_responsable);//#GDV-37
+        this.Cmp.existe_conductor.on('select',function(combo,record,index){//#GDV-37
+            if(record.data.valor == 'no'){
+                this.mostrarComponente(this.Cmp.id_responsable);
+            }else{
+                this.ocultarComponente(this.Cmp.id_responsable);
+            };
+
+        },this);
 
     },
     onButtonEdit: function() {
@@ -166,7 +162,39 @@ Phx.vista.SolVehiculo={
                 this.Cmp.monto.disable();
             };
 
-        },this)
+        },this);
+
+        this.ocultarComponente(this.Cmp.alquiler);//#GDV-37
+        this.ocultarComponente(this.Cmp.monto);//#GDV-37
+        this.Cmp.alquiler.AllowBlank = true; //#GDV-37
+        this.Cmp.monto.AllowBlank = true;//#GDV-37
+
+        if(data.existe_conductor == 'no'){//#GDV-37
+            this.mostrarComponente(this.Cmp.id_responsable);
+        }else{
+            this.ocultarComponente(this.Cmp.id_responsable);
+        }
+
+        this.Cmp.existe_conductor.on('select',function(combo,record,index){//#GDV-37
+            if(record.data.valor == 'no'){
+                this.mostrarComponente(this.Cmp.id_responsable);
+            }else{
+                this.ocultarComponente(this.Cmp.id_responsable);
+            };
+
+        },this);
+
+        this.Cmp.id_responsable.store.baseParams.query = data.id_responsable;//#GDV-37
+        this.Cmp.id_responsable.store.load({params:{start:0,limit:this.tam_pag},
+            callback : function (r) {
+                if (r.length > 0 ) {
+                    this.Cmp.id_responsable.setValue(data.id_responsable);
+                }else{
+                    this.Cmp.id_responsable.reset();
+                }
+            }, scope : this
+        });
+
 
     },
     tabsouth: [{

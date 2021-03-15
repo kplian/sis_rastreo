@@ -26,6 +26,12 @@
             </td>
         </tr>
         <tr >
+            <td width="20%" >Telefono Contacto:
+            </td>
+            <td width="80%" ><?php  echo  strtolower($this->datos_sol_vehiculo[0]['telefono_contacto']);?>
+            </td>
+        </tr>
+        <tr >
             <td width="20%" >Destino:
             </td>
             <td width="80%" ><?php  echo  strtolower($this->datos_sol_vehiculo[0]['destino']);?>
@@ -37,6 +43,29 @@
             <td width="80%" ><?php  echo  strtolower($this->datos_sol_vehiculo[0]['motivo']);?>
             </td>
         </tr>
+        <tr >
+            <td width="20%" >Requiere Conductor:
+            </td>
+
+            <?php
+            if($this->datos_sol_vehiculo[0]['existe_conductor'] == 'no' ){
+                echo ' <td width="20%" >'.strtolower($this->datos_sol_vehiculo[0]['existe_conductor']).'
+                        </td> 
+                        <td width="25%" >Conductor Autorizado: 
+                        </td>
+                        <td width="35%" >'.strtolower($this->datos_sol_vehiculo[0]['desc_reponsable']).'
+                        </td>';
+
+            }
+            else{
+
+                echo ' <td width="80%" >'.strtolower($this->datos_sol_vehiculo[0]['existe_conductor']).'
+                        </td> ';
+            }
+            ?>
+
+        </tr>
+
         <tr >
             <td width="30%" >Tipo de Vehículo Requerido:
             </td>
@@ -99,19 +128,6 @@
             </td>
             <td width="85%" >'.$this->datos_sol_vehiculo[0]['monto'].' BS.
             </td>
-        </tr>
-        <tr >
-            <td width="100%"  align="center" height="70px">
-                </td>
-        </tr>
-        <tr>
-             <td width="100%"  align="center">'.ucwords(strtolower($this->datos_sol_vehiculo[0]['desc_gerente'])).'
-            </td>
-         </tr>
-         <tr>
-            <td width="100%" align="center">Nombre y Firma Gerente
-            </td>
-            
         </tr>';
         }
         ?>
