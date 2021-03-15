@@ -35,6 +35,9 @@ v_nro_requerimiento        INTEGER;
     v_registro                  record;
     v_id_equipo_estado          integer;
     v_id_marca                  integer;
+    v_multi_vehiculo			varchar;
+    v_respon					record;
+    v_sol_resp					varchar;
 
 BEGIN
 
@@ -51,6 +54,25 @@ BEGIN
     IF (p_transaccion='RAS_ASIGVEHI_INS') THEN
 
 BEGIN
+
+v_multi_vehiculo = pxp.f_get_variable_global('ras_solicitud_multi_vehiculo');
+v_sol_resp = '';
+
+IF v_multi_vehiculo = 'no' THEN
+
+	IF (SELECT
+    	count(a.id_asig_vehiculo)
+    	from ras.tasig_vehiculo a
+        WHERE a.id_sol_vehiculo = v_parametros.id_sol_vehiculo
+        and a.estado_reg = 'activo' ) >= 1  THEN
+
+        RAISE EXCEPTION 'No Puede registrar mas de una asignacion de vehiculo';
+
+END IF;
+
+END IF;
+
+
 SELECT
     solv.alquiler,
     solv.fecha_salida,

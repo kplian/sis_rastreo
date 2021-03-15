@@ -589,11 +589,11 @@ Phx.vista.AsigVehiculoBase=Ext.extend(Phx.gridInterfaz,{
             this.mostrarComponente(this.Cmp.id_equipo);
 
         }
-        if (this.existe_conductor == 'si') {
-            this.mostrarComponente(this.Cmp.id_sol_vehiculo_responsable);
-        }else{
-            this.ocultarComponente(this.Cmp.id_sol_vehiculo_responsable);
-        }
+        // if (this.existe_conductor == 'si') {
+        //     this.mostrarComponente(this.Cmp.id_sol_vehiculo_responsable);
+        // }else{
+        //     this.ocultarComponente(this.Cmp.id_sol_vehiculo_responsable);
+        // }
 
         this.Cmp.id_tipo_equipo.store.baseParams.query = this.id_tipo_equipo;
         this.Cmp.id_tipo_equipo.store.load({params:{start:0,limit:this.tam_pag},
@@ -733,11 +733,11 @@ Phx.vista.AsigVehiculoBase=Ext.extend(Phx.gridInterfaz,{
             this.Cmp.id_tipo_equipo.store.load();
         }, this);
 
-        if (this.existe_conductor == 'si') {
-            this.mostrarComponente(this.Cmp.id_sol_vehiculo_responsable); //#GDV-37
-        }else{
-            this.ocultarComponente(this.Cmp.id_sol_vehiculo_responsable); //#GDV-37
-        }
+        // if (this.existe_conductor == 'si') {
+        //     this.mostrarComponente(this.Cmp.id_sol_vehiculo_responsable); //#GDV-37
+        // }else{
+        //     this.ocultarComponente(this.Cmp.id_sol_vehiculo_responsable); //#GDV-37
+        // }
 
         this.Cmp.id_tipo_equipo.on('select',function(combo,record,index){//GDV-32
             console.log('record',record.data.id_tipo_equipo);

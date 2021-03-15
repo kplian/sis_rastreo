@@ -106,7 +106,7 @@ Phx.vista.SolVehiculoResponsable=Ext.extend(Phx.gridInterfaz,{
         {
             config:{
                 name: 'fecha_inicio',
-                fieldLabel: 'fecha_inicio',
+                fieldLabel: 'Fecha Inicio',
                 allowBlank: true,
                 anchor: '80%',
                 gwidth: 100,
@@ -122,7 +122,7 @@ Phx.vista.SolVehiculoResponsable=Ext.extend(Phx.gridInterfaz,{
         {
             config:{
                 name: 'fecha_fin',
-                fieldLabel: 'fecha_fin',
+                fieldLabel: 'Fecha Fin',
                 allowBlank: true,
                 anchor: '80%',
                 gwidth: 100,

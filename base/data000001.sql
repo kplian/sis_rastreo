@@ -162,3 +162,10 @@ select param.f_import_tcatalogo_tipo ('insert','ttipo_responsable','RAS','trespo
 select param.f_import_tcatalogo ('insert','RAS','conductor','conductor','ttipo_responsable');
 select param.f_import_tcatalogo ('insert','RAS','personal_autorizado','personal_autorizado','ttipo_responsable');
 /***********************************F-DAT-EGS-RAS-GDV-37-11/03/2021****************************************/
+/***********************************I-DAT-EGS-RAS-GDV-37-14/03/2021****************************************/
+
+INSERT INTO pxp.variable_global ("variable", "valor", "descripcion")
+VALUES
+(E'ras_solicitud_multi_vehiculo', E'no', E'Hace que solo se pueda registrar un vehiculo por solicitud  y asigna todos los conductores a ese vehiculo');
+
+/***********************************F-DAT-EGS-RAS-GDV-37-14/03/2021****************************************/
