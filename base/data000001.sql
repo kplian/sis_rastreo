@@ -169,3 +169,10 @@ VALUES
 (E'ras_solicitud_multi_vehiculo', E'no', E'Hace que solo se pueda registrar un vehiculo por solicitud  y asigna todos los conductores a ese vehiculo');
 
 /***********************************F-DAT-EGS-RAS-GDV-37-14/03/2021****************************************/
+/***********************************I-DAT-EGS-RAS-GDV-37-1-14/03/2021****************************************/
+
+select wf.f_import_ttipo_documento ('insert','SOLVEHI','SOLVEH','Solicitud de Vehiculo','','','escaneado',1.00,'{}','no','',NULL,'');
+select wf.f_import_ttipo_documento ('insert','ASIGVEHI','SOLVEH','Asignación de Vehículo','','','escaneado',2.00,'{}','no','',NULL,'');
+select wf.f_import_ttipo_documento ('insert','REPVIAJ','SOLVEH','Reporte de Viaje','','','escaneado',2.00,'{}','no','',NULL,'');
+
+/***********************************F-DAT-EGS-RAS-GDV-37-1-14/03/2021****************************************/
