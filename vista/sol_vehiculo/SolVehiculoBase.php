@@ -197,7 +197,8 @@ Phx.vista.SolVehiculoBase=Ext.extend(Phx.gridInterfaz,{
                 maxLength:-5
             },
             type:'TextField',
-            filters:{pfiltro:'solvehi.nro_tramite',type:'string'},
+            filters:{pfiltro:'solvehi.estado',type:'string'},
+            bottom_filter:true,
             id_grupo:1,
             grid:true,
             form:false
@@ -270,6 +271,7 @@ Phx.vista.SolVehiculoBase=Ext.extend(Phx.gridInterfaz,{
             },
             type:'TextField',
             filters:{pfiltro:'solvehi.nro_tramite',type:'string'},
+            bottom_filter:true,
             id_grupo:1,
             grid:true,
             form:false
@@ -437,7 +439,8 @@ Phx.vista.SolVehiculoBase=Ext.extend(Phx.gridInterfaz,{
             },
             type: 'ComboBox',
             id_grupo: 0,
-            filters: {pfiltro: 'movtip.nombre',type: 'string'},
+            filters: {pfiltro: 'tipv.nombre ',type: 'string'},
+            bottom_filter:true,
             grid: true,
             form: true
         },
@@ -497,7 +500,6 @@ Phx.vista.SolVehiculoBase=Ext.extend(Phx.gridInterfaz,{
             },
             type:'ComboBox',
             valorInicial: 'no',
-            filters:{pfiltro:'solvehi.alquiler',type:'string'},
             id_grupo:1,
             grid:true,
             form:true
@@ -539,7 +541,6 @@ Phx.vista.SolVehiculoBase=Ext.extend(Phx.gridInterfaz,{
             },
             type:'ComboBox',
             valorInicial: 'si',
-            filters:{pfiltro:'solvehi.existe_conductor',type:'string'},
             id_grupo:1,
             grid:true,
             form:true
