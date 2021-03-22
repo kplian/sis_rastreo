@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION ras.f_sincronizartraccar (
+CREATE OR REPLACE FUNCTION ras.f_sincronizarTraccar (
   id varchar,
   imei varchar,
   placa varchar,
