@@ -727,3 +727,8 @@ select wf.f_import_ttipo_documento_estado ('insert','ASIGVEHI','SOLVEH','borrado
 select wf.f_import_ttipo_documento_estado ('insert','REPVIAJ','SOLVEH','borrador','SOLVEH','crear','superior','');
 select wf.f_import_ttipo_documento_estado ('insert','SOLVEHI','SOLVEH','borrador','SOLVEH','crear','superior','');
 /***********************************F-DEP-EGS-RAS-GDV-37-14/03/2021****************************************/
+
+
+/***********************************I-DEP-JJA-RAS-GDV-34-24/02/2021*****************************************/
+DROP TRIGGER tg_equipo ON ras.tequipo; --#RAS-7
+/***********************************F-DEP-JJA-RAS-GDV-34-24/02/2021*****************************************/

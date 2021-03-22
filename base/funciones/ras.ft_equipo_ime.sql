@@ -20,7 +20,7 @@ $body$
  HISTORIAL DE MODIFICACIONES:
  ISUUE			FECHA			 AUTHOR 		 DESCRIPCION
  * #6			19/09/2019		  JUAN		     Agregado de funcinalidad para el registro de vehiculos asociados a una regionales y grupos
-
+   #RAS-7       22/03/2021        JJA            EDITAR INSERTAR ELIMINAR VEHICULO CON DBLINK
 ***************************************************************************/
 
 DECLARE
@@ -32,7 +32,8 @@ DECLARE
     v_nombre_funcion        text;
     v_mensaje_error         text;
     v_id_equipo	integer;
-
+    v_respuesta		        varchar; --#RAS-7
+    v_id_device_ant 	    varchar; --#RAS-7
 BEGIN
 
     v_nombre_funcion = 'ras.ft_equipo_ime';
@@ -114,6 +115,9 @@ BEGIN
                         v_parametros.km_inicial --#GDV-34
                     )RETURNING id_equipo into v_id_equipo;
 
+            if v_id_equipo > 0 then --#RAS-7
+               select * into v_respuesta from ras.f_sincronizarTraccar(NULL,v_parametros.uniqueid,v_parametros.placa,'insert');
+            end if;
             --Definicion de la respuesta
             v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Vehiculos almacenado(a) con exito (id_equipo'||v_id_equipo||')');
             v_resp = pxp.f_agrega_clave(v_resp,'id_equipo',v_id_equipo::varchar);
@@ -134,6 +138,7 @@ BEGIN
 
         begin
             --Sentencia de la modificacion
+            select eq.uniqueid into v_id_device_ant from ras.tequipo eq where eq.id_equipo = v_parametros.id_equipo; --#RAS-7
             update ras.tequipo set
                                    id_tipo_equipo = v_parametros.id_tipo_equipo,
                                    id_modelo = v_parametros.id_modelo,
@@ -164,6 +169,9 @@ BEGIN
                                    km_inicial = v_parametros.km_inicial
             where id_equipo=v_parametros.id_equipo;
 
+            if v_parametros.id_equipo > 0 then --#RAS-7
+               select * into v_respuesta from ras.f_sincronizarTraccar(v_id_device_ant,v_parametros.uniqueid,v_parametros.placa,'update');
+            end if;
             --Definicion de la respuesta
             v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Vehiculos modificado(a)');
             v_resp = pxp.f_agrega_clave(v_resp,'id_equipo',v_parametros.id_equipo::varchar);
@@ -184,9 +192,12 @@ BEGIN
 
         begin
             --Sentencia de la eliminacion
+            select eq.uniqueid into v_id_device_ant from ras.tequipo eq where eq.id_equipo = v_parametros.id_equipo; --#RAS-7
+
             delete from ras.tequipo
             where id_equipo=v_parametros.id_equipo;
 
+            select * into v_respuesta from ras.f_sincronizarTraccar(v_id_device_ant,null,null,'delete'); --#RAS-7
             --Definicion de la respuesta
             v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Vehiculos eliminado(a)');
             v_resp = pxp.f_agrega_clave(v_resp,'id_equipo',v_parametros.id_equipo::varchar);
