@@ -1,3 +1,5 @@
+--------------- SQL ---------------
+
 CREATE OR REPLACE FUNCTION ras.ft_sol_vehiculo_sel (
     p_administrador integer,
     p_id_usuario integer,
@@ -20,6 +22,7 @@ $body$
 #GDV-29                 13/01/2021          EGS                  Se agrega si exite conductor o no
 #GDV-36                 02/03/2021          EGS                   Se agrega tab para filtro de estado
 #GDV-37                 11/03/2021          EGS                  Se agrega el telefono_contacto
+#GDV-37                 22/03/2021          EGS                 Se agrega que tambien lo vea usuario de creacion
  ***************************************************************************/
 
 DECLARE
@@ -67,7 +70,7 @@ BEGIN
                 --si es la vista del help y estan en estado asignado y finalizado muestra solo os registristros del funcionario solicitante
                 IF v_parametros.nombreVista = 'SolVehiculo'   THEN
 
-                    v_filtro = '(solvehi.id_funcionario = '||v_parametros.id_funcionario_usu::varchar||' ) and ';
+                    v_filtro = '(solvehi.id_funcionario = '||v_parametros.id_funcionario_usu::varchar||' or solvehi.id_usuario_reg = '||p_id_usuario::varchar||' ) and ';--#GDV-37
 
                     --Si no soy administrador y estoy en pendiente no veo nada
                 ElSIF v_parametros.nombreVista = 'SolVehiculoVoBo' or (v_parametros.nombreVista = 'SolVehiculoAsig' and v_estado = 'asigvehiculo') THEN --#GDV-36
@@ -229,7 +232,7 @@ BEGIN
                 --si es la vista del help y estan en estado asignado y finalizado muestra solo os registristros del funcionario solicitante
                 IF v_parametros.nombreVista = 'SolVehiculo'   THEN
 
-                    v_filtro = '(solvehi.id_funcionario = '||v_parametros.id_funcionario_usu::varchar||' ) and ';
+                    v_filtro = '(solvehi.id_funcionario = '||v_parametros.id_funcionario_usu::varchar||' or solvehi.id_usuario_reg = '||p_id_usuario::varchar||' ) and ';--#GDV-37
 
                     --Si no soy administrador y estoy en pendiente no veo nada
                 ElSIF v_parametros.nombreVista = 'SolVehiculoVoBo' THEN
