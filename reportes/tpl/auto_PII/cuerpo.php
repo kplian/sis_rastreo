@@ -1,6 +1,8 @@
 <p>Parte II. Llenado por División de Servicios</p><?php
 $i = 1;
-foreach ($this->datos_asig_vehiculo as $datos) {?><font size="10"><table  width="100%" cellpadding="5px"  border="1" >
+foreach ($this->datos_asig_vehiculo as $datos) {?>
+    <font size="10">
+        <table  width="100%" cellpadding="5px"  border="1" >
         <tr >
             <td width="25%"  >Vehículo Asignado:
             </td>
