@@ -1,3 +1,6 @@
+<!--
+#ETR-3400  JJA     24/03/2021  Agregar códigos a reportes Gestión vehicular
+ -->
 <font size="10">
     <?php
     $datosAsig=0;
@@ -6,7 +9,7 @@
         $existe = true;
         $i = 1;
         $numero = 3;
-        echo '<h3>'.$datosAsig['placa'].'</h3>';
+        echo '<h3>'.$datosAsig['placa'].' '.$datosAsig['desc_tipo_equipo'].'</h3>';
         echo '<p>Elementos de Seguridad y señalizacion: </p>';
         echo '<table  width="100%" cellpadding="5px"  border="1" >';
         echo '<tr>';
@@ -22,12 +25,12 @@
                 echo '<tr>';
                 echo '<td width="30%" >'. $datos['desc_elemento_seg'] .'</td>';
                 echo  '<td width="10%" align="center">';
-                echo $datos['existe']=='t'?'x':'';
+                echo $datos['existe']=='t'?'x':'-'; //#ETR-3400
                 echo  '</td>';
                 if ($datos['existe']=='t'){
                     echo '<td width="20%" >'. $datos['estado_elemento'] .'</td>';
                 }else{
-                    echo '<td width="20%" > </td>';
+                    echo '<td width="20%" >No aplica </td>'; //#ETR-3400
                 }
                 echo '<td width="40%" >'. $datos['observacion'] .'</td>';
                 echo '</tr>';

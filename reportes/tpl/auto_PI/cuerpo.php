@@ -1,9 +1,13 @@
-<font size="10"><table  width="100%" cellpadding="5px"  border="1" >
+<br>
+<font size="10">
+    <table  width="100%" cellpadding="5px"  border="1" style="width: 100%; margin-top: 50px">
 		<tr >
             <td rowspan="2" width="20%" ><br>Viaje Solicitado por:
             </td>
-            <td width="50%" height="35px">
+            <td width="25%" height="35px">
                 <?php  echo '<br>'.ucwords(strtolower($this->datos_sol_vehiculo[0]['desc_funcionario']));?>
+            </td>
+            <td width="25%" align="center">
             </td>
             <td width="10%" align="center">Día
             </td>
@@ -34,13 +38,13 @@
         <tr >
             <td width="20%" >Destino:
             </td>
-            <td width="80%" ><?php  echo  strtolower($this->datos_sol_vehiculo[0]['destino']);?>
+            <td width="80%" ><?php  echo  strtoupper($this->datos_sol_vehiculo[0]['destino']);?>
             </td>
         </tr>
         <tr >
             <td width="20%" >Motivo Viaje:
             </td>
-            <td width="80%" ><?php  echo  strtolower($this->datos_sol_vehiculo[0]['motivo']);?>
+            <td width="80%" ><?php  echo  strtoupper($this->datos_sol_vehiculo[0]['motivo']);?>
             </td>
         </tr>
         <tr >
@@ -49,7 +53,7 @@
 
             <?php
             if($this->datos_sol_vehiculo[0]['existe_conductor'] == 'no' ){
-                echo ' <td width="20%" >'.strtolower($this->datos_sol_vehiculo[0]['existe_conductor']).'
+                echo ' <td width="20%" >'.strtoupper($this->datos_sol_vehiculo[0]['existe_conductor']).'
                         </td> 
                         <td width="25%" >Conductor Autorizado: 
                         </td>
@@ -59,7 +63,7 @@
             }
             else{
 
-                echo ' <td width="80%" >'.strtolower($this->datos_sol_vehiculo[0]['existe_conductor']).'
+                echo ' <td width="80%" >'.strtoupper($this->datos_sol_vehiculo[0]['existe_conductor']).'
                         </td> ';
             }
             ?>
@@ -69,7 +73,7 @@
         <tr >
             <td width="30%" >Tipo de Vehículo Requerido:
             </td>
-            <td width="25%" ><?php  echo  strtolower($this->datos_sol_vehiculo[0]['desc_tipo_equipo']);?>
+            <td width="25%" ><?php  echo  ucfirst($this->datos_sol_vehiculo[0]['desc_tipo_equipo']);?>
             </td>
             <td width="15%" >CECO/CLCO:
             </td>
@@ -131,4 +135,5 @@
         </tr>';
         }
         ?>
-</table></font>
+    </table>
+</font>
