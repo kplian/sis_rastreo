@@ -27,7 +27,7 @@ $body$
 
 DECLARE
 
-	v_consulta    		varchar;
+v_consulta    		varchar;
 	v_parametros  		record;
 	v_nombre_funcion   	text;
 	v_resp				varchar;
@@ -58,7 +58,7 @@ BEGIN
 
 	if(p_transaccion='PB_POSIC_SEL')then
 
-    	begin
+begin
     		--Sentencia de la consulta
             --#RAS-1
 			v_consulta:='select
@@ -86,9 +86,9 @@ BEGIN
 			v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
 
 			--Devuelve la respuesta
-			return v_consulta;
+return v_consulta;
 
-		end;
+end;
 
 	/*********************************
  	#TRANSACCION:  'PB_POSIC_CONT'
@@ -99,7 +99,7 @@ BEGIN
 
 	elsif(p_transaccion='PB_POSIC_CONT')then
 
-		begin
+begin
 			--Sentencia de la consulta de conteo de registros
             --#RAS-1
 			v_consulta:='select count(id)
@@ -110,9 +110,9 @@ BEGIN
 			v_consulta:=v_consulta||v_parametros.filtro;
 
 			--Devuelve la respuesta
-			return v_consulta;
+return v_consulta;
 
-		end;
+end;
 
 	/*********************************
  	#TRANSACCION:  'PB_POSIC_ULT'
@@ -123,7 +123,7 @@ BEGIN
 
 	elsif(p_transaccion='PB_POSIC_ULT')then
 
-		begin
+begin
 
             --inicio issue #2
             --#
@@ -175,17 +175,17 @@ BEGIN
 						--if(v_parametros.ids_grupo<>'') then
 						if(pxp.f_existe_parametro(p_tabla,'ids_grupo')) then
 							v_consulta = v_consulta || ' eq.id_grupo in ('||v_parametros.ids_grupo||')';
-						else
+else
 							v_consulta = v_consulta || ' eq.id_equipo in ('||v_parametros.ids||')';
 
-						end if;
+end if;
 
 
 
 			--Devuelve la respuesta
-			return v_consulta;
+return v_consulta;
 
-		end;
+end;
 
 	/*********************************
  	#TRANSACCION:  'PB_POSRAN_SEL'
@@ -196,7 +196,7 @@ BEGIN
 
 	elsif(p_transaccion='PB_POSRAN_SEL')then
 
-		begin
+begin
 
 			--Sentencia de la consulta
 			v_consulta:='select
@@ -243,9 +243,9 @@ BEGIN
 			v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
 
 			--Devuelve la respuesta
-			return v_consulta;
+return v_consulta;
 
-		end;
+end;
 
 
 	/*********************************
@@ -257,7 +257,7 @@ BEGIN
 
 	elsif(p_transaccion='PB_POSRAN_CONT')then
 
-		begin
+begin
 
 			--Sentencia de la consulta
 			v_consulta:='select
@@ -280,9 +280,9 @@ BEGIN
 			v_consulta:=v_consulta||v_parametros.filtro;
 
 			--Devuelve la respuesta
-			return v_consulta;
+return v_consulta;
 
-		end;
+end;
 
 	/*********************************
  	#TRANSACCION:  'PB_PORAPRO_SEL'
@@ -293,7 +293,7 @@ BEGIN
 
 	elsif(p_transaccion='PB_PORAPRO_SEL')then
 
-		begin
+begin
 
 			--Crea tabla temporal
 			create temp table ras_posiciones (
@@ -365,7 +365,10 @@ BEGIN
 						pos.address, pos.attributes, pos.accuracy,
 						eq.desc_equipo,
 						ev.id as eventid,
-						ev.type,
+						case  cast(pos.attributes as json)->>''di1''
+                        when ''0'' then ''ignitionOff''
+                        when ''1'' then ''ignitionOn'' else ev.type end::varchar as type,
+
 						ev.attributes as attributes_event,
 						case ev.type
 							when ''deviceStopped'' then ''Detenido''::varchar
@@ -397,54 +400,54 @@ BEGIN
 
                         order by pos.devicetime asc';
 
-			execute(v_consulta);
-            --raise notice 'CONS: %',v_consulta;
+execute(v_consulta);
+--raise notice 'CONS: %',v_consulta;
 
-			--Recorrido de las posiciones obtenidas para verificar de no mandar posiciones repetidas cuando este detenido
-			v_detenido = false;
+--Recorrido de las posiciones obtenidas para verificar de no mandar posiciones repetidas cuando este detenido
+v_detenido = false;
 			v_total_distancia = 0;
 
             v_id_position=0;
             v_bandera_aux=0;
             v_hora=now()::TIMESTAMP;
 
-			for v_rec in select * from ras_posiciones order by devicetime asc loop
+for v_rec in select * from ras_posiciones order by devicetime asc loop
 				v_distance = cast(v_rec.attributes as json)->>'distance';
-				v_total_distancia = v_total_distancia + cast(v_distance as numeric);
+v_total_distancia = v_total_distancia + cast(v_distance as numeric);
 				--Pregunta si esta detenido
 				if v_rec.desc_type = 'deviceStopped' then
 					if v_detenido = true then
-						update ras_posiciones set send = false where id = v_rec.id;
-					else
+update ras_posiciones set send = false where id = v_rec.id;
+else
 						v_detenido = true;
-					end if;
-				else
+end if;
+else
 					v_detenido = false;
-				end if;
+end if;
 
                 --calculo de tiempo de estacionado quitando eventos repetidos
-                if(v_rec.type = 'ignitionOff' and v_bandera_aux=0)then  --#RAS-5
+                if( (v_rec.type = 'ignitionOff' or (cast(v_rec.attributes as json)->>'di1')='0') and v_bandera_aux=0)then  --#RAS-5
                   v_id_position=v_rec.id;
                   v_bandera_aux=1;
                   v_hora=v_rec.devicetime;
                   v_lat_ant=v_rec.latitude;
                   v_lon_ant=v_rec.longitude;
-                else
-                  if(v_bandera_aux=1 and (cast(v_rec.attributes as json)->>'event')::integer=0 and (cast(v_rec.attributes as json)->>'ignition')::varchar = 'true' and v_lat_ant!=v_rec.latitude )then
-                    update ras_posiciones set tiempo_detenido = to_char ((   extract(epoch from age(v_rec.devicetime::TIMESTAMP, v_hora::TIMESTAMP))    ||' seconds')::interval, 'HH24:MI:SS' ) where id = v_id_position;
-                    v_bandera_aux=0;
-                  else
+else
+                  if(v_bandera_aux=1 and (cast(v_rec.attributes as json)->>'event')::integer=0 and ((cast(v_rec.attributes as json)->>'ignition')::varchar = 'true' or (cast(v_rec.attributes as json)->>'di1')='1') and v_lat_ant!=v_rec.latitude )then
+update ras_posiciones set tiempo_detenido = to_char ((   extract(epoch from age(v_rec.devicetime::TIMESTAMP, v_hora::TIMESTAMP))    ||' seconds')::interval, 'HH24:MI:SS' ) where id = v_id_position;
+v_bandera_aux=0;
+else
                     IF(v_lat_ant=v_rec.latitude) then
-                      update ras_posiciones set send = false where id = v_rec.id;
-                    end if;
-                  end if;
-                end if;
+update ras_posiciones set send = false where id = v_rec.id;
+end if;
+end if;
+end if;
 
-			end loop;
+end loop;
 
-			for v_rec in select * from ras_posiciones order by devicetime desc limit 1 loop
-				update ras_posiciones set distance = v_total_distancia where id = v_rec.id;
-			end loop;
+for v_rec in select * from ras_posiciones order by devicetime desc limit 1 loop
+update ras_posiciones set distance = v_total_distancia where id = v_rec.id;
+end loop;
 
 			v_consulta = '
             select *
@@ -453,9 +456,9 @@ BEGIN
              order by devicetime asc ';
 
 			--Devuelve la respuesta
-			return v_consulta;
+return v_consulta;
 
-		end;
+end;
 	/*********************************
  	#TRANSACCION:  'PB_POSVEL_SEL'
  	#DESCRIPCION:	Devuelve rango de velocidades en un rango de fechas para los equipos enviados
@@ -465,7 +468,7 @@ BEGIN
 
 	elsif(p_transaccion='PB_POSVEL_SEL')then
 
-		begin
+begin
 
 			--Sentencia de la consulta
             --#RAS-1
@@ -506,9 +509,9 @@ BEGIN
 			v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
 
 			--Devuelve la respuesta
-			return v_consulta;
+return v_consulta;
 
-		end;
+end;
 
 	/*********************************
  	#TRANSACCION:  'PB_POSVEL_CONT'
@@ -519,7 +522,7 @@ BEGIN
 
 	elsif(p_transaccion='PB_POSVEL_CONT')then
 
-		begin
+begin
             --#RAS-1
 			--Sentencia de la consulta
 			v_consulta:='select
@@ -539,15 +542,15 @@ BEGIN
 			v_consulta:=v_consulta||v_parametros.filtro;
 
 			--Devuelve la respuesta
-			return v_consulta;
+return v_consulta;
 
-		end;
+end;
 
-	else
+else
 
 		raise exception 'Transaccion inexistente';
 
-	end if;
+end if;
 
 EXCEPTION
 
