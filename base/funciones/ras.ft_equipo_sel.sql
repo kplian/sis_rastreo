@@ -1,12 +1,12 @@
 --------------- SQL ---------------
 
 CREATE OR REPLACE FUNCTION ras.ft_equipo_sel (
-    p_administrador integer,
-    p_id_usuario integer,
-    p_tabla varchar,
-    p_transaccion varchar
+  p_administrador integer,
+  p_id_usuario integer,
+  p_tabla varchar,
+  p_transaccion varchar
 )
-    RETURNS varchar AS
+RETURNS varchar AS
 $body$
 /**************************************************************************
  SISTEMA:		Rastreo Satelital
@@ -28,7 +28,7 @@ $body$
 
 DECLARE
 
-    v_consulta    		varchar;
+v_consulta    		varchar;
     v_parametros  		record;
     v_nombre_funcion   	text;
     v_resp				varchar;
@@ -63,21 +63,21 @@ BEGIN
 
     if(p_transaccion='RAS_EQUIP_SEL')then
 
-        begin
+begin
             -- inicio #6
             v_filtro = '';
             IF p_administrador !=1 THEN
 
-                select
-                    pxp.aggarray(depu.id_depto)
-                into
-                    va_id_depto
-                from param.tdepto_usuario depu
-                where depu.id_usuario =  p_id_usuario and depu.cargo in ('responsable','administrador');
+select
+    pxp.aggarray(depu.id_depto)
+into
+    va_id_depto
+from param.tdepto_usuario depu
+where depu.id_usuario =  p_id_usuario and depu.cargo in ('responsable','administrador');
 
-                v_filtro = ' ( equip.id_usuario_reg = '||p_id_usuario::varchar ||' or   (equip.id_depto  in ('|| COALESCE(array_to_string(va_id_depto,','),'0')||'))) and ';
+v_filtro = ' ( equip.id_usuario_reg = '||p_id_usuario::varchar ||' or   (equip.id_depto  in ('|| COALESCE(array_to_string(va_id_depto,','),'0')||'))) and ';
 
-            END IF;
+END IF;
             -- fin #6
             --#RAS-1
             v_consulta:='select
@@ -163,9 +163,9 @@ BEGIN
             v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
             --Devuelve la respuesta
             raise notice 'v_consulta %',v_consulta;
-            return v_consulta;
+return v_consulta;
 
-        end;
+end;
 
         /*********************************
          #TRANSACCION:  'RAS_EQUIP_CONT'
@@ -176,7 +176,7 @@ BEGIN
 
     elsif(p_transaccion='RAS_EQUIP_CONT')then
 
-        begin
+begin
             --#RAS-1
             --Sentencia de la consulta de conteo de registros
             v_consulta:='select count(id_equipo)
@@ -202,9 +202,9 @@ BEGIN
             v_consulta:=v_consulta||v_parametros.filtro;
 
             --Devuelve la respuesta
-            return v_consulta;
+return v_consulta;
 
-        end;
+end;
 
         /*********************************
          #TRANSACCION:  'RAS_EQURAP_SEL'
@@ -215,21 +215,21 @@ BEGIN
 
     elsif(p_transaccion='RAS_EQURAP_SEL')then
 
-        begin
+begin
             --Sentencia de la consulta
             v_filtro = '';
             IF p_administrador !=1 THEN
 
-                select
-                    pxp.aggarray(depu.id_depto)
-                into
-                    va_id_depto
-                from param.tdepto_usuario depu
-                where depu.id_usuario =  p_id_usuario and depu.cargo in ('responsable','administrador');
+select
+    pxp.aggarray(depu.id_depto)
+into
+    va_id_depto
+from param.tdepto_usuario depu
+where depu.id_usuario =  p_id_usuario and depu.cargo in ('responsable','administrador');
 
-                v_filtro = ' ( equip.id_usuario_reg = '||p_id_usuario::varchar ||' or   (equip.id_depto  in ('|| COALESCE(array_to_string(va_id_depto,','),'0')||'))) and ';
+v_filtro = ' ( equip.id_usuario_reg = '||p_id_usuario::varchar ||' or   (equip.id_depto  in ('|| COALESCE(array_to_string(va_id_depto,','),'0')||'))) and ';
 
-            END IF;
+END IF;
 
             v_consulta:='select
 						id_equipo, placa,nro_movil,marca,modelo,tipo_equipo
@@ -241,9 +241,9 @@ BEGIN
             v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
             --raise notice 'noticeee %',v_consulta; raise exception 'error %',v_consulta;
             --Devuelve la respuesta
-            return v_consulta;
+return v_consulta;
 
-        end;
+end;
 
         /*********************************
          #TRANSACCION:  'RAS_EQURAP_CONT'
@@ -254,7 +254,7 @@ BEGIN
 
     elsif(p_transaccion='RAS_EQURAP_CONT')then
 
-        begin
+begin
             --Sentencia de la consulta de conteo de registros
             v_consulta:='select count(1) as total
 					    from ras.vequipo equip
@@ -264,9 +264,9 @@ BEGIN
             v_consulta:=v_consulta||v_parametros.filtro;
 
             --Devuelve la respuesta
-            return v_consulta;
+return v_consulta;
 
-        end;
+end;
 
         /*********************************
      #TRANSACCION:  'RAS_EQUEST_SEL'
@@ -277,27 +277,27 @@ BEGIN
 
     elsif(p_transaccion='RAS_EQUEST_SEL')then
 
-        begin
+begin
             --Sentencia de la consulta
-            SELECT
-                solv.fecha_salida
-            INTO
-                v_registro
-            FROM ras.tsol_vehiculo solv
-            WHERE solv.id_sol_vehiculo = v_parametros.id_sol_vehiculo;
-            v_filtro = '';
+SELECT
+    solv.fecha_salida
+INTO
+    v_registro
+FROM ras.tsol_vehiculo solv
+WHERE solv.id_sol_vehiculo = v_parametros.id_sol_vehiculo;
+v_filtro = '';
             IF p_administrador !=1 THEN
 
-                select
-                    pxp.aggarray(depu.id_depto)
-                into
-                    va_id_depto
-                from param.tdepto_usuario depu
-                where depu.id_usuario =  p_id_usuario and depu.cargo in ('responsable','administrador');
+select
+    pxp.aggarray(depu.id_depto)
+into
+    va_id_depto
+from param.tdepto_usuario depu
+where depu.id_usuario =  p_id_usuario and depu.cargo in ('responsable','administrador');
 
-                v_filtro = ' ( equip.id_usuario_reg = '||p_id_usuario::varchar ||' or   (equip.id_depto  in ('|| COALESCE(array_to_string(va_id_depto,','),'0')||'))) and ';
+v_filtro = ' ( equip.id_usuario_reg = '||p_id_usuario::varchar ||' or   (equip.id_depto  in ('|| COALESCE(array_to_string(va_id_depto,','),'0')||'))) and ';
 
-            END IF;
+END IF;
 
             v_filtro = v_filtro ||'( es.fecha_final < '''|| v_registro.fecha_salida||'''::date or es.fecha_final is null ) and' ;
 
@@ -334,9 +334,9 @@ BEGIN
             raise notice 'noticeee %',v_consulta;
             --raise exception 'error %',v_consulta;
             --Devuelve la respuesta
-            return v_consulta;
+return v_consulta;
 
-        end;
+end;
 
         /*********************************
          #TRANSACCION:  'RAS_EQUEST_CONT'
@@ -347,27 +347,27 @@ BEGIN
 
     elsif(p_transaccion='RAS_EQUEST_CONT')then
 
-        begin
+begin
             --Sentencia de la consulta
-            SELECT
-                solv.fecha_salida
-            INTO
-                v_registro
-            FROM ras.tsol_vehiculo solv
-            WHERE solv.id_sol_vehiculo = v_parametros.id_sol_vehiculo;
-            v_filtro = '';
+SELECT
+    solv.fecha_salida
+INTO
+    v_registro
+FROM ras.tsol_vehiculo solv
+WHERE solv.id_sol_vehiculo = v_parametros.id_sol_vehiculo;
+v_filtro = '';
             IF p_administrador !=1 THEN
 
-                select
-                    pxp.aggarray(depu.id_depto)
-                into
-                    va_id_depto
-                from param.tdepto_usuario depu
-                where depu.id_usuario =  p_id_usuario and depu.cargo in ('responsable','administrador');
+select
+    pxp.aggarray(depu.id_depto)
+into
+    va_id_depto
+from param.tdepto_usuario depu
+where depu.id_usuario =  p_id_usuario and depu.cargo in ('responsable','administrador');
 
-                v_filtro = ' ( equip.id_usuario_reg = '||p_id_usuario::varchar ||' or   (equip.id_depto  in ('|| COALESCE(array_to_string(va_id_depto,','),'0')||'))) and ';
+v_filtro = ' ( equip.id_usuario_reg = '||p_id_usuario::varchar ||' or   (equip.id_depto  in ('|| COALESCE(array_to_string(va_id_depto,','),'0')||'))) and ';
 
-            END IF;
+END IF;
 
             v_filtro = v_filtro ||'( es.fecha_final < '''|| v_registro.fecha_salida||'''::date or es.fecha_final is null ) and' ;
             --Sentencia de la consulta de conteo de registros
@@ -395,9 +395,9 @@ BEGIN
             v_consulta:=v_consulta||v_parametros.filtro;
 
             --Devuelve la respuesta
-            return v_consulta;
+return v_consulta;
 
-        end;
+end;
         /*********************************
      #TRANSACCION:  'RAS_HISVEH_SEL'
      #DESCRIPCION:	Consulta de datos
@@ -407,7 +407,7 @@ BEGIN
 
     elsif(p_transaccion='RAS_HISVEH_SEL')then --#RAS-3
 
-        begin
+begin
 
             v_consulta:='select
                     p.address::varchar as ubicacion,
@@ -419,7 +419,7 @@ BEGIN
                     (cast(p.attributes as json)->>''distance'')::numeric as distancia,
                     (cast(p.attributes as json)->>''power'')::numeric as volt_bateria,
                     (cast(p.attributes as json)->>''odometer'')::numeric as odometro,
-                    (case when cast(p.attributes as json)->>''ignition''=''true'' then ''encendido'' else ''apagado'' end)::varchar as estado
+                    (case when cast(p.attributes as json)->>''ignition''=''true'' or cast(p.attributes as json)->>''di1''=''1'' then ''encendido'' else ''apagado'' end)::varchar as estado
                     from public.tc_positions p
                     join public.tc_devices dev on dev.id=p.deviceid
                     left join public.tc_events ev on ev.positionid=p.id
@@ -432,9 +432,9 @@ BEGIN
             raise notice 'noticeee %',v_consulta;
             --raise exception 'error %',v_consulta;
             --Devuelve la respuesta
-            return v_consulta;
+return v_consulta;
 
-        end;
+end;
         /*********************************
      #TRANSACCION:  'RAS_ESTVEH_SEL'
      #DESCRIPCION:	Consulta de datos
@@ -444,7 +444,7 @@ BEGIN
 
     elsif(p_transaccion='RAS_ESTVEH_SEL')then --#RAS-6
 
-        begin
+begin
                     create temp table ras_posiciones (
                         id serial,
                         ubicacion varchar,
@@ -488,7 +488,7 @@ BEGIN
                             (cast(p.attributes as json)->>''distance'')::numeric as distancia,
                             (cast(p.attributes as json)->>''power'')::numeric as volt_bateria,
                             (cast(p.attributes as json)->>''odometer'')::numeric as odometro,
-                            (case when cast(p.attributes as json)->>''ignition''=''true'' then ''encendido'' else ''apagado'' end)::varchar as estado,
+                            (case when cast(p.attributes as json)->>''ignition''=''true'' or cast(p.attributes as json)->>''di1''=''1'' then ''encendido'' else ''apagado'' end)::varchar as estado,
                             p.attributes,
                             0::varchar as tiempo_detenido,
                             ev.type
@@ -500,35 +500,35 @@ BEGIN
 
                             v_consulta:=v_consulta||v_parametros.filtro||' order by p.devicetime asc ';
 
-        execute(v_consulta);
+execute(v_consulta);
 
-        v_detenido = false;
+v_detenido = false;
                     v_total_distancia = 0;
 
                     v_id_position=0;
                     v_bandera_aux=0;
                     v_hora=now()::TIMESTAMP;
 
-        for v_rec in select * from ras_posiciones order by fecha_hora asc loop
+for v_rec in select * from ras_posiciones order by fecha_hora asc loop
                         v_distance = cast(v_rec.attributes as json)->>'distance';
-        v_total_distancia = v_total_distancia + cast(v_distance as numeric);
+v_total_distancia = v_total_distancia + cast(v_distance as numeric);
 
                         --calculo de tiempo de estacionado quitando eventos repetidos
-                        if(v_rec.type = 'ignitionOff' and v_bandera_aux=0 and (cast(v_rec.attributes as json)->>'event')::integer !=0 )then
+                        if( (v_rec.type = 'ignitionOff' or (cast(v_rec.attributes as json)->>'di1')='0') and v_bandera_aux=0 and (cast(v_rec.attributes as json)->>'event')::integer !=0 )then
                           v_id_position=v_rec.id;
                           v_bandera_aux=1;
                           v_hora=v_rec.fecha_hora;
                           v_lat_ant=v_rec.latitude;
                           v_lon_ant=v_rec.longitude;
-        update ras_posiciones set send = true where id = v_rec.id;
-        else
-                          if(v_bandera_aux=1 and (cast(v_rec.attributes as json)->>'event')::integer=0 and (cast(v_rec.attributes as json)->>'ignition')::varchar = 'true' and v_lat_ant!=v_rec.latitude )then
-        update ras_posiciones set tiempo_detenido = to_char ((   extract(epoch from age(v_rec.fecha_hora::TIMESTAMP, v_hora::TIMESTAMP))    ||' seconds')::interval, 'HH24:MI:SS' ) where id = v_id_position;
-        v_bandera_aux=0;
-        end if;
-        end if;
+update ras_posiciones set send = true where id = v_rec.id;
+else
+                          if(v_bandera_aux=1 and (cast(v_rec.attributes as json)->>'event')::integer=0 and ( (cast(v_rec.attributes as json)->>'ignition')::varchar = 'true' or (cast(v_rec.attributes as json)->>'di1')='1' ) and v_lat_ant!=v_rec.latitude )then
+update ras_posiciones set tiempo_detenido = to_char ((   extract(epoch from age(v_rec.fecha_hora::TIMESTAMP, v_hora::TIMESTAMP))    ||' seconds')::interval, 'HH24:MI:SS' ) where id = v_id_position;
+v_bandera_aux=0;
+end if;
+end if;
 
-        end loop;
+end loop;
 
 
                     v_consulta = '
@@ -551,9 +551,9 @@ BEGIN
                      and tiempo_detenido !=''0''
                      order by fecha_hora asc ';
 
-        return v_consulta;
+return v_consulta;
 
-        end;
+end;
         /*********************************
         #TRANSACCION:  'RAS_EQUKILINI_SEL'
         #DESCRIPCION:	Consulta de datos
@@ -564,7 +564,7 @@ BEGIN
 
     elsif(p_transaccion='RAS_EQUKILINI_SEL')then
 
-        begin
+begin
             --Sentencia de la consulta
             v_filtro = '';
 
@@ -602,9 +602,9 @@ BEGIN
             --raise exception 'noticeee %',v_consulta;
             raise notice 'noticeee %',v_consulta;
             --Devuelve la respuesta
-            return v_consulta;
+return v_consulta;
 
-        end;
+end;
 
         /*********************************
      #TRANSACCION:  'RAS_EQUIPKL_SEL'
@@ -615,11 +615,11 @@ BEGIN
 
     elseif(p_transaccion='RAS_EQUIPKL_SEL')then
 
-        begin
+begin
             v_filtro = '';
             IF p_administrador !=1 THEN
 
-            END IF;
+END IF;
 
             v_consulta:='
             with km (
@@ -685,9 +685,9 @@ BEGIN
             v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
             --Devuelve la respuesta
             raise notice 'v_consulta %',v_consulta;
-            return v_consulta;
+return v_consulta;
 
-        end;
+end;
 
         /*********************************
          #TRANSACCION:  'RAS_EQUIPKL_CONT'
@@ -698,7 +698,7 @@ BEGIN
 
     elsif(p_transaccion='RAS_EQUIPKL_CONT')then
 
-        begin
+begin
             --#RAS-1
             --Sentencia de la consulta de conteo de registros
             v_consulta:='select count(id_equipo)
@@ -711,14 +711,14 @@ BEGIN
             v_consulta:=v_consulta||v_parametros.filtro;
 
             --Devuelve la respuesta
-            return v_consulta;
+return v_consulta;
 
-        end;
-    else
+end;
+else
 
         raise exception 'Transaccion inexistente';
 
-    end if;
+end if;
 
 EXCEPTION
 
@@ -730,9 +730,9 @@ EXCEPTION
         raise exception '%',v_resp;
 END;
 $body$
-    LANGUAGE 'plpgsql'
-    VOLATILE
-    CALLED ON NULL INPUT
-    SECURITY INVOKER
-    PARALLEL UNSAFE
-    COST 100;
+LANGUAGE 'plpgsql'
+VOLATILE
+CALLED ON NULL INPUT
+SECURITY INVOKER
+PARALLEL UNSAFE
+COST 100;
