@@ -398,8 +398,8 @@ BEGIN
             JOIN orga.tuo_funcionario uff on uff.id_funcionario=fun.id_funcionario
             AND uff.fecha_asignacion<=CURRENT_DATE AND (uff.fecha_finalizacion IS NULL OR CURRENT_DATE<=uff.fecha_finalizacion)
             join orga.tuo uo on uo.id_uo=orga.f_get_uo_departamento(uff.id_uo,fun.id_funcionario,null)
-
-            left join ras.tsol_vehiculo_responsable r on r.id_sol_vehiculo_responsable::integer = asig.id_sol_vehiculo_responsable::integer
+            left join ras.tsol_vehiculo_responsable r on r.id_sol_vehiculo_responsable::text = ANY (string_to_array(asig.id_sol_vehiculo_responsable,'',''))
+            --left join ras.tsol_vehiculo_responsable r on r.id_sol_vehiculo_responsable::integer = asig.id_sol_vehiculo_responsable::integer
             left join ras.tresponsable rs on rs.id_responsable=r.id_responsable
             left join segu.vpersona pe on pe.id_persona = rs.id_persona
             where sol.estado = ''asignado'' and ';
@@ -426,8 +426,8 @@ BEGIN
             JOIN orga.tuo_funcionario uff on uff.id_funcionario=fun.id_funcionario
             AND uff.fecha_asignacion<=CURRENT_DATE AND (uff.fecha_finalizacion IS NULL OR CURRENT_DATE<=uff.fecha_finalizacion)
             join orga.tuo uo on uo.id_uo=orga.f_get_uo_departamento(uff.id_uo,fun.id_funcionario,null)
-
-            left join ras.tsol_vehiculo_responsable r on r.id_sol_vehiculo_responsable::integer = asig.id_sol_vehiculo_responsable::integer
+            left join ras.tsol_vehiculo_responsable r on r.id_sol_vehiculo_responsable::text = ANY (string_to_array(asig.id_sol_vehiculo_responsable,'',''))
+            --left join ras.tsol_vehiculo_responsable r on r.id_sol_vehiculo_responsable::integer = asig.id_sol_vehiculo_responsable::integer
             left join ras.tresponsable rs on rs.id_responsable=r.id_responsable
             left join segu.vpersona pe on pe.id_persona = rs.id_persona
             where sol.estado = ''asignado'' and ';
