@@ -10,6 +10,7 @@
  #ISSUE                FECHA                AUTOR                DESCRIPCION
   #0                02-07-2020 22:13:48    egutierrez             Creacion    
 #GDV-29              29/12/2020            EGS                 Añadiendo campo deexiste conductores
+#RAS-8                 21/05/2021          JJA                  Reporte de conductores asignados
  *****************************************************************************************/
 
 class MODSolVehiculo extends MODbase{
@@ -264,6 +265,28 @@ class MODSolVehiculo extends MODbase{
         //Devuelve la respuesta
         return $this->respuesta;
     }
-            
+    function ReporteAsignacionVehiculo(){ //#RAS-8
+        //Definicion de variables para ejecucion del procedimientp
+        $this->procedimiento='ras.ft_sol_vehiculo_sel';
+        $this->transaccion='RAS_DASIGVEH_SEL';
+        $this->tipo_procedimiento='SEL';//tipo de transaccion
+
+        //Definicion de la lista del resultado del query
+        $this->captura('id_asig_vehiculo','int4');
+        $this->captura('conductor_responsable','varchar');
+        $this->captura('placa','varchar');
+        $this->captura('funcionario_solicitante','varchar');
+        $this->captura('fecha_retorno','varchar');
+        $this->captura('nombre_unidad','varchar');
+
+
+        //Ejecuta la instruccion
+        $this->armarConsulta();
+        $this->ejecutarConsulta();
+
+        //Devuelve la respuesta
+        return $this->respuesta;
+    }
+
 }
 ?>

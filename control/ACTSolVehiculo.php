@@ -10,6 +10,7 @@
  #ISSUE                FECHA                AUTOR                DESCRIPCION
   #0                02-07-2020 22:13:48    egutierrez             Creacion
   #GDV-36        02/03/2021      EGS                     Se agrega tab para filtro de estado
+  #RAS-8            21/05/2021             JJA          Reporte de conductores asignados
 #
 *****************************************************************************************/
 require_once(dirname(__FILE__).'/../../pxp/pxpReport/DataSource.php');
@@ -220,6 +221,35 @@ class ACTSolVehiculo extends ACTbase{
 
         $this->res=$this->objFunc->EditFormAlquilado($this->objParam);
 
+        $this->res->imprimirRespuesta($this->res->generarJson());
+    }
+    function ReporteAsignacionVehiculo(){ //#RAS-8
+        $this->objParam->defecto('ordenacion','asig.id_sol_vehiculo');
+
+        $this->objParam->defecto('dir_ordenacion','asc');
+
+        if($this->objParam->getParametro('id_funcionario')){
+            $this->objParam->addFiltro("fun.id_funcionario = ".$this->objParam->getParametro('id_funcionario'));
+        }
+        if($this->objParam->getParametro('id_sol_vehiculo_responsable')){
+            $this->objParam->addFiltro("r.id_sol_vehiculo_responsable = ".$this->objParam->getParametro('id_sol_vehiculo_responsable'));
+        }
+        if($this->objParam->getParametro('desde')){
+            $this->objParam->addFiltro(" (sol.fecha_retorno::date >= ''".$this->objParam->getParametro('desde')."''::date ) ");
+        }
+        if($this->objParam->getParametro('hasta')){
+            $this->objParam->addFiltro(" (sol.fecha_retorno::date <= ''".$this->objParam->getParametro('hasta')."''::date ) ");
+        }
+
+
+        if($this->objParam->getParametro('tipoReporte')=='excel_grid' || $this->objParam->getParametro('tipoReporte')=='pdf_grid'){
+            $this->objReporte = new Reporte($this->objParam,$this);
+            $this->res = $this->objReporte->generarReporteListado('MODSolVehiculo','ReporteAsignacionVehiculo');
+        } else{
+            $this->objFunc=$this->create('MODSolVehiculo');
+
+            $this->res=$this->objFunc->ReporteAsignacionVehiculo($this->objParam);
+        }
         $this->res->imprimirRespuesta($this->res->generarJson());
     }
 }
