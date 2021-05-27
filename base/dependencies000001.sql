@@ -737,3 +737,7 @@ DROP TRIGGER tg_equipo ON ras.tequipo; --#RAS-7
 --#RAS-8
 select pxp.f_insert_testructura_gui ('ASIVEHI', 'RAS.7');
 /***********************************F-DEP-JJA-RAS-GDV-34-21/05/2021*****************************************/
+/***********************************I-DEP-JJA-RAS-GDV-34-27/05/2021*****************************************/
+--#RAS-8
+select pxp.f_insert_testructura_gui ('CONSSOLI', 'RAS.7');
+/***********************************F-DEP-JJA-RAS-GDV-34-27/05/2021*****************************************/
