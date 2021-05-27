@@ -180,3 +180,7 @@ select wf.f_import_ttipo_documento ('insert','REPVIAJ','SOLVEH','Reporte de Viaj
 --#RAS-8
 select pxp.f_insert_tgui ('Conductores asignados', 'Conductores asignados', 'ASIVEHI', 'si', 6, 'sis_rastreo/reportes/formulario/form_asignacion.php', 3, '', 'form_asignacion', 'RAS');
 /***********************************F-DAT-JJA-RAS-GDV-37-1-21/05/2021****************************************/
+/***********************************I-DAT-JJA-RAS-GDV-37-1-27/05/2021****************************************/
+--#RAS-8
+select pxp.f_insert_tgui ('Consulta solicitudes', 'Consulta solicitudes', 'CONSSOLI', 'si', 7, 'sis_rastreo/reportes/formulario/form_solicitud.php', 3, '', 'form_solicitud', 'RAS');
+/***********************************F-DAT-JJA-RAS-GDV-37-1-27/05/2021****************************************/
