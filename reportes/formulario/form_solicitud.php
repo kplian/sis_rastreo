@@ -99,7 +99,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     gdisplayField:'desc_uo',//mapea al store del grid
                     gwidth:200,
                     emptyText:'Dejar blanco para toda la empresa...',
-                    width : 315,
+                    width : 250,
                     baseParams: {gerencia: 'si'},
                     allowBlank:true,
                     tpl:'<tpl for="."><div class="x-combo-list-item"><p><b>{codigo}</b> - {nombre_unidad}</p> </div></tpl>',
@@ -109,7 +109,30 @@ header("content-type: text/javascript; charset=UTF-8");
                 id_grupo:0,
                 form:true
             },
-
+            {
+                config:{
+                    name: 'desde',
+                    fieldLabel: 'Retorno Desde',
+                    allowBlank: true,
+                    format: 'd/m/Y',
+                    width: 250
+                },
+                type: 'DateField',
+                id_grupo: 0,
+                form: true
+            },
+            {
+                config:{
+                    name: 'hasta',
+                    fieldLabel: 'Retorno Hasta',
+                    allowBlank: true,
+                    format: 'd/m/Y',
+                    width: 250
+                },
+                type: 'DateField',
+                id_grupo: 0,
+                form: true
+            }
 
         ],
         labelSubmit: '<i class="fa fa-check"></i> Aplicar Filtro',

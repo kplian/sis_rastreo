@@ -266,6 +266,12 @@ class ACTSolVehiculo extends ACTbase{
         if($this->objParam->getParametro('id_tipo_cc')){
             $this->objParam->addFiltro("tcc.id_tipo_cc = ".$this->objParam->getParametro('id_tipo_cc'));
         }
+        if($this->objParam->getParametro('desde')){
+            $this->objParam->addFiltro(" (sol.fecha_retorno::date >= ''".$this->objParam->getParametro('desde')."''::date ) ");
+        }
+        if($this->objParam->getParametro('hasta')){
+            $this->objParam->addFiltro(" (sol.fecha_retorno::date <= ''".$this->objParam->getParametro('hasta')."''::date ) ");
+        }
 
         if($this->objParam->getParametro('tipoReporte')=='excel_grid' || $this->objParam->getParametro('tipoReporte')=='pdf_grid'){
             $this->objReporte = new Reporte($this->objParam,$this);

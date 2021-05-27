@@ -447,7 +447,8 @@ BEGIN
             to_char(sol.fecha_retorno,''DD/MM/YYYY'')::varchar as finalizacion,
             sol.destino,
             uo.nombre_unidad::varchar as depto,
-            g.nombre_unidad::varchar as gerencia
+            g.nombre_unidad::varchar as gerencia,
+            sol.alquiler::varchar
             FROM  ras.tsol_vehiculo sol
             join param.tcentro_costo cc on cc.id_centro_costo=sol.id_centro_costo
             join param.ttipo_cc tcc on tcc.id_tipo_cc=cc.id_tipo_cc

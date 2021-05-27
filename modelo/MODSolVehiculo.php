@@ -302,6 +302,7 @@ class MODSolVehiculo extends MODbase{
         $this->captura('destino','varchar');
         $this->captura('depto','varchar');
         $this->captura('gerencia','varchar');
+        $this->captura('alquiler','varchar');
         //Ejecuta la instruccion
         $this->armarConsulta();
         $this->ejecutarConsulta();

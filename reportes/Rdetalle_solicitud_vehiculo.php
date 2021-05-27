@@ -105,11 +105,26 @@ header("content-type: text/javascript; charset=UTF-8");
                     },
                     {
                         config:{
+                            name: 'alquiler',
+                            fieldLabel: 'Alquiler',
+                            allowBlank: true,
+                            anchor: '80%',
+                            gwidth: 70,
+                            maxLength:10
+                        },
+                        type:'TextField',
+                        filters:{pfiltro:'sol.nombre_unidad',type:'string'},
+                        id_grupo:1,
+                        grid:true,
+                        form:false
+                    },
+                    {
+                        config:{
                             name: 'depto',
                             fieldLabel: 'Depto',
                             allowBlank: true,
                             anchor: '80%',
-                            gwidth: 150,
+                            gwidth: 140,
                             maxLength:10
                         },
                         type:'TextField',
@@ -153,7 +168,8 @@ header("content-type: text/javascript; charset=UTF-8");
                 {name:'finalizacion', type: 'string'},
                 {name:'destino', type: 'string'},
                 {name:'depto', type: 'string'},
-                {name:'gerencia', type: 'string'}
+                {name:'gerencia', type: 'string'},
+                {name:'alquiler', type: 'string'},
             ],
 
             sortInfo:{
