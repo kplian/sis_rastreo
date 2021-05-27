@@ -436,6 +436,55 @@ BEGIN
 
 RETURN v_consulta;
 END;
+    ELSIF (p_transaccion='RAS_CONSUVEHI_SEL') THEN --#RAS-8
+
+BEGIN
+            v_consulta = ' select
+            SOL.id_sol_vehiculo,
+            fun.desc_funcionario1::varchar as solicitante,
+            (tcc.codigo||'' - ''||tcc.descripcion)::varchar as ceco,
+             to_char(sol.fecha_salida,''DD/MM/YYYY'')::varchar as inicio,
+            to_char(sol.fecha_retorno,''DD/MM/YYYY'')::varchar as finalizacion,
+            sol.destino,
+            uo.nombre_unidad::varchar as depto,
+            g.nombre_unidad::varchar as gerencia
+            FROM  ras.tsol_vehiculo sol
+            join param.tcentro_costo cc on cc.id_centro_costo=sol.id_centro_costo
+            join param.ttipo_cc tcc on tcc.id_tipo_cc=cc.id_tipo_cc
+            JOIN orga.vfuncionario fun on fun.id_funcionario = sol.id_funcionario
+            JOIN orga.tuo_funcionario uff on uff.id_funcionario=fun.id_funcionario
+            AND uff.fecha_asignacion<=CURRENT_DATE AND (uff.fecha_finalizacion IS NULL OR CURRENT_DATE<=uff.fecha_finalizacion)
+            join orga.tuo uo on uo.id_uo=orga.f_get_uo_departamento(uff.id_uo,fun.id_funcionario,null)
+            join orga.tuo g on g.id_uo=orga.f_get_uo_gerencia(uff.id_uo,fun.id_funcionario,null) where ';
+            --Definicion de la respuesta
+            v_consulta:=v_consulta||v_parametros.filtro;
+            v_consulta:=v_consulta||' order by sol.id_sol_vehiculo  ASC limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
+
+            --Devuelve la respuesta
+RETURN v_consulta;
+END;
+        /*********************************
+           #TRANSACCION:  'RAS_DASIGVEH_CONT'
+           #DESCRIPCION:    Conteo de registros
+           #AUTOR:        JJA
+           #FECHA:        20-05-2021 22:13:48
+          ***********************************/
+    ELSEIF (p_transaccion='RAS_CONSUVEHI_CONT') THEN --#RAS-8
+BEGIN
+            v_consulta = ' select count(*)
+            FROM  ras.tsol_vehiculo sol
+            join param.tcentro_costo cc on cc.id_centro_costo=sol.id_centro_costo
+            join param.ttipo_cc tcc on tcc.id_tipo_cc=cc.id_tipo_cc
+            JOIN orga.vfuncionario fun on fun.id_funcionario = sol.id_funcionario
+            JOIN orga.tuo_funcionario uff on uff.id_funcionario=fun.id_funcionario
+            AND uff.fecha_asignacion<=CURRENT_DATE AND (uff.fecha_finalizacion IS NULL OR CURRENT_DATE<=uff.fecha_finalizacion)
+            join orga.tuo uo on uo.id_uo=orga.f_get_uo_departamento(uff.id_uo,fun.id_funcionario,null)
+            join orga.tuo g on g.id_uo=orga.f_get_uo_gerencia(uff.id_uo,fun.id_funcionario,null) where ';
+            --Definicion de la respuesta
+            v_consulta:=v_consulta||v_parametros.filtro;
+
+RETURN v_consulta;
+END;
 ELSE
 
         RAISE EXCEPTION 'Transaccion inexistente';

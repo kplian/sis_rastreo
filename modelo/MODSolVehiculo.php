@@ -287,6 +287,28 @@ class MODSolVehiculo extends MODbase{
         //Devuelve la respuesta
         return $this->respuesta;
     }
+    function ReporteConsultaSolcitud(){ //#RAS-8
+        //Definicion de variables para ejecucion del procedimientp
+        $this->procedimiento='ras.ft_sol_vehiculo_sel';
+        $this->transaccion='RAS_CONSUVEHI_SEL';
+        $this->tipo_procedimiento='SEL';//tipo de transaccion
+
+        //Definicion de la lista del resultado del query
+        $this->captura('id_sol_vehiculo','int4');
+        $this->captura('solicitante','varchar');
+        $this->captura('ceco','varchar');
+        $this->captura('inicio','varchar');
+        $this->captura('finalizacion','varchar');
+        $this->captura('destino','varchar');
+        $this->captura('depto','varchar');
+        $this->captura('gerencia','varchar');
+        //Ejecuta la instruccion
+        $this->armarConsulta();
+        $this->ejecutarConsulta();
+
+        //Devuelve la respuesta
+        return $this->respuesta;
+    }
 
 }
 ?>

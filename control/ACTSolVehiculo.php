@@ -252,6 +252,31 @@ class ACTSolVehiculo extends ACTbase{
         }
         $this->res->imprimirRespuesta($this->res->generarJson());
     }
+    function ReporteConsultaSolcitud(){ //#RAS-8
+        $this->objParam->defecto('ordenacion','asig.id_sol_vehiculo');
+
+        $this->objParam->defecto('dir_ordenacion','asc');
+
+        if($this->objParam->getParametro('id_funcionario')){
+            $this->objParam->addFiltro("fun.id_funcionario = ".$this->objParam->getParametro('id_funcionario'));
+        }
+        if($this->objParam->getParametro('id_uo')){
+            $this->objParam->addFiltro("g.id_uo = ".$this->objParam->getParametro('id_uo'));
+        }
+        if($this->objParam->getParametro('id_tipo_cc')){
+            $this->objParam->addFiltro("tcc.id_tipo_cc = ".$this->objParam->getParametro('id_tipo_cc'));
+        }
+
+        if($this->objParam->getParametro('tipoReporte')=='excel_grid' || $this->objParam->getParametro('tipoReporte')=='pdf_grid'){
+            $this->objReporte = new Reporte($this->objParam,$this);
+            $this->res = $this->objReporte->generarReporteListado('MODSolVehiculo','ReporteConsultaSolcitud');
+        } else{
+            $this->objFunc=$this->create('MODSolVehiculo');
+
+            $this->res=$this->objFunc->ReporteConsultaSolcitud($this->objParam);
+        }
+        $this->res->imprimirRespuesta($this->res->generarJson());
+    }
 }
 
 ?>
