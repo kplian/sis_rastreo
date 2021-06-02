@@ -57,7 +57,7 @@ class RAutoPIII extends  ReportePDF {
         ob_start();
         include(dirname(__FILE__).'/../reportes/tpl/auto_PIII/detalle.php');
         $content2 = ob_get_clean();
-        $this->writeHTML($content.$content2, false, false, false, false, '');
+        $this->writeHTML($content.$content2);
 
         $this->SetFont ('helvetica', '', 5 , '', 'default', true );
 
