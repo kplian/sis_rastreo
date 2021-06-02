@@ -5,6 +5,8 @@
 *@author  (admin)
 *@date 07-03-2019 13:53:18
 *@description Archivo con la interfaz de usuario que permite la ejecucion de todas las funcionalidades del sistema
+ * ISSUE        FECHA           AUTOR           DESCRIPCION
+ * #GDV-38      02/06/2021      EGS             Se agrega id responsable como obligatorio
 */
 
 header("content-type: text/javascript; charset=UTF-8");
@@ -119,8 +121,11 @@ Phx.vista.SolVehiculo={
         this.Cmp.existe_conductor.on('select',function(combo,record,index){//#GDV-37
             if(record.data.valor == 'no'){
                 this.mostrarComponente(this.Cmp.id_responsable);
+                this.Cmp.id_responsable.allowBlank = false; //#GDV-38
             }else{
                 this.ocultarComponente(this.Cmp.id_responsable);
+                this.Cmp.id_responsable.allowBlank = true; //#GDV-38
+                this.Cmp.id_responsable.reset();//#GDV-38
             };
 
         },this);
@@ -171,15 +176,21 @@ Phx.vista.SolVehiculo={
 
         if(data.existe_conductor == 'no'){//#GDV-37
             this.mostrarComponente(this.Cmp.id_responsable);
+            this.Cmp.id_responsable.allowBlank = false; //#GDV-38
         }else{
             this.ocultarComponente(this.Cmp.id_responsable);
+            this.Cmp.id_responsable.allowBlank = true; //#GDV-38
+            this.Cmp.id_responsable.reset();//#GDV-38
         }
 
         this.Cmp.existe_conductor.on('select',function(combo,record,index){//#GDV-37
             if(record.data.valor == 'no'){
                 this.mostrarComponente(this.Cmp.id_responsable);
+                this.Cmp.id_responsable.allowBlank = false; //#GDV-38
             }else{
                 this.ocultarComponente(this.Cmp.id_responsable);
+                this.Cmp.id_responsable.allowBlank = true; //#GDV-38
+                this.Cmp.id_responsable.reset();//#GDV-38
             };
 
         },this);
