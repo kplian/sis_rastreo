@@ -20,6 +20,7 @@ $body$
 #ISSUE                FECHA                AUTOR                DESCRIPCION
  #0                02-07-2020 22:13:48    egutierrez             Creacion
 #GDV-29                 13/01/2021          EGS                  Se agrega si exite conductor o no
+  #RAS-10               07/06/2021          EGS                   Se agrega correos y alarmas WF
  ***************************************************************************/
 
 DECLARE
@@ -60,6 +61,15 @@ DECLARE
     v_id_usuario_reg        integer;
     v_id_estado_wf_ant       integer;
     v_id_funcionario        integer;
+    v_desc_funcionario      VARCHAR;
+    v_correo                varchar;
+    v_descripcion_correo    varchar;
+    v_id_alarma             varchar;
+    v_nro_tramite           varchar;
+    v_desc_responsables      varchar;
+    v_record                record;
+    v_consulta              varchar;
+    desc_funcionario_sol    varchar;
 
 BEGIN
 
@@ -355,13 +365,20 @@ BEGIN
             select
                 ew.id_proceso_wf,
                 c.id_estado_wf,
-                c.estado
+                c.estado,
+                c.id_funcionario,
+                c.nro_tramite,
+                fun.desc_funcionario1
             into
                 v_id_proceso_wf,
                 v_id_estado_wf,
-                v_codigo_estado
+                v_codigo_estado,
+                v_id_funcionario,
+                v_nro_tramite,
+                desc_funcionario_sol
             from ras.tsol_vehiculo c
                      inner join wf.testado_wf ew on ew.id_estado_wf = c.id_estado_wf
+                     left join orga.vfuncionario fun on fun.id_funcionario = c.id_funcionario
             where c.id_sol_vehiculo = v_parametros.id_sol_vehiculo;
 
 --recuperamos la nomina de personas
@@ -403,26 +420,15 @@ BEGIN
             end if;
 
             --Acciones por estado siguiente que podrian realizarse
-            if v_codigo_estado_siguiente in ('') then
+            if v_codigo_estado_siguiente in ('asignado') then
+                IF NOT EXISTS (SELECT
+                                   1
+                               FROM ras.tasig_vehiculo a WHERE a.id_sol_vehiculo = v_parametros.id_sol_vehiculo)  THEN
+                    RAISE EXCEPTION ' %','Debe Asignar un Vehiculo';
+                END IF;
             end if;
 
-            ---------------------------------------
-            -- REGISTRA EL SIGUIENTE ESTADO DEL WF
-            ---------------------------------------
-            --Configurar acceso directo para la alarma
-            v_acceso_directo = '';
-            v_clase = '';
-            v_parametros_ad = '';
-            v_tipo_noti = 'notificacion';
-            v_titulo  = 'VoBo';
-            --raise exception 'v_codigo_estado_siguiente %',v_codigo_estado_siguiente;
-            if v_codigo_estado_siguiente not in('borrador','finalizado','anulado') then
-                v_acceso_directo = '../../../sis_planillas/vista/licencia/Licencia.php';
-                v_clase = 'Licencia';
-                v_parametros_ad = '{filtro_directo:{campo:"lice.id_proceso_wf",valor:"'||v_id_proceso_wf::varchar||'"}}';
-                v_tipo_noti = 'notificacion';
-                v_titulo  = 'VoBo';
-            end if;
+
             v_id_estado_actual = wf.f_registra_estado_wf(
                     v_parametros.id_tipo_estado,
                     v_parametros.id_funcionario_wf,
@@ -432,49 +438,8 @@ BEGIN
                     v_parametros._id_usuario_ai,
                     v_parametros._nombre_usuario_ai,
                     v_id_depto,                       --depto del estado anterior
-                    v_obs,
-                    v_acceso_directo,
-                    v_clase,
-                    v_parametros_ad,
-                    v_tipo_noti,
-                    v_titulo );
+                    v_obs );
 
-
-            --raise exception 'v_id_estado_actual %',v_id_estado_actual;
-            --------------------------------------
-            -- Registra los procesos disparados
-            --------------------------------------
-            for v_registros_proc in ( select * from json_populate_recordset(null::wf.proceso_disparado_wf, v_parametros.json_procesos::json)) loop
-
-                    --Obtencion del codigo tipo proceso
-                    select
-                        tp.codigo
-                    into
-                        v_codigo_tipo_pro
-                    from wf.ttipo_proceso tp
-                    where tp.id_tipo_proceso =  v_registros_proc.id_tipo_proceso_pro;
-
---Disparar creacion de procesos seleccionados
-                    select
-                        ps_id_proceso_wf,
-                        ps_id_estado_wf,
-                        ps_codigo_estado
-                    into
-                        v_id_proceso_wf,
-                        v_id_estado_wf,
-                        v_codigo_estado
-                    from wf.f_registra_proceso_disparado_wf(
-                            p_id_usuario,
-                            v_parametros._id_usuario_ai,
-                            v_parametros._nombre_usuario_ai,
-                            v_id_estado_actual,
-                            v_registros_proc.id_funcionario_wf_pro,
-                            v_registros_proc.id_depto_wf_pro,
-                            v_registros_proc.obs_pro,
-                            v_codigo_tipo_pro,
-                            v_codigo_tipo_pro);
-
-                end loop;
 
             if ras.f_fun_inicio_sol_vehiculo_wf(
                     v_parametros.id_sol_vehiculo,
@@ -488,6 +453,120 @@ BEGIN
                 ) then
 
             end if;
+
+            ---------------------------------------
+            -- REGISTRA ALARMAS y CORREOS
+            ---------------------------------------
+            IF v_codigo_estado_siguiente <> 'asignado'  THEN
+                SELECT
+                    fu.desc_funcionario1,
+                    fun.email_empresa
+                INTO
+                    v_desc_funcionario,
+                    v_correo
+                FROM orga.tfuncionario fun
+                         LEFT JOIN orga.vfuncionario fu on fu.id_funcionario = fun.id_funcionario
+                WHERE fun.id_funcionario = v_parametros.id_funcionario_wf ;
+            ELSE
+                SELECT
+                    fu.desc_funcionario1,
+                    fun.email_empresa
+                INTO
+                    v_desc_funcionario,
+                    v_correo
+                FROM orga.tfuncionario fun
+                         LEFT JOIN orga.vfuncionario fu on fu.id_funcionario = fun.id_funcionario
+                WHERE fun.id_funcionario = v_id_funcionario ;
+
+                v_parametros.id_funcionario_wf = v_id_funcionario;
+            END IF;
+
+
+
+            --Configurar acceso directo para la alarma
+            v_acceso_directo = '';
+            v_clase = '';
+            v_parametros_ad = '';
+            v_tipo_noti = 'notificacion';
+            v_titulo  = '';
+            --raise exception 'v_codigo_estado_siguiente %',v_codigo_estado_siguiente;
+            if v_codigo_estado_siguiente = 'vobojefedep'  then --#RAS-10
+
+                v_descripcion_correo = '<font color="FF0000" size="5"><font size="4">VISTO BUENO: </font> </font><br><br><b></b>Tiene una solicitud vehicular para aprobar del funcionario:<b>'||COALESCE(desc_funcionario_sol,'')||'</b>.';
+                v_titulo = 'Visto Bueno Solicitud Vehicular: '||v_nro_tramite;
+
+
+            elseif   v_codigo_estado_siguiente = 'vobojefeserv'   then
+                v_descripcion_correo = '<font color="FF0000" size="5"><font size="4">ASIGNACIÓN DE CONDUCTOR</font> </font><br><br><b></b>Tiene una solicitud vehicular para asignar conductor del funcionario:<b>'||COALESCE(desc_funcionario_sol,'')||'</b>.';
+                v_titulo = 'Asignación de Conductor: '||v_nro_tramite;
+
+            elseif  v_codigo_estado_siguiente = 'asigvehiculo'   then
+                v_descripcion_correo = '<font color="FF0000" size="5"><font size="4">ASIGNACIÓN DE VEHÍCULO: </font> </font><br><br><b></b>Tiene una solicitud vehicular para asignar vehiculo del funcionario:<b>'||COALESCE(desc_funcionario_sol,'')||'</b>.';
+                v_titulo = 'Asignación de Vehículo: '||v_nro_tramite;
+
+                /* v_acceso_directo = '../../../sis_rastreo/vista/asig_vehiculo/SolVehiculoAsig.php';
+                 v_clase = 'SolVehiculoAsig';
+                 v_parametros_ad = '{filtro_directo:{campo:"solvehi.id_proceso_wf",valor:"'||v_id_proceso_wf::varchar||'"}}';
+  */         elseif  v_codigo_estado_siguiente = 'asignado'   then
+                v_descripcion_correo = '<font color="FF0000" size="5"><font size="4">NOTIFICACIÓN DE ASIGNACIÓN</font> </font><br><br><b></b>El motivo de la presente es notificarle sobre la asignación del vehiculo:<br>';
+
+
+                FOR v_record IN(
+                    SELECT
+                        e.placa,
+                        m.nombre as modelo,
+                        ma.nombre as marca,
+                        av.id_sol_vehiculo_responsable
+                    FROM ras.tasig_vehiculo av
+                             left join ras.tequipo e on e.id_equipo = av.id_equipo
+                             left join ras.tmodelo m on m.id_modelo = e.id_modelo
+                             left join ras.tmarca ma on ma.id_marca = m.id_marca
+                    WHERE av.id_sol_vehiculo =  v_parametros.id_sol_vehiculo
+
+                )LOOP
+                        v_consulta='
+                    SELECT
+                        array_to_string(array_agg(DISTINCT upper(p.nombre_completo1)), '',''::text)::character varying AS nombre_completo
+                    FROM ras.tsol_vehiculo_responsable sr
+                    LEFT join ras.tresponsable r on r.id_responsable = sr.id_responsable
+                    LEFT JOIN segu.vpersona p on p.id_persona = r.id_persona
+                    WHERE sr.id_sol_vehiculo_responsable in ('||v_record.id_sol_vehiculo_responsable::varchar||')';
+
+                        EXECUTE v_consulta into v_desc_responsables;
+
+                        v_descripcion_correo =v_descripcion_correo||'<table BORDER ><tr> <td> Vehículo:</td><td>'||COALESCE(v_record.marca,'')||'-'||COALESCE(v_record.modelo,'')||'</td></tr><br><tr><td>Placa:</td><td>'||COALESCE(v_record.placa,'')||'</td><tr><br><tr><td>Conductor:</td><td>'||COALESCE(v_desc_responsables,'')||'</td></tr></table><br>';
+
+
+
+                    END LOOP;
+
+
+                v_titulo = 'Asignación de Conductor y Vehiculo: '||v_nro_tramite;
+
+            end if;
+
+            v_descripcion_correo =v_descripcion_correo||'<br>Obs:'||COALESCE(v_obs,'');
+
+            v_id_alarma = param.f_inserta_alarma(
+                    v_parametros.id_funcionario_wf,
+                    v_descripcion_correo,--par_descripcion
+                    v_acceso_directo,--acceso directo
+                    now()::date,--par_fecha: Indica la fecha de vencimiento de la alarma
+                    v_tipo_noti, --notificacion
+                    v_titulo,  --asunto
+                    p_id_usuario,
+                    v_clase, --clase
+                    v_titulo,--titulo
+                    v_parametros_ad,--par_parametros varchar,   parametros a mandar a la interface de acceso directo
+                    p_id_usuario, --usuario a quien va dirigida la alarma
+                    v_titulo,--titulo correo
+                    v_correo, --correo funcionario
+                    null,--#9
+                    v_id_proceso_wf,--#9
+                    v_id_estado_actual--#9
+                );
+
+
             -- si hay mas de un estado disponible  preguntamos al usuario
             v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Se realizo el cambio de estado del pago simple id='||v_parametros.id_sol_vehiculo);
             v_resp = pxp.f_agrega_clave(v_resp,'operacion','cambio_exitoso');
@@ -542,14 +621,14 @@ BEGIN
             v_tipo_noti = 'notificacion';
             v_titulo  = 'Visto Bueno';
 
-            if v_codigo_estado_siguiente not in('borrador','finalizado','anulado') then
+            /*            if v_codigo_estado_siguiente not in('borrador','finalizado','anulado') then
 
-                v_acceso_directo = '../../../sis_planillas/vista/licencia/Licencia.php';
-                v_clase = 'Licencia';
-                v_parametros_ad = '{filtro_directo:{campo:"lice.id_proceso_wf",valor:"'||v_id_proceso_wf::varchar||'"}}';
-                v_tipo_noti = 'notificacion';
-                v_titulo  = 'Visto Bueno';
-            end if;
+                            v_acceso_directo = '../../../sis_planillas/vista/licencia/Licencia.php';
+                            v_clase = 'Licencia';
+                            v_parametros_ad = '{filtro_directo:{campo:"lice.id_proceso_wf",valor:"'||v_id_proceso_wf::varchar||'"}}';
+                            v_tipo_noti = 'notificacion';
+                            v_titulo  = 'Visto Bueno';
+                        end if;*/
 
 
             --Registra nuevo estado
