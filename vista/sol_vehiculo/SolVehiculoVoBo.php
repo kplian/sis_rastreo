@@ -20,6 +20,8 @@ Phx.vista.SolVehiculoVoBo={
 		//console.log('maestro',this.maestro.id_funcionario);
 		//this.Atributos[this.getIndAtributo('id_funcionario')].valorInicial = this.maestro.id_funcionario;
     	//llama al constructor de la clase padre
+        console.log('Phx.CP.config_ini.id_funcionariou',Phx.CP.config_ini.id_funcionario)
+        //this.Atributos[this.getIndAtributo('desc_funcionario_wf')].grid=false;
 		Phx.vista.SolVehiculoVoBo.superclass.constructor.call(this,config);
 		this.init();
 		this.load({params:{start:0,
@@ -72,8 +74,10 @@ Phx.vista.SolVehiculoVoBo={
 
          if(data.estado == 'vobojefeserv' ){
              this.getBoton('btnAlquilado').enable();
+             this.enableTabAsigConductores();//#RAS-11
          }else{
              this.getBoton('btnAlquilado').disable();
+             this.enableTabNomina();//#RAS-11
          }
 
        	
@@ -123,6 +127,20 @@ Phx.vista.SolVehiculoVoBo={
             'FormAlquilado'
         );
     },
+    enableTabAsigConductores:function(){//#RAS-11
+        if(this.TabPanelSouth.get(1)){
+            this.TabPanelSouth.get(1).enable();
+            this.TabPanelSouth.setActiveTab(1)
+        }
+    },
+    enableTabNomina:function(){//#RAS-11
+        if(this.TabPanelSouth.get(0)){
+            this.TabPanelSouth.get(0).enable();
+            this.TabPanelSouth.setActiveTab(0)
+        }
+    },
+
+
 	}
 </script>
 		
