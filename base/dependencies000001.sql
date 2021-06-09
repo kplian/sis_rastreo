@@ -741,3 +741,13 @@ select pxp.f_insert_testructura_gui ('ASIVEHI', 'RAS.7');
 --#RAS-8
 select pxp.f_insert_testructura_gui ('CONSSOLI', 'RAS.7');
 /***********************************F-DEP-JJA-RAS-GDV-34-27/05/2021*****************************************/
+/***********************************I-DEP-EGS-RAS-11-01-07/06/2021*****************************************/
+
+ALTER TABLE ras.tsol_vehiculo_responsable
+    ADD CONSTRAINT tsol_vehiculo_responsable_fk FOREIGN KEY (id_responsable)
+        REFERENCES ras.tresponsable(id_responsable)
+        ON DELETE NO ACTION
+        ON UPDATE NO ACTION
+        NOT DEFERRABLE;
+
+/***********************************F-DEP-EGS-RAS-11-01-07/06/2021*****************************************/

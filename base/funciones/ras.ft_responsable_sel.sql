@@ -1,12 +1,12 @@
 --------------- SQL ---------------
 
 CREATE OR REPLACE FUNCTION ras.ft_responsable_sel (
-  p_administrador integer,
-  p_id_usuario integer,
-  p_tabla varchar,
-  p_transaccion varchar
+    p_administrador integer,
+    p_id_usuario integer,
+    p_tabla varchar,
+    p_transaccion varchar
 )
-RETURNS varchar AS
+    RETURNS varchar AS
 $body$
 /**************************************************************************
  SISTEMA:		Rastreo Satelital
@@ -24,7 +24,7 @@ $body$
 
 DECLARE
 
-v_consulta    		varchar;
+    v_consulta    		varchar;
     v_parametros  		record;
     v_nombre_funcion   	text;
     v_resp				varchar;
@@ -43,7 +43,7 @@ BEGIN
 
     if(p_transaccion='RAS_CONDUC_SEL')then
 
-begin
+        begin
             --Sentencia de la consulta
             v_consulta:='select
 						conduc.id_responsable,
@@ -58,12 +58,7 @@ begin
 						usu1.cuenta as usr_reg,
 						usu2.cuenta as usr_mod,
 						per.nombre_completo1 as desc_persona,
-                        case     --#GDV-35
-                        when fun.id_funcionario is not null then
-                        fun.codigo
-                        else
-                        conduc.codigo
-                        end as codigo,
+                        conduc.codigo,
                         conduc.tipo_responsable  --#GDV-37
 						from ras.tresponsable conduc
 						left join segu.vpersona per
@@ -78,9 +73,9 @@ begin
             v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
 
             --Devuelve la respuesta
-return v_consulta;
+            return v_consulta;
 
-end;
+        end;
 
         /*********************************
          #TRANSACCION:  'RAS_CONDUC_CONT'
@@ -91,7 +86,7 @@ end;
 
     elsif(p_transaccion='RAS_CONDUC_CONT')then
 
-begin
+        begin
             --Sentencia de la consulta de conteo de registros
             v_consulta:='select count(id_responsable)
 					    from ras.tresponsable conduc
@@ -105,15 +100,15 @@ begin
             v_consulta:=v_consulta||v_parametros.filtro;
 
             --Devuelve la respuesta
-return v_consulta;
+            return v_consulta;
 
-end;
+        end;
 
-else
+    else
 
         raise exception 'Transaccion inexistente';
 
-end if;
+    end if;
 
 EXCEPTION
 
@@ -125,9 +120,9 @@ EXCEPTION
         raise exception '%',v_resp;
 END;
 $body$
-LANGUAGE 'plpgsql'
-VOLATILE
-CALLED ON NULL INPUT
-SECURITY INVOKER
-PARALLEL UNSAFE
-COST 100;
+    LANGUAGE 'plpgsql'
+    VOLATILE
+    CALLED ON NULL INPUT
+    SECURITY INVOKER
+    PARALLEL UNSAFE
+    COST 100;
