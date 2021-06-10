@@ -19,7 +19,7 @@
             <td style="width: 197px; color: #444444;text-align:center;  " > <!-- #ETR-3400-->
                 <div style="margin-top: 30px">
                     <b style="display: flex;align-items: center;"> <?php echo $this->datos_sol_vehiculo[0]['nro_tramite'] ;?></b>
-                    <b>Form. 2-R-2012</b> <!-- #ETR-3506-->
+                    <b>Form. 2-R-2012/1</b> <!-- #ETR-3506-->
                 </div>
             </td>
         </tr>

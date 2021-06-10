@@ -1,6 +1,6 @@
 <?php
 // Extend the TCPDF class to create custom MultiRow
-class RAutoPIII extends  ReportePDF {
+class RAutoPIV extends  ReportePDF {
     var $cabecera;
     var $detalleCbte;
     var $ancho_hoja;
@@ -37,7 +37,7 @@ class RAutoPIII extends  ReportePDF {
         $newDate = date("d/m/Y", strtotime( $this->cabecera[0]['fecha']));
         $dataSource = $this->datos_detalle;
         ob_start();
-        include(dirname(__FILE__).'/../reportes/tpl/auto_PIII/cabecera.php');
+        include(dirname(__FILE__).'/../reportes/tpl/auto_PIV/cabecera.php');
         $content = ob_get_clean();
         $this->writeHTML($content, false, false, true, false, '');
 
@@ -51,11 +51,11 @@ class RAutoPIII extends  ReportePDF {
         $with_col = $this->with_col;
         //adiciona glosa
         ob_start();
-        include(dirname(__FILE__).'/../reportes/tpl/auto_PIII/cuerpo.php');
+        include(dirname(__FILE__).'/../reportes/tpl/auto_PIV/cuerpo.php');
         $content = ob_get_clean();
 
         ob_start();
-        include(dirname(__FILE__).'/../reportes/tpl/auto_PIII/detalle.php');
+        include(dirname(__FILE__).'/../reportes/tpl/auto_PIV/detalle.php');
         $content2 = ob_get_clean();
         $this->writeHTML($content.$content2);
 

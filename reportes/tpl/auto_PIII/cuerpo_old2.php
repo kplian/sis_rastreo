@@ -25,13 +25,13 @@
                 echo '<tr>';
                 echo '<td width="30%" >'. $datos['desc_elemento_seg'] .'</td>';
                 echo  '<td width="10%" align="center">';
-                echo $datos['existe']=='t'?'x':''; //#ETR-3400
+                echo $datos['existe']=='t'?'x':'-'; //#ETR-3400
                 echo  '</td>';
-               // if ($datos['existe']=='t'){
+                if ($datos['existe']=='t'){
                     echo '<td width="20%" >'. $datos['estado_elemento'] .'</td>';
-               // }else{
-                //    echo '<td width="20%" >No aplica </td>'; //#ETR-3400
-               // }
+                }else{
+                    echo '<td width="20%" >No aplica </td>'; //#ETR-3400
+                }
                 echo '<td width="40%" >'. $datos['observacion'] .'</td>';
                 echo '</tr>';
 
