@@ -203,6 +203,20 @@ Phx.vista.SolVehiculoBase=Ext.extend(Phx.gridInterfaz,{
             grid:true,
             form:false
         },
+        {
+            config:{
+                name: 'desc_funcionario_wf',
+                fieldLabel: 'Fun. Responsable WF',
+                allowBlank: true,
+                anchor: '80%',
+                gwidth: 100,
+                maxLength:300
+            },
+            type:'TextField',
+            id_grupo:1,
+            grid:true,
+            form:false
+        },
 
         //
         // {
@@ -730,6 +744,7 @@ Phx.vista.SolVehiculoBase=Ext.extend(Phx.gridInterfaz,{
         {name:'telefono_contacto', type: 'string'},//#GDV-37
         {name:'id_responsable', type: 'numeric'},//#GDV-37
         {name:'desc_reponsable', type: 'string'},//#GDV-37
+        {name:'desc_funcionario_wf', type: 'string'},
 
 
     ],

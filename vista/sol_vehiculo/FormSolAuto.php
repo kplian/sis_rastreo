@@ -54,7 +54,8 @@ header("content-type: text/javascript; charset=UTF-8");
                         data : [
                             ['auto_PI','Solicitud de Viaje'],
                             ['auto_PII','Asignacion de Vehiculos'],
-                            ['auto_PIII','Reporte de Viaje']
+                            ['auto_PIII','Reporte de Viaje'],
+                            ['auto_PIV','Conformidad de Solicitud']
                         ]
                     }),
                     valueField: 'variable',

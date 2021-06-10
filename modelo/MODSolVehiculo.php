@@ -67,6 +67,8 @@ class MODSolVehiculo extends MODbase{
         $this->captura('telefono_contacto','varchar');//#GDV-37
         $this->captura('id_responsable','int4');//#GDV-37
         $this->captura('desc_reponsable','varchar');//#GDV-37
+        $this->captura('desc_funcionario_wf','varchar');
+
 
         if($this->objParam->getParametro('tipo_reporte')=='auto_PI' || $this->objParam->getParametro('tipo_reporte')=='auto_PII'){
             $this->captura('desc_jefe_dep','varchar');
