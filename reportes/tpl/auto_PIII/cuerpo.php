@@ -15,7 +15,7 @@
         echo '<tr>';
         echo '<th align="center" width="30%">Elemento</th>';
         echo '<th align="center" width="10%">existe</th>';
-        echo '<th align="center" width="20%">Estado </th>';
+        echo '<th align="center" width="20%"  style="margin: 2px; line-height: 10px">Estado<p style="font-size: 8px">(malo,regular,bueno,excelente)</p> </th>';
         echo '<th align="center" width="40%">Observaciones</th>';
         echo '</tr>';
         //var_dump('xx',$this->datos_elemento_seg_equipo);exit;
