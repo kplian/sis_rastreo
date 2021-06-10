@@ -70,7 +70,7 @@ BEGIN
                 --si es la vista del help y estan en estado asignado y finalizado muestra solo os registristros del funcionario solicitante
                 IF v_parametros.nombreVista = 'SolVehiculo'   THEN
 
-                    v_filtro = '(solvehi.id_funcionario = '||v_parametros.id_funcionario_usu::varchar||' ) and ';
+                    v_filtro = '(solvehi.id_funcionario = '||v_parametros.id_funcionario_usu::varchar||' ) or solvehi.id_usuario_reg = '||p_id_usuario||' and '; --RAS-11
 
                     --Si no soy administrador y estoy en pendiente no veo nada
                 ElSIF v_parametros.nombreVista = 'SolVehiculoVoBo' or (v_parametros.nombreVista = 'SolVehiculoAsig' and v_estado = 'asigvehiculo') THEN --#GDV-36
