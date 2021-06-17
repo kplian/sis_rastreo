@@ -183,7 +183,7 @@ Phx.vista.AsigVehiculoBase=Ext.extend(Phx.gridInterfaz,{
             config: {
                 name: 'id_sol_vehiculo_responsable',
                 fieldLabel: 'Conductor',
-                allowBlank: true,
+                allowBlank: false,
                 emptyText: 'Elija una opción...',
                 store: new Ext.data.JsonStore({
                     url: '../../sis_rastreo/control/SolVehiculoResponsable/listarSolVehiculoResponsable',
