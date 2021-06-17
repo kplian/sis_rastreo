@@ -194,7 +194,10 @@ Phx.vista.SolVehiculoBase=Ext.extend(Phx.gridInterfaz,{
                 allowBlank: true,
                 anchor: '80%',
                 gwidth: 100,
-                maxLength:-5
+                maxLength:-5,
+                renderer:function (value,p,record){
+                    return  String.format('<b><font size=2 >{0}</font><b>',record.data['estado'] );
+                }
             },
             type:'TextField',
             filters:{pfiltro:'solvehi.estado',type:'string'},

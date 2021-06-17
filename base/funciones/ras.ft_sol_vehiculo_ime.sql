@@ -21,6 +21,7 @@ $body$
  #0                02-07-2020 22:13:48    egutierrez             Creacion
 #GDV-29                 13/01/2021          EGS                  Se agrega si exite conductor o no
   #RAS-10               07/06/2021          EGS                   Se agrega correos y alarmas WF
+  #ETR-4275             17/06/2021          EGS                   Se controla que si exista una asignacion de conductor
  ***************************************************************************/
 
 DECLARE
@@ -425,6 +426,14 @@ BEGIN
                                    1
                                FROM ras.tasig_vehiculo a WHERE a.id_sol_vehiculo = v_parametros.id_sol_vehiculo)  THEN
                     RAISE EXCEPTION ' %','Debe Asignar un Vehiculo';
+                END IF;
+            end if;
+
+            if v_codigo_estado_siguiente in ('asigvehiculo') then --ETR-4275
+                IF NOT EXISTS (SELECT
+                                   1
+                               FROM ras.tsol_vehiculo_responsable a WHERE a.id_sol_vehiculo = v_parametros.id_sol_vehiculo)  THEN
+                    RAISE EXCEPTION ' %','Debe Asignar un Conductor';
                 END IF;
             end if;
 
