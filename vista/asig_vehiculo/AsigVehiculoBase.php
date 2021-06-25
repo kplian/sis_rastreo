@@ -589,36 +589,23 @@ Phx.vista.AsigVehiculoBase=Ext.extend(Phx.gridInterfaz,{
             this.mostrarComponente(this.Cmp.id_equipo);
 
         }
-        // if (this.existe_conductor == 'si') {
-        //     this.mostrarComponente(this.Cmp.id_sol_vehiculo_responsable);
-        // }else{
-        //     this.ocultarComponente(this.Cmp.id_sol_vehiculo_responsable);
-        // }
 
-        this.Cmp.id_tipo_equipo.store.baseParams.query = this.id_tipo_equipo;
-        this.Cmp.id_tipo_equipo.store.load({params:{start:0,limit:this.tam_pag},
-            callback : function (r) {
-                if (r.length > 0 ) {
-                    this.Cmp.id_tipo_equipo.setValue(r[0].data.id_tipo_equipo);
-                }else{
-                    this.Cmp.id_tipo_equipo.reset();
+        this.Cmp.id_tipo_equipo.store.load({
+            params: {start: 0, limit: this.tam_pag},
+            callback: function (r) {
+                if (r.length > 0) {
+                    this.Cmp.id_tipo_equipo.setValue(this.id_tipo_equipo);
+                    this.Cmp.id_tipo_equipo.fireEvent('select', this.id_tipo_equipo, r[0]);
+                    this.Cmp.id_tipo_equipo.collapse();
                 }
-            }, scope : this
+
+            }, scope: this
         });
 
-        this.Cmp.id_tipo_equipo.on('select',function(combo,record,index){//GDV-32
 
-            this.Cmp.id_equipo.store.baseParams.id_tipo_equipo = record.data.id_tipo_equipo;
-            this.Cmp.id_equipo.store.load({params:{start:0,limit:this.tam_pag},
-                callback : function (r) {
-                    if (r.length > 0 ) {
-                        // this.Cmp.id_equipo.setValue(r[0].data.id_equipo);
-                        this.Cmp.id_equipo.reset();
-                    }else{
-                        this.Cmp.id_equipo.reset();
-                    }
-                }, scope : this
-            });
+        this.Cmp.id_tipo_equipo.on('select',function(combo,record,index){//GDV-32
+            //this.Cmp.id_equipo.store.baseParams.id_tipo_equipo = record.data.id_tipo_equipo;
+            this.Cmp.id_equipo.reset();
         },this)
 
 

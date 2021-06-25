@@ -311,6 +311,13 @@ class ACTSolVehiculo extends ACTbase{
         }
         $this->res->imprimirRespuesta($this->res->generarJson());
     }
+    function devolverBorrador(){
+        $this->objFunc=$this->create('MODSolVehiculo');
+
+        $this->res=$this->objFunc->devolverBorrador($this->objParam);
+
+        $this->res->imprimirRespuesta($this->res->generarJson());
+    }
 }
 
 ?>

@@ -54,6 +54,14 @@ Phx.vista.SolVehiculoVoBo={
             handler : this.openAlquilado,
             tooltip : '<b>Datos de Alquilado</b>'
         });
+        this.addButton('dev_borrador', {
+            text : 'Dev. al Solicitante',
+            iconCls : 'batras',
+            disabled : true,
+            handler : this.devBorrador,
+            tooltip : '<b>Devuelve a Borrador</b>'
+        });
+
 	},
 	preparaMenu:function(n){
       var data = this.getSelectedData();
@@ -61,7 +69,7 @@ Phx.vista.SolVehiculoVoBo={
         Phx.vista.SolVehiculoVoBo.superclass.preparaMenu.call(this,n);
         this.getBoton('diagrama_gantt').enable();
 		this.getBoton('btnChequeoDocumentosWf').enable();
-
+        this.getBoton('dev_borrador').enable();
          //if (data.estado == 'borrador') {
          	this.getBoton('ant_estado').enable();
     		this.getBoton('sig_estado').enable();	
@@ -89,7 +97,8 @@ Phx.vista.SolVehiculoVoBo={
 			this.getBoton('btnChequeoDocumentosWf').disable();          
             this.getBoton('diagrama_gantt').disable();
             this.getBoton('ant_estado').disable();
-    		this.getBoton('sig_estado').disable();  
+    		this.getBoton('sig_estado').disable();
+            this.getBoton('dev_borrador').disable();
         }
        return tb
     },
