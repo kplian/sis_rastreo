@@ -449,7 +449,8 @@ BEGIN
             sol.destino,
             uo.nombre_unidad::varchar as depto,
             g.nombre_unidad::varchar as gerencia,
-            sol.alquiler::varchar
+            sol.alquiler::varchar,
+            sol.nro_tramite::varchar --#RAS-8
             FROM  ras.tsol_vehiculo sol
             join param.tcentro_costo cc on cc.id_centro_costo=sol.id_centro_costo
             join param.ttipo_cc tcc on tcc.id_tipo_cc=cc.id_tipo_cc
