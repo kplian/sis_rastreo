@@ -60,7 +60,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     gwidth: 100,
                     valueField: 'id_funcionario',
                     gdisplayField: 'desc_funcionario',
-                    baseParams: {par_filtro: 'id_funcionario#desc_funcionario1'},
+                    baseParams: {par_filtro: 'id_funcionario#desc_funcionario1',fecha:(new Date().getDate())+'/'+(new Date().getMonth())+'/'+(new Date().getFullYear())},
                     renderer:function(value, p, record){return String.format('{0}', record.data['desc_funcionario']);}
                 },
                 type:'ComboRec',//ComboRec
