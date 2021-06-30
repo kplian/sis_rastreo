@@ -107,6 +107,20 @@ Phx.vista.EquipoEstado=Ext.extend(Phx.gridInterfaz,{
             grid: true,
             form: true
         },
+        {
+            config:{
+                name: 'nro_tramite',
+                fieldLabel: 'Nro Tramite',
+                allowBlank: true,
+                anchor: '80%',
+                gwidth: 100,
+                maxLength:10
+            },
+            type:'TextField',
+            id_grupo:1,
+            grid:true,
+            form:false
+        },
 		{
             config:{
                 name: 'estado_reg',
@@ -236,6 +250,7 @@ Phx.vista.EquipoEstado=Ext.extend(Phx.gridInterfaz,{
 		{name:'fecha_mod', type: 'date',dateFormat:'Y-m-d H:i:s.u'},
 		{name:'usr_reg', type: 'string'},
 		{name:'usr_mod', type: 'string'},
+        {name:'nro_tramite', type: 'string'},
         
     ],
     sortInfo:{

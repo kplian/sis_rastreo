@@ -194,11 +194,28 @@ Phx.vista.SolVehiculoBase=Ext.extend(Phx.gridInterfaz,{
                 allowBlank: true,
                 anchor: '80%',
                 gwidth: 100,
-                maxLength:-5
+                maxLength:-5,
+                renderer:function (value,p,record){
+                    return  String.format('<b><font size=2 >{0}</font><b>',record.data['estado'] );
+                }
             },
             type:'TextField',
             filters:{pfiltro:'solvehi.estado',type:'string'},
             bottom_filter:true,
+            id_grupo:1,
+            grid:true,
+            form:false
+        },
+        {
+            config:{
+                name: 'desc_funcionario_wf',
+                fieldLabel: 'Fun. Responsable WF',
+                allowBlank: true,
+                anchor: '80%',
+                gwidth: 100,
+                maxLength:300
+            },
+            type:'TextField',
             id_grupo:1,
             grid:true,
             form:false
@@ -730,6 +747,7 @@ Phx.vista.SolVehiculoBase=Ext.extend(Phx.gridInterfaz,{
         {name:'telefono_contacto', type: 'string'},//#GDV-37
         {name:'id_responsable', type: 'numeric'},//#GDV-37
         {name:'desc_reponsable', type: 'string'},//#GDV-37
+        {name:'desc_funcionario_wf', type: 'string'},
 
 
     ],
@@ -814,7 +832,6 @@ Phx.vista.SolVehiculoBase=Ext.extend(Phx.gridInterfaz,{
 
     },
     onAntEstado: function(wizard,resp){
-        console.log('resp',wizard.data.id_help_desk);
         Phx.CP.loadingShow();
         var operacion = 'cambiar';
 
@@ -843,7 +860,59 @@ Phx.vista.SolVehiculoBase=Ext.extend(Phx.gridInterfaz,{
     },
     obtenerNombreVista: function () { //#GDV-29
         return this.nombreVista;
-    }
+    },
+    devBorrador: function(){
+        var data = this.getSelectedData();
+        Phx.CP.loadingHide();
+        Phx.CP.loadWindows('../../../sis_rastreo/vista/sol_vehiculo/AntFormEstadoWf.php',
+            'Estado de Wf',
+            {   modal: true,
+                width: 450,
+                height: 250
+            },
+            {    data: data
+            },
+            this.idContenedor,'AntFormEstadoWf',
+            {
+                config:[{
+                    event:'beforesave',
+                    delegate: this.onDevBorrador,
+                }],
+                scope:this
+            });
+        // Ext.Ajax.request({
+        //     url:'../../sis_rastreo/control/SolVehiculo/devolverBorrador',
+        //     params:{
+        //         id_sol_vehiculo: data.id_sol_vehiculo,
+        //     },
+        //     success: this.successDevBorrador,
+        //     failure: this.conexionFailure,
+        //     timeout: this.timeout,
+        //     scope: this
+        // });
+    },
+    onDevBorrador: function(wizard,resp){
+
+        Phx.CP.loadingShow();
+        Ext.Ajax.request({
+            url:'../../sis_rastreo/control/SolVehiculo/devolverBorrador',
+            params:{
+                id_sol_vehiculo: wizard.data.id_sol_vehiculo,
+                obs: resp.obs
+            },
+            argument:{wizard:wizard},
+            success: this.successDevBorrador,
+            failure: this.conexionFailure,
+            timeout: this.timeout,
+            scope: this
+        });
+    },
+    successDevBorrador:function(resp){
+        console.log('resp',resp)
+        Phx.CP.loadingHide();
+        resp.argument.wizard.panel.destroy()
+        this.reload();
+    },
 
     }
 )

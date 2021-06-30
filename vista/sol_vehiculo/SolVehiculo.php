@@ -7,6 +7,7 @@
 *@description Archivo con la interfaz de usuario que permite la ejecucion de todas las funcionalidades del sistema
  * ISSUE        FECHA           AUTOR           DESCRIPCION
  * #GDV-38      02/06/2021      EGS             Se agrega id responsable como obligatorio
+ * #ETR-4275    17/06/2021      EGS             Se habilita feha de solicitud al editar y no carga automaticamente este
 */
 
 header("content-type: text/javascript; charset=UTF-8");
@@ -135,8 +136,8 @@ Phx.vista.SolVehiculo={
         var data = this.getSelectedData();
         console.log('data',data);
         Phx.vista.SolVehiculo.superclass.onButtonEdit.call(this);
-        this.Cmp.fecha_sol.setValue(new Date());
-        this.Cmp.fecha_sol.disable();
+        //this.Cmp.fecha_sol.setValue(new Date());//#ETR-4275
+        this.Cmp.fecha_sol.enable();//#ETR-4275
         this.Cmp.id_funcionario.store.baseParams.fecha = this.Cmp.fecha_sol.getValue().dateFormat(this.Cmp.fecha_sol.format);
         this.obtenerGestion(this.Cmp.fecha_sol.getValue());
         this.Cmp.id_centro_costo.store.baseParams.query = data.id_centro_costo;

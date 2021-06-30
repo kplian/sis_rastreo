@@ -410,3 +410,7 @@ CREATE TABLE ras.tsol_vehiculo_responsable (
 ALTER TABLE ras.tasig_vehiculo
     ADD COLUMN id_sol_vehiculo_responsable VARCHAR;
 /***********************************F-SCP-EGS-RAS-GDV-37-11/03/2021****************************************/
+/***********************************I-SCP-EGS-RAS-GVD-37-10/06/2021****************************************/
+ALTER TABLE ras.telemento_seg_equipo
+    ALTER COLUMN estado_elemento SET DEFAULT ''::character varying;
+/***********************************F-SCP-EGS-RAS-GDV-37-10/06/2021****************************************/

@@ -1,86 +1,119 @@
 <!--
 #ETR-3400  JJA     24/03/2021  Agregar códigos a reportes Gestión vehicular
  -->
-<br><br>
-<table border="1" align="center" style="margin-left: -50px;">
-    <tr style="background-color: #000080; color:white;height: 30px;">
-        <td align="left" >Parte I. Llenado por el solicitante</td>
-    </tr>
-    <tr  style="height: 50px;" >
-        <td align="center" width="146px;" rowspan="2" colspan="2" ><br/><br/><b>Solicitante:</b></td>
-        <td align="center" width="146px;" colspan="2" style="background-color: #F2F5A9;"><b>Nombre</b></td>
-        <td align="center" width="146px;" colspan="2" style="background-color: #F2F5A9;"><b>Firma</b></td>
-        <td align="center" width="73px;" style="background-color: #F2F5A9;"><b>Dia</b></td>
-        <td align="center" width="73px;" style="background-color: #F2F5A9;"><b>Mes</b></td>
-        <td align="center" width="75px;" style="background-color: #F2F5A9;"><b>Año</b></td>
-    </tr>
-    <tr style="height: 50px;">
-        <td align="center" width="146px;" colspan="2"><?php echo $this->datos_sol_vehiculo[0]["desc_funcionario"]; ?></td>
-        <td align="center" width="146px;" colspan="2"></td>
-        <td align="center" width="73px;"><br/>
-            <?php  echo explode("-", $this->datos_sol_vehiculo[0]["fecha_sol"])[2]; ?>
-        </td>
-        <td align="center" width="73px;"><br/>
-            <?php echo explode("-", $this->datos_sol_vehiculo[0]["fecha_sol"])[1]; ?></td>
-        <td align="center" width="75px;"><br/>
-            <?php echo explode("-", $this->datos_sol_vehiculo[0]["fecha_sol"])[0]; ?></td>
-    </tr>
-    <tr style="height: 50px;">
-        <td width="146px" height="50px" colspan="2"><br/><br/><b>Lugares visitados:</b></td>
-        <td align="center" colspan="7" ><br/><br/><?php echo $this->datos_sol_vehiculo[0]["destino"]; ?></td>
-    </tr>
-    <tr style="height: 50px;">
-        <td align="center" width="146px;" height="50px" colspan="2"><b>Nómina de Personas:</b></td>
-        <td align="center" colspan="7" >
-            <ol>
-                <?php $nomina=0; foreach ($this->datos_nomina_persona as $nomina) { ?>
-                <li>
-                <?php echo $nomina['nombre']; ?>
-                </li>
-                <?php } ?>
-            </ol>
-        </td>
-    </tr>
-    <tr style="background-color: #F2F5A9;">
-        <td align="center" colspan="4"><b>Fecha y Hora de Salida</b> </td>
-        <td align="center" colspan="5" ><b>Fecha y Hora de Retorno</b></td>
-    </tr>
-    <tr>
-        <td align="left" colspan="2" ><b>Fecha:</b> <?php echo $this->datos_sol_vehiculo[0]["fecha_salida"]; ?></td>
-        <td align="left" colspan="2" ><b>Hora:</b> <?php echo $this->datos_sol_vehiculo[0]["hora_salida"]; ?></td>
-        <td align="left" colspan="3" ><b>Fecha:</b> <?php echo $this->datos_sol_vehiculo[0]["fecha_retorno"]; ?></td>
-        <td align="left" colspan="2" ><b>Hora:</b> <?php echo $this->datos_sol_vehiculo[0]["hora_retorno"]; ?></td>
-    </tr>
-    <tr style="height: 50px;">
-        <td align="center" width="146px;" height="50px" colspan="2"><br/><b>Vehículo Asignado:</b></td>
-        <td align="center" colspan="7" ><br/><br/><?php echo $this->datos_asig_vehiculo[0]["placa"]." - ".$this->datos_asig_vehiculo[0]["desc_marca"]." ".$this->datos_asig_vehiculo[0]["desc_modelo"]; ?></td>
-    </tr>
-    <tr style="height: 50px;">
-        <td align="center" width="146px;" height="50px" colspan="2"><br/><b>Nombre del Chofer:</b></td>
-        <td align="center" colspan="3" ><?php echo $this->datos_asig_vehiculo[0]["desc_persona"]; ?></td>
-        <td align="center" colspan="2" ><br/><br/><b>Propio/Alquilado:</b></td>
-        <td align="center" colspan="2" >
-            <br/><br/><?php if($this->datos_sol_vehiculo[0]["alquiler"] =="no"){ echo("Propio");} else{ echo"Alquilado"; } ?>
+<font size="10">
+    <?php
+    $datosAsig=0;
+    foreach ($this->datos_asig_vehiculo as $datosAsig) {
+        $id_asig_vehiculo = $datosAsig['id_asig_vehiculo'];
+        $existe = true;
+        $i = 1;
+        $numero = 3;
+        echo '<h3>'.$datosAsig['placa'].' '.$datosAsig['desc_tipo_equipo'].'</h3>';
+        echo '<p>Elementos de Seguridad y señalizacion: </p>';
+        echo '<table  width="100%" cellpadding="5px"  border="1" >';
+        echo '<tr>';
+        echo '<th align="center" width="30%">Elemento</th>';
+        echo '<th align="center" width="10%">existe</th>';
+        echo '<th align="center" width="20%"  style="margin: 2px; line-height: 10px">Estado<p style="font-size: 8px">(malo,regular,bueno,excelente)</p> </th>';
+        echo '<th align="center" width="40%">Observaciones</th>';
+        echo '</tr>';
+        //var_dump('xx',$this->datos_elemento_seg_equipo);exit;
+         foreach ($this->datos_elemento_seg_equipo as $datos) {
 
-        </td>
-    </tr>
-    <tr style="height: 50px;">
-        <td align="center" width="146px;" height="50px" colspan="2"><br/><br/><b>Kilometraje Final:</b></td>
-        <td align="center" colspan="3" ><br/><br/><?php echo $this->datos_asig_vehiculo[0]["km_final"]; ?></td>
-        <td align="center" colspan="4" rowspan="3" >
-                <b align="center">Observaciones / Novedades de Viaje / Estado de Vehículo:</b><br/>
-                <?php $observ=0; foreach ($this->datos_elemento_seg_equipo as $observ) { ?>
-                        <?php echo $observ['observacion']." "; ?>
-                <?php } ?>
-        </td>
-    </tr>
-    <tr style="height: 50px;">
-        <td align="center" width="146px;" height="50px" colspan="2"><br/><br/><b>Kilometraje Inicial:</b></td>
-        <td align="center" colspan="3" ><br/><br/><?php echo $this->datos_asig_vehiculo[0]["km_inicio"]; ?></td>
-    </tr>
-    <tr style="height: 50px;">
-        <td align="center" width="146px;" height="50px" colspan="2"><br/><br/><b>Total Recorrido km.</b></td>
-        <td align="center" colspan="3" ><br/><br/><?php echo $this->datos_asig_vehiculo[0]["recorrido"]; ?></td>
-    </tr>
-</table>
+            if($id_asig_vehiculo == $datos['id_asig_vehiculo']){
+                echo '<tr>';
+                echo '<td width="30%" >'. $datos['desc_elemento_seg'] .'</td>';
+                echo  '<td width="10%" align="center">';
+                echo $datos['existe']=='t'?'x':''; //#ETR-3400
+                echo  '</td>';
+               // if ($datos['existe']=='t'){
+                    echo '<td width="20%" >'. $datos['estado_elemento'] .'</td>';
+               // }else{
+                //    echo '<td width="20%" >No aplica </td>'; //#ETR-3400
+               // }
+                echo '<td width="40%" >'. $datos['observacion'] .'</td>';
+                echo '</tr>';
 
+            }
+        }//fin 2 for
+
+        echo '</table>';
+        echo '<p>Datos del viaje: </p>';
+        echo '<table width="100%" cellpadding="5px"  border="1"> 
+        <tr>
+            <td width="25%">Kilometraje Final:               
+            </td>
+            <td width="15%" >'.$datosAsig['km_inicio'].'
+            </td>
+            <td width="60%" rowspan="3" >Observaciones / Novedades de Viaje / Estado de Vehículo:
+                '.$datosAsig['observacion_viaje'].'
+            </td>
+        </tr>
+        <tr>
+            <td width="25%">Kilometraje Inicial:
+            </td>
+            <td width="15%">'.$datosAsig['km_final'].'
+            </td>
+        </tr>
+        <tr>
+            <td width="25%" >Total Recorrido km:
+            </td>
+            <td width="15%" >'.$datosAsig['recorrido'].'
+            </td>
+        </tr>
+         <tr>
+            <td width="25%" rowspan="3" >Nombre y Firma Chofer:
+            </td>
+            <td width="75%" height="70px" rowspan="2">
+            </td>
+          
+        </tr>
+        <tr>
+         
+        </tr>
+         <tr>
+            <td width="75%" align="center">'.ucwords(strtolower($datosAsig['desc_persona'])).'
+
+            </td>
+         </tr> 
+        
+        </table>';
+
+        if(  $datosAsig['incidencia']== 'si'  ) {
+            echo '<p>Incidencias:</p>';
+            echo '<table border="1">';
+            echo '<tr> 
+                <td width="30%" align="center">Incidencia</td>
+                <td width="69.1%" align="center">Observaciones</td>
+            </tr>';
+            $agrupador = '';
+            foreach ($this->datos_asig_incidencia as $datos) {
+                if ($id_asig_vehiculo == $datos['id_asig_vehiculo']) {
+
+                    if ($agrupador != $datos['desc_incidencia_agrupador']) {
+                        echo '
+                   <tr>
+                        <td colspan="2" width="99.1%">' . $datos['desc_incidencia_agrupador'] . ':</td>
+                   </tr>
+                   ';
+                    }
+
+                    echo '<tr>';
+                    echo '<td width="30%" >' . $datos['desc_incidencia'] . '</td> ';
+                    echo '<td width="69.1%" >' . $datos['observacion'] . '</td>';
+                    echo '</tr>';
+
+                    $agrupador = $datos['desc_incidencia_agrupador'];
+                }
+
+
+            }
+            echo '</table>';
+        }
+    }//fin 1 for
+    ?>
+
+
+
+</font>

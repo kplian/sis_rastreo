@@ -67,6 +67,8 @@ class MODSolVehiculo extends MODbase{
         $this->captura('telefono_contacto','varchar');//#GDV-37
         $this->captura('id_responsable','int4');//#GDV-37
         $this->captura('desc_reponsable','varchar');//#GDV-37
+        $this->captura('desc_funcionario_wf','varchar');
+
 
         if($this->objParam->getParametro('tipo_reporte')=='auto_PI' || $this->objParam->getParametro('tipo_reporte')=='auto_PII'){
             $this->captura('desc_jefe_dep','varchar');
@@ -304,6 +306,23 @@ class MODSolVehiculo extends MODbase{
         $this->captura('gerencia','varchar');
         $this->captura('alquiler','varchar');
         $this->captura('nro_tramite','varchar');
+
+        //Ejecuta la instruccion
+        $this->armarConsulta();
+        $this->ejecutarConsulta();
+
+        //Devuelve la respuesta
+        return $this->respuesta;
+    }
+    function devolverBorrador(){
+        //Definicion de variables para ejecucion del procedimiento
+        $this->procedimiento='ras.ft_sol_vehiculo_ime';
+        $this->transaccion='RAS_RECHASOL_MOD';
+        $this->tipo_procedimiento='IME';
+
+        //Define los parametros para la funcion
+        $this->setParametro('id_sol_vehiculo','id_sol_vehiculo','int4');
+        $this->setParametro('obs','obs','varchar');
 
         //Ejecuta la instruccion
         $this->armarConsulta();

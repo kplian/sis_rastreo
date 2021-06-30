@@ -7,6 +7,7 @@
 *@description Archivo con la interfaz de usuario que permite la ejecucion de todas las funcionalidades del sistema
  ISSUE			FECHA			AUTHOR 					DESCRIPCION
  #GDV-34        22/02/201       EGS                     Se agrega campo de kilometraje inicial
+#RAS-9          04/06/2021      EGS                     Se modifica depto por interfaz
 */
 
 header("content-type: text/javascript; charset=UTF-8");
@@ -67,6 +68,30 @@ Phx.vista.Equipo=Ext.extend(Phx.gridInterfaz,{
 			grid: true,
 			form: false
 		},
+        {
+            config:{
+                name:'id_depto',
+                hiddenName: 'id_depto',
+                url: '../../sis_parametros/control/Depto/listarDeptoFiltradoXUsuario',
+                origen:'DEPTO',
+                allowBlank:false,
+                fieldLabel: 'Depto',
+                gdisplayField:'codigo',//dibuja el campo extra de la consulta al hacer un inner join con orra tabla
+                width:250,
+                gwidth:180,
+                baseParams:{
+                    par_filtro : 'deppto.id_depto#deppto.nombre#deppto.codigo',
+                    estado : 'activo',
+                    codigo_subsistema : 'RAS'},//parametros adicionales que se le pasan al store
+                renderer:function (value, p, record){return String.format('{0}', record.data['codigo']);}
+            },
+            //type:'TrigguerCombo',
+            type:'ComboRec',
+            id_grupo:0,
+            filters:{pfiltro:'depto.nombre',type:'string'},
+            grid:false,
+            form:true
+        },
 		{
 			config: {
 				name: 'id_tipo_equipo',
@@ -717,15 +742,15 @@ Phx.vista.Equipo=Ext.extend(Phx.gridInterfaz,{
 				grid:true,
 				form:false
 		},
-        {
-            config:{
-                labelSeparator:'',
-                inputType:'hidden',
-                name: 'id_depto'
-            },
-            type:'Field',
-            form:true
-        }
+        // {
+        //     config:{
+        //         labelSeparator:'',
+        //         inputType:'hidden',
+        //         name: 'id_depto'
+        //     },
+        //     type:'Field',
+        //     form:true
+        // }
 
 	],
 	tam_pag:50,	
@@ -844,6 +869,7 @@ Phx.vista.Equipo=Ext.extend(Phx.gridInterfaz,{
             this.window.buttons[0].show();
             this.form.getForm().reset();
             this.loadValoresIniciales();
+            this.Cmp.id_depto.disable();//#RAS-9
             this.window.show();
             if(this.getValidComponente(0)){
                 this.getValidComponente(0).focus(false,100);
@@ -858,12 +884,22 @@ Phx.vista.Equipo=Ext.extend(Phx.gridInterfaz,{
             this.window.show();
             this.loadForm(this.sm.getSelected())
             this.window.buttons[0].hide();
+            this.Cmp.id_depto.enable();//#RAS-9
             this.loadValoresIniciales();
         }
     },
     loadValoresIniciales: function () {
         Phx.vista.Equipo.superclass.loadValoresIniciales.call(this);
-        this.getComponente('id_depto').setValue(this.cmbDepto.getValue());
+        //this.getComponente('id_depto').setValue(this.cmbDepto.getValue());
+        this.Cmp.id_depto.store.load({params:{start:0,limit:this.tam_pag},//#RAS-9
+            callback : function (r) {
+                if (r.length > 0 ) {
+                   this.Cmp.id_depto.setValue(this.cmbDepto.getValue());
+                }else{
+                    this.Cmp.id_depto.reset();
+                }
+            }, scope : this
+        });
     }
 
 	}

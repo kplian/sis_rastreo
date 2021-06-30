@@ -18,6 +18,7 @@ require_once dirname(__FILE__).'/../../pxp/lib/lib_reporte/ReportePDFFormulario.
 require_once(dirname(__FILE__).'/../reportes/RAutoPI.php');
 require_once(dirname(__FILE__).'/../reportes/RAutoPII.php');
 require_once(dirname(__FILE__).'/../reportes/RAutoPIII.php');
+require_once(dirname(__FILE__).'/../reportes/RAutoPIV.php');
 class ACTSolVehiculo extends ACTbase{    
             
     function listarSolVehiculo(){
@@ -194,6 +195,33 @@ class ACTSolVehiculo extends ACTbase{
             $this->mensajeExito->imprimirRespuesta($this->mensajeExito->generarJson());
 
         }
+        if($this->objParam->getParametro('tipo_reporte')=='auto_PIV'){
+
+            $nombreArchivo = uniqid(md5(session_id()).'-ElementVehiculo') . '.pdf';
+            $tamano = 'LETTER';
+            $orientacion = 'P';
+            $this->objParam->addParametro('orientacion',$orientacion);
+            $this->objParam->addParametro('tamano',$tamano);
+            $this->objParam->addParametro('titulo_archivo',$titulo);
+            $this->objParam->addParametro('nombre_archivo',$nombreArchivo);
+            $this->objParam->addParametro('datos_sol_vehiculo',$dataSourceSolVehiculo->getDatos());
+            $this->objParam->addParametro('datos_nomina_persona',$dataSourceNominaPersona->getDatos());
+            $this->objParam->addParametro('datos_asig_vehiculo',$dataSourceAsigVehiculo->getDatos());
+            $this->objParam->addParametro('datos_elemento_seg_equipo',$dataSourceElementSegEqui->getDatos());
+            $this->objParam->addParametro('datos_asig_incidencia',$dataSourceAsigIncidencia->getDatos());
+
+            $reporte = new RAutoPIV($this->objParam);
+
+            $reporte->datosHeader($this->objParam);
+            $reporte->generarReporte1($this->objParam);
+            $reporte->output($reporte->url_archivo,'F');
+
+            $this->mensajeExito=new Mensaje();
+            $this->mensajeExito->setMensaje('EXITO','Reporte.php','Reporte generado','Se generó con éxito el reporte: '.$nombreArchivo,'control');
+            $this->mensajeExito->setArchivoGenerado($nombreArchivo);
+            $this->mensajeExito->imprimirRespuesta($this->mensajeExito->generarJson());
+
+        }
     }
         function listarSolVehiculoKilometraje(){
             $this->objParam->defecto('ordenacion','id_sol_vehiculo');
@@ -284,6 +312,13 @@ class ACTSolVehiculo extends ACTbase{
 
             $this->res=$this->objFunc->ReporteConsultaSolcitud($this->objParam);
         }
+        $this->res->imprimirRespuesta($this->res->generarJson());
+    }
+    function devolverBorrador(){
+        $this->objFunc=$this->create('MODSolVehiculo');
+
+        $this->res=$this->objFunc->devolverBorrador($this->objParam);
+
         $this->res->imprimirRespuesta($this->res->generarJson());
     }
 }
