@@ -148,6 +148,21 @@ header("content-type: text/javascript; charset=UTF-8");
                         grid:true,
                         form:false
                     },
+                    {
+                        config:{
+                            name: 'nro_tramite',
+                            fieldLabel: 'Nro Tramite',
+                            allowBlank: true,
+                            anchor: '80%',
+                            gwidth: 70,
+                            maxLength:10
+                        },
+                        type:'TextField',
+                        filters:{pfiltro:'sol.nro_tramite',type:'string'},
+                        id_grupo:1,
+                        grid:true,
+                        form:false
+                    },
 
 
                 ];
@@ -170,6 +185,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 {name:'depto', type: 'string'},
                 {name:'gerencia', type: 'string'},
                 {name:'alquiler', type: 'string'},
+                {name:'nro_tramite', type: 'string'},
             ],
 
             sortInfo:{
