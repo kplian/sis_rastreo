@@ -120,6 +120,11 @@ Phx.vista.SolVehiculoAsig={
         title: 'Nomina Personas',
         height: '50%',
         cls: 'NominaPersonaVoBo'
+    },{
+        url: '../../../sis_rastreo/vista/sol_vehiculo_responsable/SolVehiculoResponsableAsig.php',
+        title: 'Conductores',
+        height: '50%',
+        cls: 'SolVehiculoResponsableAsig'
     }],
     bdel:false,
     bnew:false,

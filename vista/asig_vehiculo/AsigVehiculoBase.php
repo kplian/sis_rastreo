@@ -621,6 +621,17 @@ Phx.vista.AsigVehiculoBase=Ext.extend(Phx.gridInterfaz,{
                 }, scope : this
             });
         }, this);
+        this.Cmp.id_sol_vehiculo_responsable.on('expand', function (Combo) {
+            this.Cmp.id_sol_vehiculo_responsable.store.load({params:{start:0,limit:this.tam_pag},
+                callback : function (r) {
+                    if (r.length > 0 ) {
+                        //this.Cmp.id_sol_vehiculo_responsable.setValue(r[0].data.id_sol_vehiculo_responsable);
+                    }else{
+                        this.Cmp.id_sol_vehiculo_responsable.reset();
+                    }
+                }, scope : this
+            });
+        }, this);
 
         // if( this.estado == 'vobojefeserv' && this.nombreVistaPadre == 'SolVehiculoVoBo' ){ //GDV-32
         //     this.ocultarComponente(this.Cmp.id_tipo_equipo);
