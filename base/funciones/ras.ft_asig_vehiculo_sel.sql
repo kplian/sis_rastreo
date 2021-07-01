@@ -91,8 +91,26 @@ BEGIN
                          left join ras.tsol_vehiculo_responsable r on r.id_responsable = rs.id_responsable
                          where r.id_sol_vehiculo_responsable  in ( SELECT element::integer
                                                         FROM UNNEST( string_to_array(asigvehi.id_sol_vehiculo_responsable,'',''))
-                                                        as element)
+                                                        as element
+                                                        order by element asc
+                                                        )
                          ) as desc_persona,
+                         (SELECT  array_to_string(array_agg(to_char(sr.fecha_inicio,''DD/MM/YYYY'')), ''<br>''::
+                            text)::character varying
+                        from ras.tsol_vehiculo_responsable sr
+                        where sr.id_sol_vehiculo_responsable  in ( SELECT element::integer
+                                    FROM UNNEST( string_to_array(asigvehi.id_sol_vehiculo_responsable,'',''))
+                                    as element
+                                    order by element asc
+                                     )) as fechas_inicio,
+                        (SELECT  array_to_string(array_agg(to_char(sr.fecha_fin,''DD/MM/YYYY'') ), ''<br>''::
+                            text)::character varying
+                        from ras.tsol_vehiculo_responsable sr
+                        where sr.id_sol_vehiculo_responsable  in ( SELECT element::integer
+                                    FROM UNNEST( string_to_array(asigvehi.id_sol_vehiculo_responsable,'',''))
+                                    as element
+                                    order by element asc
+                                     )) as fechas_fin,
                         asigvehi.km_inicio,
                         asigvehi.km_final,
                         asigvehi.recorrido,
