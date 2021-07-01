@@ -60,7 +60,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     gwidth: 100,
                     valueField: 'id_funcionario',
                     gdisplayField: 'desc_funcionario',
-                    baseParams: {par_filtro: 'id_funcionario#desc_funcionario1'},
+                    baseParams: {par_filtro: 'id_funcionario#desc_funcionario1',fecha:(new Date().getDate())+'/'+(new Date().getMonth())+'/'+(new Date().getFullYear())},
                     renderer:function(value, p, record){return String.format('{0}', record.data['desc_funcionario']);}
                 },
                 type:'ComboRec',//ComboRec
@@ -100,10 +100,28 @@ header("content-type: text/javascript; charset=UTF-8");
                     gwidth:200,
                     emptyText:'Dejar blanco para toda la empresa...',
                     width : 250,
-                    baseParams: {gerencia: 'si'},
+                    baseParams: {uo_nivel: '1,2'},
                     allowBlank:true,
                     tpl:'<tpl for="."><div class="x-combo-list-item"><p><b>{codigo}</b> - {nombre_unidad}</p> </div></tpl>',
                     listWidth:'315',
+                },
+                type:'ComboRec',
+                id_grupo:0,
+                form:true
+            },
+            {
+                config:{
+                    name:'id_depto',
+                    hiddenName: 'id_uo',
+                    origen:'UO',
+                    fieldLabel:'Depto.',
+                    gdisplayField:'desc_uo',//mapea al store del grid
+                    gwidth:200,
+                    emptyText:'Dejar blanco para toda la empresa...',
+                    width : 250,
+                    baseParams: {uo_nivel: '4'},
+                    allowBlank:true,
+                    tpl:'<tpl for="."><div class="x-combo-list-item"><p><b>{codigo}</b> - {nombre_unidad}</p> </div></tpl>',
                 },
                 type:'ComboRec',
                 id_grupo:0,
@@ -121,6 +139,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 id_grupo: 0,
                 form: true
             },
+
             {
                 config:{
                     name: 'hasta',
