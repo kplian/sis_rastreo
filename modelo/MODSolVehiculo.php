@@ -305,6 +305,25 @@ class MODSolVehiculo extends MODbase{
         $this->captura('depto','varchar');
         $this->captura('gerencia','varchar');
         $this->captura('alquiler','varchar');
+        $this->captura('nro_tramite','varchar');
+
+        //Ejecuta la instruccion
+        $this->armarConsulta();
+        $this->ejecutarConsulta();
+
+        //Devuelve la respuesta
+        return $this->respuesta;
+    }
+    function devolverBorrador(){
+        //Definicion de variables para ejecucion del procedimiento
+        $this->procedimiento='ras.ft_sol_vehiculo_ime';
+        $this->transaccion='RAS_RECHASOL_MOD';
+        $this->tipo_procedimiento='IME';
+
+        //Define los parametros para la funcion
+        $this->setParametro('id_sol_vehiculo','id_sol_vehiculo','int4');
+        $this->setParametro('obs','obs','varchar');
+
         //Ejecuta la instruccion
         $this->armarConsulta();
         $this->ejecutarConsulta();

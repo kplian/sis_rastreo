@@ -13,7 +13,13 @@ class ACTResponsable extends ACTbase{
 		$this->objParam->defecto('ordenacion','id_responsable');
 
         if($this->objParam->getParametro('tipo_responsable')!=''){
-            $this->objParam->addFiltro("conduc.tipo_responsable = ''".$this->objParam->getParametro('tipo_responsable')."''");
+            if($this->objParam->getParametro('tipo_responsable')=='conductor_alquilado'){
+
+                $this->objParam->addFiltro("conduc.tipo_responsable in (''conductor'',''conductor_alquilado'')");
+            }else{
+                $this->objParam->addFiltro("conduc.tipo_responsable = ''".$this->objParam->getParametro('tipo_responsable')."''");
+            }
+
         }
 
 		$this->objParam->defecto('dir_ordenacion','asc');

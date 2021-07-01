@@ -832,7 +832,6 @@ Phx.vista.SolVehiculoBase=Ext.extend(Phx.gridInterfaz,{
 
     },
     onAntEstado: function(wizard,resp){
-        console.log('resp',wizard.data.id_help_desk);
         Phx.CP.loadingShow();
         var operacion = 'cambiar';
 
@@ -861,7 +860,59 @@ Phx.vista.SolVehiculoBase=Ext.extend(Phx.gridInterfaz,{
     },
     obtenerNombreVista: function () { //#GDV-29
         return this.nombreVista;
-    }
+    },
+    devBorrador: function(){
+        var data = this.getSelectedData();
+        Phx.CP.loadingHide();
+        Phx.CP.loadWindows('../../../sis_rastreo/vista/sol_vehiculo/AntFormEstadoWf.php',
+            'Estado de Wf',
+            {   modal: true,
+                width: 450,
+                height: 250
+            },
+            {    data: data
+            },
+            this.idContenedor,'AntFormEstadoWf',
+            {
+                config:[{
+                    event:'beforesave',
+                    delegate: this.onDevBorrador,
+                }],
+                scope:this
+            });
+        // Ext.Ajax.request({
+        //     url:'../../sis_rastreo/control/SolVehiculo/devolverBorrador',
+        //     params:{
+        //         id_sol_vehiculo: data.id_sol_vehiculo,
+        //     },
+        //     success: this.successDevBorrador,
+        //     failure: this.conexionFailure,
+        //     timeout: this.timeout,
+        //     scope: this
+        // });
+    },
+    onDevBorrador: function(wizard,resp){
+
+        Phx.CP.loadingShow();
+        Ext.Ajax.request({
+            url:'../../sis_rastreo/control/SolVehiculo/devolverBorrador',
+            params:{
+                id_sol_vehiculo: wizard.data.id_sol_vehiculo,
+                obs: resp.obs
+            },
+            argument:{wizard:wizard},
+            success: this.successDevBorrador,
+            failure: this.conexionFailure,
+            timeout: this.timeout,
+            scope: this
+        });
+    },
+    successDevBorrador:function(resp){
+        console.log('resp',resp)
+        Phx.CP.loadingHide();
+        resp.argument.wizard.panel.destroy()
+        this.reload();
+    },
 
     }
 )

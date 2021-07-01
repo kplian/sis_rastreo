@@ -300,7 +300,10 @@ class ACTSolVehiculo extends ACTbase{
         if($this->objParam->getParametro('hasta')){
             $this->objParam->addFiltro(" (sol.fecha_retorno::date <= ''".$this->objParam->getParametro('hasta')."''::date ) ");
         }
-
+        if($this->objParam->getParametro('id_depto')){ //#RAS-8
+            $this->objParam->addFiltro(" (uo.id_uo in( ".$this->objParam->getParametro('id_depto').") ) ");
+        }
+       
         if($this->objParam->getParametro('tipoReporte')=='excel_grid' || $this->objParam->getParametro('tipoReporte')=='pdf_grid'){
             $this->objReporte = new Reporte($this->objParam,$this);
             $this->res = $this->objReporte->generarReporteListado('MODSolVehiculo','ReporteConsultaSolcitud');
@@ -309,6 +312,13 @@ class ACTSolVehiculo extends ACTbase{
 
             $this->res=$this->objFunc->ReporteConsultaSolcitud($this->objParam);
         }
+        $this->res->imprimirRespuesta($this->res->generarJson());
+    }
+    function devolverBorrador(){
+        $this->objFunc=$this->create('MODSolVehiculo');
+
+        $this->res=$this->objFunc->devolverBorrador($this->objParam);
+
         $this->res->imprimirRespuesta($this->res->generarJson());
     }
 }

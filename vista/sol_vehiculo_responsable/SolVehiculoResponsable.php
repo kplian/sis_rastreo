@@ -69,10 +69,13 @@ Phx.vista.SolVehiculoResponsable=Ext.extend(Phx.gridInterfaz,{
                         direction: 'ASC'
                     },
                     totalProperty: 'total',
-                    fields: ['id_responsable', 'desc_persona', 'codigo'],
+                    fields: ['id_responsable', 'desc_persona', 'codigo','tipo_responsable'],
                     remoteSort: true,
                     baseParams: {par_filtro: 'conduc.id_responsable#per.nombre_completo1#conduc.codigo'}
                 }),
+                tpl:'<tpl for="."><div class="x-combo-list-item" ><div class="awesomecombo-item {checked}"><p><b>Nombre: </b>{desc_persona}</p></div>\
+                               <p style="padding-left: 20px;"><b>tipo: </b>{tipo_responsable}</p>\
+                                </div></tpl>',
                 valueField: 'id_responsable',
                 displayField: 'desc_persona',
                 gdisplayField: 'desc_persona',
@@ -287,8 +290,14 @@ Phx.vista.SolVehiculoResponsable=Ext.extend(Phx.gridInterfaz,{
     onButtonNew:function(){
         //llamamos primero a la funcion new de la clase padre por que reseta el valor los componentes
         Phx.vista.SolVehiculoResponsable.superclass.onButtonNew.call(this);
+        console.log('this.maestro',this.maestro);
         this.Cmp.id_responsable.enable();
-        this.Cmp.id_responsable.store.baseParams.tipo_responsable = 'conductor';
+        if(this.maestro.alquiler == 'si'){
+            this.Cmp.id_responsable.store.baseParams.tipo_responsable = 'conductor_alquilado';
+        }else{
+            this.Cmp.id_responsable.store.baseParams.tipo_responsable = 'conductor';
+        }
+
         this.Cmp.id_responsable.on('expand', function (Combo) {
             this.Cmp.id_responsable.store.load({params:{start:0,limit:this.tam_pag},
                 callback : function (r) {
@@ -350,7 +359,9 @@ Phx.vista.SolVehiculoResponsable=Ext.extend(Phx.gridInterfaz,{
             if( this.estado == 'vobojefeserv' ){
                 this.getBoton('new').enable();
             }else{
-                this.getBoton('new').disable();
+               if(this.nombreVista != 'SolVehiculoResponsableAsig' ) {
+                   this.getBoton('new').disable();
+               }
             }
         }
         return tb

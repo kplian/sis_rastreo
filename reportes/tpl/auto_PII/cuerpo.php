@@ -19,9 +19,20 @@ foreach ($this->datos_asig_vehiculo as $datos) {?>
 
         </tr>
         <tr >
-            <td width="25%" >Nombre del Chofer:
+            <td width="40%" align="center">Nombre del Chofer
             </td>
-            <td width="75%" > <?php echo  ucwords(strtolower($datos['desc_persona']));    ?>
+            <td width="30%" align="center">Fecha Inicio
+            </td>
+            <td width="30%" align="center">Fecha Fin
+            </td>
+
+        </tr>
+        <tr >
+            <td width="40%" ><?php echo  ucwords(strtolower($datos['desc_persona']));    ?>
+            </td>
+            <td width="30%" align="center"><?php echo  ucwords(strtolower($datos['fechas_inicio']));    ?>
+            </td>
+            <td width="30%" align="center"><?php echo  ucwords(strtolower($datos['fechas_fin']));    ?>
             </td>
 
         </tr>

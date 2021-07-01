@@ -303,8 +303,10 @@ BEGIN
             v_filtro = v_filtro ||' equip.id_equipo not in (SELECT
                                             equipes.id_equipo
                                         FROM ras.tequipo_estado equipes
-                                        WHERE  ('''||v_registro.fecha_salida||'''::date BETWEEN  equipes.fecha_inicio and  equipes.fecha_final)  or
-                                        ('''||v_registro.fecha_retorno||'''::date BETWEEN  equipes.fecha_inicio and  equipes.fecha_final) ) and' ;
+                                        WHERE  (('''||v_registro.fecha_salida||'''::date BETWEEN  equipes.fecha_inicio and  equipes.fecha_final)  or
+                                        ('''||v_registro.fecha_retorno||'''::date BETWEEN  equipes.fecha_inicio and  equipes.fecha_final))  and
+                                        equipes.estado <> ''cancelado'' ) and
+                                        ' ;
 
             v_consulta:='
             select
@@ -364,8 +366,9 @@ BEGIN
             v_filtro = v_filtro ||' equip.id_equipo not in (SELECT
                                             equipes.id_equipo
                                         FROM ras.tequipo_estado equipes
-                                        WHERE  ('''||v_registro.fecha_salida||'''::date BETWEEN  equipes.fecha_inicio and  equipes.fecha_final)  or
-                                        ('''||v_registro.fecha_retorno||'''::date BETWEEN  equipes.fecha_inicio and  equipes.fecha_final) )  and' ;
+                                        WHERE  (('''||v_registro.fecha_salida||'''::date BETWEEN  equipes.fecha_inicio and  equipes.fecha_final)  or
+                                        ('''||v_registro.fecha_retorno||'''::date BETWEEN  equipes.fecha_inicio and  equipes.fecha_final))  and
+                                        equipes.estado <> ''cancelado'') and ' ;
             --Sentencia de la consulta de conteo de registros
             v_consulta:='
             select count(equip.id_equipo) as total

@@ -44,6 +44,8 @@ class MODAsigVehiculo extends MODbase{
         $this->captura('desc_modelo','varchar');
         $this->captura('desc_tipo_equipo','varchar');
         $this->captura('desc_persona','varchar');
+        $this->captura('fechas_inicio','varchar');
+        $this->captura('fechas_fin','varchar');
         $this->captura('km_inicio','numeric');
         $this->captura('km_final','numeric');
         $this->captura('recorrido','numeric');

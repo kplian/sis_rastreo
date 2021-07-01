@@ -449,7 +449,8 @@ BEGIN
             sol.destino,
             uo.nombre_unidad::varchar as depto,
             g.nombre_unidad::varchar as gerencia,
-            sol.alquiler::varchar
+            sol.alquiler::varchar,
+            sol.nro_tramite::varchar --#RAS-8
             FROM  ras.tsol_vehiculo sol
             join param.tcentro_costo cc on cc.id_centro_costo=sol.id_centro_costo
             join param.ttipo_cc tcc on tcc.id_tipo_cc=cc.id_tipo_cc
@@ -457,7 +458,8 @@ BEGIN
             JOIN orga.tuo_funcionario uff on uff.id_funcionario=fun.id_funcionario
             AND uff.fecha_asignacion<=CURRENT_DATE AND (uff.fecha_finalizacion IS NULL OR CURRENT_DATE<=uff.fecha_finalizacion)
             join orga.tuo uo on uo.id_uo=orga.f_get_uo_departamento(uff.id_uo,fun.id_funcionario,null)
-            join orga.tuo g on g.id_uo=orga.f_get_uo_gerencia(uff.id_uo,fun.id_funcionario,null) where ';
+            join orga.tuo g on g.id_uo=orga.f_get_uo_gerencia(uff.id_uo,fun.id_funcionario,null)
+            where ';
             --Definicion de la respuesta
             v_consulta:=v_consulta||v_parametros.filtro;
             v_consulta:=v_consulta||' order by sol.id_sol_vehiculo  ASC limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;

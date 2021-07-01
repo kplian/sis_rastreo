@@ -49,6 +49,13 @@ Phx.vista.SolVehiculoAsig={
 						handler: this.sigEstado,
 						tooltip: '<b>Pasar al Siguiente Estado</b>'
 						});
+        this.addButton('dev_borrador', {
+            text : 'Dev. al Solicitante',
+            iconCls : 'batras',
+            disabled : true,
+            handler : this.devBorrador,
+            tooltip : '<b>Devuelve a Borrador</b>'
+        });
 	},
 	preparaMenu:function(n){
       var data = this.getSelectedData();
@@ -56,15 +63,18 @@ Phx.vista.SolVehiculoAsig={
         Phx.vista.SolVehiculoAsig.superclass.preparaMenu.call(this,n);
         this.getBoton('diagrama_gantt').enable();
 		this.getBoton('btnChequeoDocumentosWf').enable();
+        this.getBoton('dev_borrador').enable();
 
          //if (data.estado == 'borrador') {
          	this.getBoton('ant_estado').enable();
     		this.getBoton('sig_estado').enable();	
 
         // };
-         if(data.estado == ('vobo' ||'finalizado' )){
-         	this.getBoton('ant_estado').disable();
-    		this.getBoton('sig_estado').disable();		
+         if(data.estado == 'cancelado' ) {
+             this.getBoton('sig_estado').disable();
+             this.getBoton('dev_borrador').disable();
+         }else if(data.estado == 'asignado'){
+             this.getBoton('dev_borrador').disable();
          };
          
 
@@ -77,7 +87,9 @@ Phx.vista.SolVehiculoAsig={
 			this.getBoton('btnChequeoDocumentosWf').disable();          
             this.getBoton('diagrama_gantt').disable();
             this.getBoton('ant_estado').disable();
-    		this.getBoton('sig_estado').disable();  
+    		this.getBoton('sig_estado').disable();
+            this.getBoton('dev_borrador').disable();
+
         }
        return tb
     },
@@ -108,14 +120,21 @@ Phx.vista.SolVehiculoAsig={
         title: 'Nomina Personas',
         height: '50%',
         cls: 'NominaPersonaVoBo'
+    },{
+        url: '../../../sis_rastreo/vista/sol_vehiculo_responsable/SolVehiculoResponsableAsig.php',
+        title: 'Conductores',
+        height: '50%',
+        cls: 'SolVehiculoResponsableAsig'
     }],
     bdel:false,
     bnew:false,
     bedit:false,
     bsave:false,
     gruposBarraTareas:[//#GDV-36
-        {name:'asigvehiculo',title:'<H1 align="center"><i class="fa fa-eye"></i>Asiganción</h1>',grupo:0,height:0},
-        {name:'asignado',title:'<H1 align="center"><i class="fa fa-eye"></i>Asignado</h1>',grupo:0,height:0}
+        {name:'asigvehiculo',title:'<H1 align="center"><i class="fa fa-eye"></i>Asignación</h1>',grupo:0,height:0},
+        {name:'asignado',title:'<H1 align="center"><i class="fa fa-eye"></i>Asignado</h1>',grupo:0,height:0},
+        {name:'cancelado',title:'<H1 align="center"><i class="fa fa-eye"></i>Cancelado</h1>',grupo:0,height:0}
+
     ],
     actualizarSegunTab: function(name, indice){//#GDV-36
         if(this.finCons) {

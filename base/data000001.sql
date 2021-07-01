@@ -184,3 +184,14 @@ select pxp.f_insert_tgui ('Conductores asignados', 'Conductores asignados', 'ASI
 --#RAS-8
 select pxp.f_insert_tgui ('Consulta solicitudes', 'Consulta solicitudes', 'CONSSOLI', 'si', 7, 'sis_rastreo/reportes/formulario/form_solicitud.php', 3, '', 'form_solicitud', 'RAS');
 /***********************************F-DAT-JJA-RAS-GDV-37-1-27/05/2021****************************************/
+/***********************************I-DAT-EGS-RAS-ETR-4316-25/06/2021****************************************/
+select param.f_import_tcatalogo_tipo ('insert','tequipo_estado','RAS','tequipo_estado');
+select param.f_import_tcatalogo ('insert','RAS','Mantenimiento','mantenimiento','tequipo_estado','2');
+select param.f_import_tcatalogo ('insert','RAS','Cancelado','cancelado','tequipo_estado','3');
+select param.f_import_tcatalogo ('insert','RAS','Asignado','asignado','tequipo_estado','1');
+
+select param.f_import_tcatalogo_tipo ('insert','ttipo_responsable','RAS','tresponsable');
+select param.f_import_tcatalogo ('insert','RAS','conductor_alquilado','conductor_alquilado','ttipo_responsable','3');
+select param.f_import_tcatalogo ('insert','RAS','conductor','conductor','ttipo_responsable','1');
+select param.f_import_tcatalogo ('insert','RAS','personal_autorizado','personal_autorizado','ttipo_responsable','2');
+/***********************************F-DAT-EGS-RAS-ETR-4316-25/06/2021****************************************/
