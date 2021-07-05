@@ -7,6 +7,6 @@
         <td  style="width: 20%; color: #444444;" ><img  style="width: 130px; height: 75px" src="./../../../lib/<?php echo $_SESSION['_DIR_LOGO'];?>" alt="Logo"><!-- #ETR-3400-->
         </td>
         <td align="center" style="width: 50%; color: #444444;  padding: 15px; " ><h1><?php echo  'CONFORMIDAD DE USO DE VEHÍCULOS' ;?> </h1></td> <!-- #ETR-3400-->
-        <td style="width: 30%; color: #444444;" align="center" ><h1><b align="center"> Form. 5-R-271/0</b></h1></td> <!-- #ETR-3400-->
+        <td style="width: 30%; color: #444444;" align="center" ><h4><b align="center"><?php echo $this->datos_sol_vehiculo[0]['nro_tramite'] ;?> <!-- #ETR-4484--> <br/> Form. 5-R-271/0</b></h4></td> <!-- #ETR-3400-->
     </tr>
 </table>
