@@ -1,5 +1,6 @@
 <!--
 #ETR-3400  JJA     24/03/2021  Agregar códigos a reportes Gestión vehicular
+#ETR-4484  JJA     06/07/2021  Cambio de formato de reporte
  -->
 <br><br>
 <table border="1" align="center" style="margin-left: -50px;">
@@ -64,23 +65,21 @@
 
         </td>
     </tr>
+    <!-- #ETR-4484-->
     <tr style="height: 50px;">
-        <td align="center" width="146px;" height="50px" colspan="2"><br/><br/><b>Kilometraje Final:</b></td>
-        <td align="center" colspan="3" ><br/><br/><?php echo $this->datos_asig_vehiculo[0]["km_final"]; ?></td>
-        <td align="center" colspan="4" rowspan="3" >
-                <b align="center">Observaciones / Novedades de Viaje / Estado de Vehículo:</b><br/>
-                <?php $observ=0; foreach ($this->datos_elemento_seg_equipo as $observ) { ?>
-                        <?php echo $observ['observacion']." "; ?>
+        <td align="center" width="146px;" height="50px" colspan="2"><br/><b>Observaciones / Novedades de Viaje / Estado de Vehículo:</b></td>
+        <td align="center" colspan="7" ><br/>
+            <?php $observ=0; foreach ($this->datos_elemento_seg_equipo as $observ) { ?>
+                <?php if($observ==1){ ?>
+                    <?php echo $observ['observacion']." "; ?>
+                <?php }else{ ?>
+                    <br/>
+                    <?php echo $observ['observacion']; ?>
                 <?php } ?>
+
+            <?php } ?>
         </td>
     </tr>
-    <tr style="height: 50px;">
-        <td align="center" width="146px;" height="50px" colspan="2"><br/><br/><b>Kilometraje Inicial:</b></td>
-        <td align="center" colspan="3" ><br/><br/><?php echo $this->datos_asig_vehiculo[0]["km_inicio"]; ?></td>
-    </tr>
-    <tr style="height: 50px;">
-        <td align="center" width="146px;" height="50px" colspan="2"><br/><br/><b>Total Recorrido km.</b></td>
-        <td align="center" colspan="3" ><br/><br/><?php echo $this->datos_asig_vehiculo[0]["recorrido"]; ?></td>
-    </tr>
+
 </table>
 
